@@ -194,7 +194,6 @@ void *removeDLL(DLL *items,int index) // add case for index > items->size/2;
                 }
             deleted = temp;
             val = getNODEvalue(deleted);
-            free(deleted);
             setNODEnext(getNODEprev(temp), getNODEnext(temp));
             if (index == items->size - 2) 
                 {
@@ -206,6 +205,7 @@ void *removeDLL(DLL *items,int index) // add case for index > items->size/2;
                 setNODEprev(getNODEnext(temp), getNODEprev(temp));
                 setNODEnext(getNODEprev(temp), getNODEnext(temp));
                 }
+            free(deleted);
             }
         else
             {
@@ -222,7 +222,7 @@ void *removeDLL(DLL *items,int index) // add case for index > items->size/2;
             }
         }
     items->size--;
-    
+    //free(temp);
     return val;
     }
 
@@ -264,10 +264,23 @@ void *getDLL(DLL *items,int index)
     else if (index == items->size - 1) { return getNODEvalue(items->tail); }
     else
         {
-        while(count != index)
+        if (index > (items->size / 2) && items->size > 3)
             {
-            temp = temp->next;
-            count++;
+            temp = items->tail;
+            count = items->size - 1;
+            while (count != index)
+                {
+                temp = getNODEprev(temp);
+                count--;
+                }
+            }
+        else
+            {
+                while(count != index)
+                {
+                temp = getNODEnext(temp);
+                count++;
+                }
             }
         return getNODEvalue(temp);
         }

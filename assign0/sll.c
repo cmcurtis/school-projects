@@ -181,7 +181,7 @@ void *getSLL(SLL *items, int index)
         {
         while(count != index)
             {
-            temp = temp->next;
+            temp = getNODEnext(temp);
             count++;
             }
         return getNODEvalue(temp);
@@ -218,6 +218,12 @@ void *setSLL(SLL *items, int index, void *value)
         {
         val = getNODEvalue(items->head);
         setNODEvalue(items->head, value);
+        return val;
+        }
+    else if (index == items->size - 1) 
+        {
+        val = getNODEvalue(items->tail);
+        setNODEvalue(items->tail, value);
         return val;
         }
     else 
