@@ -12,6 +12,7 @@ static void printPreOrder(BST *t, BSTNODE *n, FILE *fp);
 static void swap(BSTNODE *n, BSTNODE *r);
 static int maxHeight(BSTNODE* n);
 static int minHeight(BSTNODE* n);
+static void deletePostOrder(BST *t, BSTNODE *n);
 
 struct bstnode
     {
@@ -99,22 +100,44 @@ BSTNODE *insertBST(BST *t,void *value)
 
     BSTNODE *temp = 0;
     temp = t->root;
-
-    void *oldVal = 0;
-    while(isLeaf(temp) != 0)
+    
+    if (temp == 0)
         {
-        oldVal = getBSTNODEvalue(temp);
-        if (t->compare(oldVal, value) >= 0 ) { temp = getBSTNODEleft(temp); }
-        else { temp = getBSTNODEright(temp); }
+        BSTNODE *inserted = newBSTNODE(value);
+        setBSTNODEleft(inserted, 0);
+        setBSTNODEright(inserted, 0);
+        setBSTNODEparent(inserted, 0);
+        t->root = inserted;
+        t->size++;
+        return inserted;
         }
-    
-    BSTNODE *inserted = newBSTNODE(value);
+    else
+        {
+        void *oldVal = 0;
+        while(temp != 0)
+            {
+            oldVal = getBSTNODEvalue(temp);
+            if (t->compare(oldVal, value) >= 0 )
+                {
+                if (getBSTNODEleft(temp) == 0) { break; }
+                temp = getBSTNODEleft(temp); 
+                }
+            else 
+                {
+                if (getBSTNODEright(temp) == 0) { break; }
+                temp = getBSTNODEright(temp); 
+                }
+            }
+        
+        BSTNODE *inserted = newBSTNODE(value);
 
-    if(t->compare(oldVal, value) >= 0 ) { setBSTNODEleft(temp, inserted); }
-    else {setBSTNODEright(temp, inserted); }
-    
-    setBSTNODEparent(inserted, temp);
-    return inserted;
+        if(t->compare(oldVal, value) >= 0 ) { setBSTNODEleft(temp, inserted); }
+        else {setBSTNODEright(temp, inserted); }
+        
+        setBSTNODEparent(inserted, temp);
+        t->size++;
+        return inserted;
+        }
     }
 
 // This method returns the node that holds the searched-for value. If the value is not in the tree, 
@@ -123,12 +146,20 @@ BSTNODE *findBST(BST *t,void *value)
     {
     BSTNODE *temp = 0;
     temp = t->root;
-
+    if (t->size == 0) { return NULL; }
     while (t->compare(getBSTNODEvalue(temp), value) != 0)
         {
         if (temp == 0) { return 0; }
-        if (t->compare(getBSTNODEvalue(temp), value) > 0) { temp = getBSTNODEleft(temp); }
-        else { temp = getBSTNODEright(temp); }
+        if (t->compare(getBSTNODEvalue(temp), value) > 0) 
+            { 
+            if (getBSTNODEleft(temp) == 0) { return NULL; }
+            temp = getBSTNODEleft(temp);
+            }
+        else 
+            {
+            if (getBSTNODEright(temp) == 0) { return NULL; }
+            temp = getBSTNODEright(temp);
+            }
         }
 
     return temp;
@@ -139,8 +170,11 @@ BSTNODE *deleteBST(BST *t,void *value)
         BSTNODE *temp = 0;
         BSTNODE *pruned = 0;
         temp = findBST(t, value);
+        if (temp == 0) {return temp; }
         pruned = swapToLeafBST(t, temp);
+        temp = pruned;
         pruneLeafBST(t,temp);
+        t->size--;
         return pruned;
     }
 
@@ -169,6 +203,12 @@ void pruneLeafBST(BST *t,BSTNODE *leaf)
     {
     BSTNODE *parent = 0;
     parent = getBSTNODEparent(leaf);
+
+    if (parent == 0 ) 
+        {
+        if (leaf == t->root) { t->root = 0; }
+        return; 
+        }
 
     if (getBSTNODEleft(parent) == leaf) { setBSTNODEleft(parent, 0); }
     if (getBSTNODEright(parent) == leaf) { setBSTNODEright(parent, 0); }
@@ -199,14 +239,13 @@ void displayBST(BST *t,FILE *fp)
     BSTNODE *temp = 0;
     temp = t->root;
 
-    fprintf(fp, "[");
+    if (temp == 0) { fprintf(fp, "[]"); }
     printPreOrder(t, temp, fp);
-
+    fprintf(fp, "\n");
     }
 
 void displayBSTdebug(BST *t,FILE *fp)
     {
-    //printLevelOrder(t, t->root);
     if(t->root == 0) { return; }
     QUEUE *Q1 = newQUEUE(0, 0);
     QUEUE *Q2 = newQUEUE(0,0);
@@ -219,7 +258,7 @@ void displayBSTdebug(BST *t,FILE *fp)
             BSTNODE *current = peekQUEUE(Q1);
             if(getBSTNODEleft(current) != 0) { enqueue(Q2, getBSTNODEleft(current)); }
             if(getBSTNODEright(current) != 0) { enqueue(Q2, getBSTNODEright(current)); }
-            t->display(current, fp);
+            t->display(getBSTNODEvalue(current), fp);
             fprintf(fp, " ");
             dequeue(Q1);
             }
@@ -229,18 +268,21 @@ void displayBSTdebug(BST *t,FILE *fp)
             BSTNODE *second = peekQUEUE(Q2); 
             if(getBSTNODEleft(second) != 0) { enqueue(Q1, getBSTNODEleft(second)); }
             if(getBSTNODEright(second) != 0) { enqueue(Q1, getBSTNODEright(second)); }
-            t->display(second, fp);
+            t->display(getBSTNODEvalue(second), fp);
             fprintf(fp, " ");
             dequeue(Q2);
             }
             fprintf(fp, "\n");
         }
+    freeQUEUE(Q1);
+    freeQUEUE(Q2);
     }
 
 //This method walks through the tree, freeing the nodes that make up the tree. Then, the tree object itself is freed. 
 void freeBST(BST *t)
     {
-    
+    deletePostOrder(t, t->root);
+    free(t);
     }
 
 
@@ -253,16 +295,16 @@ int isLeaf(BSTNODE *n)
 
 void printPreOrder(BST *t, BSTNODE *n, FILE *fp)
     {//maybe add separate helper functions for brackets
+    if (n == 0) { return; }
+
+    if (getBSTNODEparent(n) != 0) { fprintf(fp, " "); }
     fprintf(fp, "[");
-    if (n == 0) { fprintf( fp, "]"); return; }
+    t->display(getBSTNODEvalue(n), fp);
 
-    t->display(n, fp);
+    if (getBSTNODEleft(n) != 0) { printPreOrder(t, getBSTNODEleft(n), fp); }
+    if (getBSTNODEright(n) != 0) { printPreOrder(t, getBSTNODEright(n), fp); }
     
-    fprintf(fp, " "); 
-    printPreOrder(t, getBSTNODEleft(n), fp);
-
-    printPreOrder(t, getBSTNODEright(n), fp);
-    
+    fprintf(fp, "]");
     }
 
 void swap(BSTNODE *n, BSTNODE *r)
@@ -278,28 +320,41 @@ void swap(BSTNODE *n, BSTNODE *r)
 
 int maxHeight(BSTNODE* n)
     {
-    if (n==0) { return 0; }
+    if (n==0) { return -1; }
     else
         {
         // compute the height of each subtree
         int lheight = maxHeight(getBSTNODEleft(n));
         int rheight = maxHeight(getBSTNODEright(n));
- 
+        
         if (lheight > rheight) { return(lheight+1); }
         else { return(rheight+1); }
         }
+    
     }
 
 int minHeight(BSTNODE* n)
     {
-    if (n==0) { return 0; }
+    if (n==0) { return -1; }
     else
         {
         // compute the height of each subtree
+    
         int lheight = minHeight(getBSTNODEleft(n));
         int rheight = minHeight(getBSTNODEright(n));
  
         if (lheight < rheight) { return(lheight+1); }
         else { return(rheight+1); }
         }
+    }
+
+void deletePostOrder(BST *t, BSTNODE *n)
+    {
+    if (n == 0) { return; }
+
+    deletePostOrder(t, getBSTNODEleft(n));
+
+    deletePostOrder(t, getBSTNODEright(n));
+
+    freeBSTNODE(n, t->free);
     }

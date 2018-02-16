@@ -1,27 +1,45 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 
-typedef struct heap HEAP;
+#include "bst.h"
 
-// The constructor is passed three functions, one that knows how to display the generic value stored in the heap, one that 
-// can compare two generic values, and one that can free a generic value. The comparator function is used to maintain heap 
-// ordering (either a min-heap or a max-heap). 
-extern HEAP *newHEAP(
-    void (*)(void *,FILE *),    //display
-    int (*)(void *,void *),     //compare
-    void (*)(void *))           //free
+struct heap
     {
-        //The memory allocated shall not be zero. 
+    BST *tree;
+    int size;
+    void (*display)();
+    int (*compare)();
+    void (*free)();
+    };
+
+HEAP *newHEAP(
+    void (*d)(void *,FILE *d),    //display
+    int (*c)(void *,void *),     //compare
+    void (*f)(void *))           //free
+    {
+        HEAP *heap = malloc(sizeof(HEAP));
+        assert(heap != 0);
+        
+        heap->tree = 0;
+        heap->size = 0;
+        heap->display = d;
+        heap->compare = c;
+        heap->free = f;
     }
 
 //This method inserts a generic value into an un-heapified heap. No fixing up of the heap should occur.
 // It should run in constant time.     
-extern void insertHEAP(HEAP *h,void *value)
+void insertHEAP(HEAP *h,void *value)
     {
-        //The memory allocated shall not be zero. 
+        assert(h != 0);
+        
     }
 
-//This method inserts a generic value into a heapified heap, rebuilding the heap. It should run in logarithmic time. 
-extern void buildHEAP(HEAP *h)
+// This method imparts heap ordering on the current heap. 
+// Once buildHEAP has been called, no insertions to the heap should be made.  
+void buildHEAP(HEAP *h)
     {
         
     }
