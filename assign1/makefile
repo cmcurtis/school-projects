@@ -1,8 +1,8 @@
-OBJS = integer.o real.o string.o sll.o dll.o stack.o queue.o bst.o
+OBJS = integer.o real.o string.o sll.o dll.o stack.o queue.o bst.o heap.o
 OOPTS = -Wall -Wextra -g -c
 LOPTS = -Wall -Wextra -g
 
-all : test-sll test-queue test-dll test-stack test-bst
+all : test-sll test-queue test-dll test-stack test-bst test-heap
 
 test-sll : test-sll.o integer.o sll.o
 		gcc $(LOPTS) test-sll.o integer.o sll.o -o test-sll
@@ -19,6 +19,9 @@ test-queue : test-queue.o integer.o sll.o queue.o
 test-bst : test-bst.o integer.o sll.o queue.o bst.o
 		gcc $(LOPTS) test-bst.o integer.o sll.o queue.o bst.o -o test-bst
 
+test-heap : test-heap.o integer.o sll.o queue.o stack.o bst.o heap.o
+		gcc $(LOPTS) test-bst.o integer.o sll.o queue.o stack.o bst.o heap.o -o test-bst
+
 test-sll.o : test-sll.c sll.h integer.h
 		gcc $(OOPTS) test-sll.c
 
@@ -33,6 +36,9 @@ test-queue.o : test-queue.c queue.h sll.h integer.h
 
 test-bst.o : test-bst.c bst.h queue.h sll.h integer.h
 		gcc $(OOPTS) test-bst.c
+
+test-heap.o : test-heap.c heap.h bst.h stack.h queue.h sll.h integer.h
+		gcc $(OOPTS) test-heap.c
 
 bst.o : bst.c bst.h queue.h sll.h
 		gcc $(OOPTS) bst.c
@@ -63,6 +69,8 @@ valgrind : all
 	valgrind ./test-queue
 	echo testing binary search tree
 	valgrind ./test-bst
+	echo testing heap
+	valgrind ./test-heap
 
 test : all
 	echo testing singly-linked list
