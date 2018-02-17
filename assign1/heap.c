@@ -30,7 +30,8 @@ HEAP *newHEAP(
         HEAP *heap = malloc(sizeof(HEAP));
         assert(heap != 0);
         
-        heap->tree = newBST(d, 0, 0, f);
+        heap->tree = newBST(d, c, 0, f);
+        setBSTsize(heap->tree, 1);
         heap->stack = newSTACK(0, 0);
         heap->queue = newQUEUE(0, 0);
         heap->size = 0;
@@ -39,9 +40,7 @@ HEAP *newHEAP(
         heap->free = f;
         return heap;
     }
-
-//This method inserts a generic value into an un-heapified heap. No fixing up of the heap should occur.
-// It should run in constant time.     
+  
 void insertHEAP(HEAP *h,void *value)
     {
         assert(h != 0);
@@ -52,8 +51,6 @@ void insertHEAP(HEAP *h,void *value)
             setBSTroot(h->tree, inserted);
             enqueue(h->queue, inserted);
             push(h->stack, inserted);
-            int v = sizeBST(h->tree);
-            setBSTsize(h->tree, v++);
             h->size++;
             }
         else   
@@ -66,8 +63,8 @@ void insertHEAP(HEAP *h,void *value)
                 setBSTNODEparent(inserted, temp);
                 enqueue(h->queue, inserted);
                 push(h->stack, inserted);
-                // int v = sizeBST(h->tree);
-                // setBSTsize(h->tree, v++);
+                int v = sizeBST(h->tree);
+                setBSTsize(h->tree, v + 1);
                 h->size++;   
                 }
             else if(getBSTNODEleft(temp) != 0 && getBSTNODEright(temp) == 0)
@@ -76,8 +73,8 @@ void insertHEAP(HEAP *h,void *value)
                 setBSTNODEparent(inserted, temp);
                 enqueue(h->queue, inserted);
                 push(h->stack, inserted);
-                // int v = sizeBST(h->tree);
-                // setBSTsize(h->tree, v++);
+                int v = sizeBST(h->tree);
+                setBSTsize(h->tree, v + 1);
                 h->size++;
                 }
             else 
@@ -86,34 +83,47 @@ void insertHEAP(HEAP *h,void *value)
                 insertHEAP(h, value);
                 }
             }
-
     }
 
-// This method imparts heap ordering on the current heap. 
-// Once buildHEAP has been called, no insertions to the heap should be made.  
+
 void buildHEAP(HEAP *h)
     {
-    BSTNODE *temp = getBSTNODEparent(pop(h->stack));
-    while(temp != peekSTACK(h->stack)) { pop(h->stack); }
-    for (int i = h->size/2 - 1; i > 0; i--)
+    STACK *oldStack = h->stack;
+    STACK *newStack = newSTACK(0, 0);
+    
+    BSTNODE* temp = 0;
+
+    while( sizeSTACK(oldStack) != 0)
         {
-        heapify(h, temp);
-        pop(h->stack);
+        temp = pop(oldStack);
+        push(newStack, temp);
+        if (getBSTNODEleft(temp) != 0 || getBSTNODEright(temp) != 0)
+            {
+            heapify(h, temp);
+            }
         }
+    while (sizeSTACK(newStack) != 0)
+        {
+        temp = pop(newStack);
+        push(oldStack, temp);
+        }
+    
+    freeSTACK(newStack);
     }
 
 void *peekHEAP(HEAP *h)
     {
-    return getBSTroot(h->tree);
+    return getBSTNODEvalue(getBSTroot(h->tree));
     }
 
 //This method returns the value at the “root” of the heap, rebuilding the heap. It should run in logarithmic time. 
 void *extractHEAP(HEAP *h)
     {
-    BSTNODE *root = deleteBST(peekHEAP(h), getBSTNODEvalue(peekHEAP(h)));
-    heapify(h, root);
+    if (sizeHEAP(h) == 0) { return 0; }
+    BSTNODE *root = deleteBST(h->tree, peekHEAP(h));
+    if (sizeBST(h->tree) != 0) { heapify(h, getBSTroot(h->tree)); }
     h->size--;
-    return root;
+    return getBSTNODEvalue(root);
     }
 
 //This method returns the number of values currently in the tree. It should run in amortized constant time.
@@ -125,7 +135,7 @@ int sizeHEAP(HEAP *h)
 //The method calls the display method of the underlying data structure.     
 void displayHEAP(HEAP *h,FILE *fp)
     {
-    displayBST(peekHEAP(h), fp);
+    displayBST(h->tree, fp);
     }
 
 
@@ -148,7 +158,7 @@ void freeHEAP(HEAP *h)
     }
 
 
-void heapify(HEAP *h, BSTNODE *n)
+void heapify(HEAP *h, BSTNODE *n) //Look into this
     {
     BSTNODE *left = getBSTNODEleft(n);
     BSTNODE *right = getBSTNODEright(n);

@@ -3,6 +3,7 @@
 #include <assert.h>
 #include "dll.h"
 
+
 typedef struct NODE
     {
     void *value;
@@ -15,7 +16,7 @@ typedef struct NODE
 /* constructors */
 
 NODE *
-newNODE(void *v,NODE *n,NODE *prev)
+newDLLNODE(void *v,NODE *n,NODE *prev)
     {
     NODE *p = malloc(sizeof(NODE));
     if (p == 0) { fprintf(stderr,"out of memory\n"); exit(1); }
@@ -27,18 +28,18 @@ newNODE(void *v,NODE *n,NODE *prev)
 
 /* accessors */
 
-void  *getNODEvalue(NODE *n) { return n->value; }
-NODE  *getNODEnext(NODE *n)  { return n->next; }
-NODE  *getNODEprev(NODE *n)  { return n->prev; }
+void  *getDLLNODEvalue(NODE *n) { return n->value; }
+NODE  *getDLLNODEnext(NODE *n)  { return n->next; }
+NODE  *getDLLNODEprev(NODE *n)  { return n->prev; }
 
 /* mutators */
 
-void  setNODEvalue(NODE *n,void *v) { n->value = v; }
-void  setNODEnext(NODE *n,NODE *p)  { n->next = p; }
-void  setNODEprev(NODE *n,NODE *p)  { n->prev = p; }
+void  setDLLNODEvalue(NODE *n,void *v) { n->value = v; }
+void  setDLLNODEnext(NODE *n,NODE *p)  { n->next = p; }
+void  setDLLNODEprev(NODE *n,NODE *p)  { n->prev = p; }
 
 
-void freeNODE(NODE *n,void (*release)(void *))
+void freeDLLNODE(NODE *n,void (*release)(void *))
     {
     if (release != 0) release(n->value);
     free(n);
@@ -76,7 +77,7 @@ void insertDLL(DLL *items,int index,void *value) // add case for index > items->
     assert(index >= 0);
 
     NODE *inserted = NULL;
-    inserted = newNODE(value, 0, 0);
+    inserted = newDLLNODE(value, 0, 0);
 
     int count = 0;
     if (index == 0) 
@@ -87,8 +88,8 @@ void insertDLL(DLL *items,int index,void *value) // add case for index > items->
             items->size++;
             return;
             }
-        setNODEnext(inserted, items->head);
-        setNODEprev(items->head, inserted);
+        setDLLNODEnext(inserted, items->head);
+        setDLLNODEprev(items->head, inserted);
         items->head = inserted;
         }
     else if (index == items->size) 
@@ -96,13 +97,13 @@ void insertDLL(DLL *items,int index,void *value) // add case for index > items->
         if (items->size == 1) 
             {
             items->tail = inserted; 
-            setNODEnext(items->head, items->tail);
-            setNODEprev(items->tail, items->head);
+            setDLLNODEnext(items->head, items->tail);
+            setDLLNODEprev(items->tail, items->head);
             items->size++;
             return;
             }
-        setNODEprev(inserted, items->tail);
-        setNODEnext(items->tail, inserted);
+        setDLLNODEprev(inserted, items->tail);
+        setDLLNODEnext(items->tail, inserted);
         items->tail = inserted;
         }
     else 
@@ -114,26 +115,26 @@ void insertDLL(DLL *items,int index,void *value) // add case for index > items->
             count = items->size;
             while (count != index)
                 {
-                temp = getNODEprev(temp);
+                temp = getDLLNODEprev(temp);
                 count--;
                 }
-            setNODEnext(inserted, temp->next);
-            setNODEprev(inserted, temp);
-            setNODEprev(temp->next, inserted);
-            setNODEnext(temp, inserted);
+            setDLLNODEnext(inserted, temp->next);
+            setDLLNODEprev(inserted, temp);
+            setDLLNODEprev(temp->next, inserted);
+            setDLLNODEnext(temp, inserted);
             }
         else
             {
             temp = items->head;
             while(count != index - 1)
                 {
-                temp = getNODEnext(temp);
+                temp = getDLLNODEnext(temp);
                 count++;
                 }
-            setNODEnext(inserted, temp->next);
-            setNODEprev(inserted, temp);
-            setNODEprev(temp->next, inserted);
-            setNODEnext(temp, inserted);
+            setDLLNODEnext(inserted, temp->next);
+            setDLLNODEprev(inserted, temp);
+            setDLLNODEprev(temp->next, inserted);
+            setDLLNODEnext(temp, inserted);
             }
         
         }
@@ -158,9 +159,9 @@ void *removeDLL(DLL *items,int index) // add case for index > items->size/2;
     if (index == 0) 
         {
         deleted = temp;
-        items->head = getNODEnext(temp);
+        items->head = getDLLNODEnext(temp);
         items->size--;
-        val = getNODEvalue(deleted);
+        val = getDLLNODEvalue(deleted);
         free(deleted);
         return val;
         }
@@ -170,15 +171,15 @@ void *removeDLL(DLL *items,int index) // add case for index > items->size/2;
         if(items->size == 2) 
             {
             items->tail = items->head;
-            setNODEnext(items->tail, 0);
+            setDLLNODEnext(items->tail, 0);
             items->size--;
-            val = getNODEvalue(deleted);
+            val = getDLLNODEvalue(deleted);
             free(deleted);
             return val;
             }
-        val = getNODEvalue(deleted);
+        val = getDLLNODEvalue(deleted);
         items->tail = deleted->prev;
-        setNODEnext(items->tail, 0);
+        setDLLNODEnext(items->tail, 0);
         free(deleted);
         }
     else 
@@ -189,21 +190,21 @@ void *removeDLL(DLL *items,int index) // add case for index > items->size/2;
             count = items->size - 1;
             while (count != index)
                 {
-                temp = getNODEprev(temp);
+                temp = getDLLNODEprev(temp);
                 count--;
                 }
             deleted = temp;
-            val = getNODEvalue(deleted);
-            setNODEnext(getNODEprev(temp), getNODEnext(temp));
+            val = getDLLNODEvalue(deleted);
+            setDLLNODEnext(getDLLNODEprev(temp), getDLLNODEnext(temp));
             if (index == items->size - 2) 
                 {
-                    setNODEprev(items->tail, getNODEprev(temp));
-                    setNODEnext(getNODEprev(temp), items->tail);
+                    setDLLNODEprev(items->tail, getDLLNODEprev(temp));
+                    setDLLNODEnext(getDLLNODEprev(temp), items->tail);
                 }
             else 
                 { 
-                setNODEprev(getNODEnext(temp), getNODEprev(temp));
-                setNODEnext(getNODEprev(temp), getNODEnext(temp));
+                setDLLNODEprev(getDLLNODEnext(temp), getDLLNODEprev(temp));
+                setDLLNODEnext(getDLLNODEprev(temp), getDLLNODEnext(temp));
                 }
             free(deleted);
             }
@@ -211,13 +212,13 @@ void *removeDLL(DLL *items,int index) // add case for index > items->size/2;
             {
             while(count <= index - 1)
                 {
-                temp = getNODEnext(temp);
+                temp = getDLLNODEnext(temp);
                 count++;
                 }
             deleted = temp;
-            val = getNODEvalue(deleted);
-            setNODEnext(getNODEprev(temp), getNODEnext(temp));
-            setNODEprev(getNODEnext(temp), getNODEprev(temp));
+            val = getDLLNODEvalue(deleted);
+            setDLLNODEnext(getDLLNODEprev(temp), getDLLNODEnext(temp));
+            setDLLNODEprev(getDLLNODEnext(temp), getDLLNODEprev(temp));
             free(deleted);
             }
         }
@@ -240,8 +241,8 @@ void unionDLL(DLL *recipient,DLL *donor)
         }
     else
         {
-        setNODEnext(recipient->tail, donor->head);
-        setNODEprev(donor->head, recipient->tail);
+        setDLLNODEnext(recipient->tail, donor->head);
+        setDLLNODEprev(donor->head, recipient->tail);
         recipient->tail = donor->tail;
         }
     recipient->size += donor->size;
@@ -260,8 +261,8 @@ void *getDLL(DLL *items,int index)
     NODE *temp = 0;
     temp = items->head;
     int count = 0;
-    if (index == 0) { return getNODEvalue(items->head); }
-    else if (index == items->size - 1) { return getNODEvalue(items->tail); }
+    if (index == 0) { return getDLLNODEvalue(items->head); }
+    else if (index == items->size - 1) { return getDLLNODEvalue(items->tail); }
     else
         {
         if (index > (items->size / 2) && items->size > 3)
@@ -270,7 +271,7 @@ void *getDLL(DLL *items,int index)
             count = items->size - 1;
             while (count != index)
                 {
-                temp = getNODEprev(temp);
+                temp = getDLLNODEprev(temp);
                 count--;
                 }
             }
@@ -278,11 +279,11 @@ void *getDLL(DLL *items,int index)
             {
                 while(count != index)
                 {
-                temp = getNODEnext(temp);
+                temp = getDLLNODEnext(temp);
                 count++;
                 }
             }
-        return getNODEvalue(temp);
+        return getDLLNODEvalue(temp);
         }
     }
 
@@ -303,14 +304,14 @@ void *setDLL(DLL *items,int index,void *value)
     int count = 0;
     if (index == 0) 
         {
-        val = getNODEvalue(items->head);
-        setNODEvalue(items->head, value);
+        val = getDLLNODEvalue(items->head);
+        setDLLNODEvalue(items->head, value);
         return val;
         }
     else if (index == items->size) 
         {
-        NODE *inserted = newNODE(value, NULL, items->tail);
-        setNODEnext(items->tail, inserted);
+        NODE *inserted = newDLLNODE(value, NULL, items->tail);
+        setDLLNODEnext(items->tail, inserted);
         items->tail = inserted;
         items->size++;
         return 0;
@@ -323,7 +324,7 @@ void *setDLL(DLL *items,int index,void *value)
             count = items->size - 1;
             while (count != index)
                 {
-                temp = getNODEprev(temp);
+                temp = getDLLNODEprev(temp);
                 count--;
                 }
             }
@@ -331,12 +332,12 @@ void *setDLL(DLL *items,int index,void *value)
             {
             while(count != index)
                 {
-                temp = getNODEnext(temp);
+                temp = getDLLNODEnext(temp);
                 count++;
                 }
             }
-        val = getNODEvalue(temp);
-        setNODEvalue(temp, value);
+        val = getDLLNODEvalue(temp);
+        setDLLNODEvalue(temp, value);
         }
     return val;
     }
@@ -361,7 +362,7 @@ void displayDLL(DLL *items,FILE *fp)
             {
             items->display(temp->value, fp);
             if(temp->next != 0) { fprintf(fp, ","); }
-            temp = getNODEnext(temp);
+            temp = getDLLNODEnext(temp);
             }
         }   
     fprintf(fp, "}}");
@@ -380,7 +381,7 @@ void displayDLLdebug(DLL *items,FILE *fp)
             {
             items->display(temp->value, fp);
             if(temp->next != NULL) { fprintf(fp, ","); }
-            temp = getNODEnext(temp);
+            temp = getDLLNODEnext(temp);
             }
         }
     fprintf(fp, "}},tail->{{");
@@ -404,8 +405,8 @@ void freeDLL(DLL *items)
     while(temp != 0)
         {
         deleted = temp;
-        temp = getNODEnext(temp);
-        freeNODE(deleted, items->free);
+        temp = getDLLNODEnext(temp);
+        freeDLLNODE(deleted, items->free);
         }
     free(items);
     return;

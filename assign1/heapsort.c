@@ -3,10 +3,16 @@
 #include <stdarg.h>
 #include <string.h>
 
+#include "scanner.h"
+#include "integer.h"
+#include "real.h"
+#include "string.h"
+#include "heap.h"
+
 /* options */
-int Special = 0;    /* option -s      */
-int Number = 0;     /* option -n XXXX */
-char* Name = 0;     /* option -N YYYY */
+int verbose = 0;
+int type = 0;
+int order = 0;
 
 static int processOptions(int,char **);
 void Fatal(char *,...);
@@ -14,26 +20,139 @@ void Fatal(char *,...);
 int
 main(int argc,char **argv)
     {
-    int argIndex;
+    //int argIndex;
 
     if (argc == 1) Fatal("%d arguments!\n",argc-1);
 
-    argIndex = processOptions(argc,argv);
+    processOptions(argc,argv);
 
-    printf("Special is %s\n", Special == 0? "false" : "true");
-    printf("Number is %d\n", Number);
-    printf("Name is %s\n", Name == 0? "missing" : Name);
+    FILE *f;
+    f = fopen(argv[argc-1], "r");
 
-    if (argIndex == argc)
-        printf("No arguments\n");
-    else
+    if (verbose) 
         {
-        int i;
-        printf("Remaining arguments:\n");
-        for (i = argIndex; i < argc; ++i)
-            printf("    %s\n",argv[i]);
+        printf("Written by Caley Curtis\n");
+        printf("My heapsort works in XX time because XXX\n");
+        return 0;   
         }
-
+    HEAP *h = 0;
+    if (!order) //default order
+        {
+        if (type == 0) //integers
+            {
+            h = newHEAP(displayINTEGER, compareINTEGER, freeINTEGER);
+            int x;
+            x = readInt(f);
+            while (!feof(f))
+                {
+                insertHEAP(h, newINTEGER(x));
+                x = readInt(f);
+                }
+            fclose(f);
+            }
+        else if (type == 1) //reals
+            {
+            h = newHEAP(displayREAL, compareREAL, freeREAL);
+            double x;
+            x = readReal(f);
+            while (!feof(f))
+                {
+                insertHEAP(h, newREAL(x));
+                x = readReal(f);
+                }
+            fclose(f);
+            }
+        else //strings or tokens
+            {
+            h = newHEAP(displaySTRING, compareSTRING, freeSTRING);
+            char *x;
+            if (stringPending(f)) 
+                {
+                x = readString(f);
+                }
+            else 
+                {
+                x = readToken(f);
+                }
+            while (!feof(f))
+                {
+                insertHEAP(h, newSTRING(x));
+                if (stringPending(f)) 
+                    {
+                    x = readString(f);
+                    }
+                else 
+                    {
+                    x = readToken(f);
+                    }
+                }
+            fclose(f);
+            }
+        }
+    else  //decreasing order
+        {
+        if (type == 0) //integers
+            {
+            h = newHEAP(displayINTEGER, compareINTEGERdecr, freeINTEGER);
+            int x;
+            x = readInt(f);
+            while (!feof(f))
+                {
+                insertHEAP(h, newINTEGER(x));
+                x = readInt(f);
+                }
+            fclose(f);
+            }
+        else if (type == 1) //reals
+            {
+            h = newHEAP(displayREAL, compareREALdecr, freeREAL);
+            double x;
+            x = readReal(f);
+            while (!feof(f))
+                {
+                insertHEAP(h, newREAL(x));
+                x = readReal(f);
+                }
+            fclose(f);
+            }
+        else //strings or tokens
+            {
+            h = newHEAP(displaySTRING, compareSTRINGdecr, freeSTRING);
+            char *x;
+            if (stringPending(f)) 
+                {
+                x = readString(f);
+                }
+            else 
+                {
+                x = readToken(f);
+                }
+            while (!feof(f))
+                {
+                insertHEAP(h, newSTRING(x));
+                if (stringPending(f)) 
+                    {
+                    x = readString(f);
+                    }
+                else 
+                    {
+                    x = readToken(f);
+                    }
+                }
+            fclose(f);
+            }
+        }
+    buildHEAP(h);
+    while(sizeHEAP(h) != 0)
+        {
+        void *val;
+        val = extractHEAP(h);
+        if (type == 0) { displayINTEGER(val, stdout); }
+        else if (type == 1) { displayREAL(val, stdout); }
+        else { displaySTRING(val, stdout); }
+        printf(" ");  
+        }
+    printf("\n");
     return 0;
     }
 
@@ -50,7 +169,6 @@ Fatal(char *fmt, ...)
     exit(-1);
     }
 
-/* only -oXXX  or -o XXX options */
 
 static int
 processOptions(int argc, char **argv)
@@ -58,7 +176,7 @@ processOptions(int argc, char **argv)
     int argIndex;
     int argUsed;
     int separateArg;
-    char *arg;
+    //char *arg;
 
     argIndex = 1;
 
@@ -71,30 +189,34 @@ processOptions(int argc, char **argv)
         separateArg = 0;
         argUsed = 0;
 
-        if (argv[argIndex][2] == '\0')
-            {
-            arg = argv[argIndex+1];
-            separateArg = 1;
-            }
-        else
-            arg = argv[argIndex]+2;
+        // if (argv[argIndex][2] == '\0')
+        //     {
+        //     arg = argv[argIndex+1];
+        //     separateArg = 1;
+        //     }
+        // else
+        //     arg = argv[argIndex]+2;
 
         switch (argv[argIndex][1])
             {
             case 'v': //exit program
-                Special = 1;
+                verbose = 1;
                 break;
-            case '':
-                // flag name = 1;
-                argUsed = 1;
+            case 'i': //sort a file of integers (default)
+                type = 0;
                 break;
-            case 'v':
-                Special = 1;
+            case 'r': //sort a file of real numbers
+                type = 1;
                 break;
-            case 'N':
-                Name = strdup(arg);
-                argUsed = 1;
+            case 's': //sort a file of tokens or quoted strings
+                type = 2;
                 break;
+            case 'I': //sort in increasing order (default)
+                order = 0;
+                break;
+            case 'D': //sort in decreasing order
+                order = 1;
+                break;    
             default:
                 Fatal("option %s not understood\n",argv[argIndex]);
             }

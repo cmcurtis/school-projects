@@ -1,4 +1,4 @@
- #ifndef __HEAP_INCLUDED__
+#ifndef __HEAP_INCLUDED__
 #define __HEAP_INCLUDED__
 
 #include <stdio.h>

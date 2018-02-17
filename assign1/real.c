@@ -38,11 +38,31 @@ displayREAL(void *v,FILE *fp)
     fprintf(fp,"%g",getREAL((REAL *) v));
     }
 
-double 
+int 
 compareREAL(void *v,void *w)
     {
-    return getREAL(v) - getREAL(w);
+    double d = getREAL(v) - getREAL(w);
+    if (d > 0)
+        d = d + 0.5;
+    else if (d < 0)
+        d = d - 0.5;
+    int y = (int)d;
+
+    return y;
     }
+int 
+compareREALdecr(void *v,void *w)
+    {
+    double d = getREAL(w) - getREAL(v);
+    if (d > 0)
+        d = d + 0.5;
+    else if (d < 0)
+        d = d - 0.5;
+    int y = (int)d;
+
+    return y;
+    }
+
 
 void
 freeREAL(void *v)

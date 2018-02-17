@@ -241,7 +241,6 @@ void displayBST(BST *t,FILE *fp)
 
     if (temp == 0) { fprintf(fp, "[]"); }
     printPreOrder(t, temp, fp);
-    fprintf(fp, "\n");
     }
 
 void displayBSTdebug(BST *t,FILE *fp)
