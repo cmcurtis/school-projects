@@ -65,7 +65,7 @@ void insertHEAP(HEAP *h,void *value)
                 push(h->stack, inserted);
                 int v = sizeBST(h->tree);
                 setBSTsize(h->tree, v + 1);
-                h->size++;   
+                h->size++;
                 }
             else if(getBSTNODEleft(temp) != 0 && getBSTNODEright(temp) == 0)
                 {
@@ -80,7 +80,9 @@ void insertHEAP(HEAP *h,void *value)
             else 
                 {
                 dequeue(h->queue);
+                free(inserted);
                 insertHEAP(h, value);
+                //free(inserted);
                 }
             }
     }

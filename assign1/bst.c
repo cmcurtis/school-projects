@@ -261,7 +261,8 @@ void displayBSTdebug(BST *t,FILE *fp)
             fprintf(fp, " ");
             dequeue(Q1);
             }
-            fprintf(fp, "\n");
+        fprintf(fp, "\n");
+        if (sizeQUEUE(Q2) == 0) { break; }
         while(sizeQUEUE(Q2) != 0)
             {
             BSTNODE *second = peekQUEUE(Q2); 
@@ -271,7 +272,7 @@ void displayBSTdebug(BST *t,FILE *fp)
             fprintf(fp, " ");
             dequeue(Q2);
             }
-            fprintf(fp, "\n");
+        fprintf(fp, "\n");
         }
     freeQUEUE(Q1);
     freeQUEUE(Q2);

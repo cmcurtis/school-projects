@@ -35,7 +35,7 @@ setREAL(REAL *v,double x)
 void 
 displayREAL(void *v,FILE *fp)
     {
-    fprintf(fp,"%g",getREAL((REAL *) v));
+    fprintf(fp,"%.6f",getREAL((REAL *) v));
     }
 
 int 
