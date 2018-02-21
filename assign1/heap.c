@@ -121,7 +121,8 @@ void *peekHEAP(HEAP *h)
 //This method returns the value at the “root” of the heap, rebuilding the heap. It should run in logarithmic time. 
 void *extractHEAP(HEAP *h)
     {
-    assert(sizeHEAP(h) !=0);
+    assert(sizeHEAP(h) != 0);
+    //if (sizeHEAP(h) == 0) { return 0; }
     
     BSTNODE *temp = 0;
     temp = pop(h->stack);
@@ -132,11 +133,10 @@ void *extractHEAP(HEAP *h)
     void *val = getBSTNODEvalue(temp);
     pruneLeafBST(h->tree, temp);
     
-    int v = sizeBST(h->tree);
-    setBSTsize(h->tree, --v);
     h->size--;
-
-    if (sizeHEAP(h) != 0) { heapify(h, getBSTroot(h->tree)); }
+    setBSTsize(h->tree, h->size);
+    
+    if (sizeHEAP(h) > 1) { heapify(h, getBSTroot(h->tree)); }
 
     free(temp);
     return val;

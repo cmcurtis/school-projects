@@ -32,7 +32,7 @@ main(int argc,char **argv)
     if (verbose) 
         {
         printf("Written by Caley Curtis\n");
-        printf("My heapsort works in XX time because XXX\n");
+        //printf("My heapsort works in XX time because XXX\n");
         return 0;   
         }
     HEAP *h = 0;
@@ -150,7 +150,7 @@ main(int argc,char **argv)
         if (type == 0) { displayINTEGER(val, stdout); }
         else if (type == 1) { displayREAL(val, stdout); }
         else { displaySTRING(val, stdout); }
-        printf(" ");  
+        if (sizeHEAP(h) != 0) { printf(" "); } 
         }
     printf("\n");
     return 0;
