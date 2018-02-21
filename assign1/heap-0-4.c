@@ -17,23 +17,23 @@ main(void)
     srandom(5);
     //INTEGER test of HEAP
     int i;
-    HEAP *p = newHEAP(displayINTEGER,compareINTEGERdecr,freeINTEGER);
+    HEAP *p = newHEAP(displayINTEGER,rcompareINTEGER,freeINTEGER);
     for (i = 0; i < 15; ++i)
         {
-        int j = random() % 15;
+        int j = random();
         INTEGER *a = newINTEGER(j);
         insertHEAP(p,a);
         }
     buildHEAP(p);
     printf("peek: %d\n",getINTEGER(peekHEAP(p)));
-    if (sizeHEAP(p) < 200)
-        {
-        printf("heap: ");
-        displayHEAP(p,stdout);
-        printf("\n");
-        printf("debug:\n");
-        displayHEAPdebug(p,stdout);
-        }
+    //if (sizeHEAP(p) < 200)
+    //    {
+    //    printf("heap: ");
+    //    displayHEAP(p,stdout);
+    //    printf("\n");
+    //    printf("debug:\n");
+    //    displayHEAPdebug(p,stdout);
+    //    }
     printf("size is %d\n",sizeHEAP(p));
     freeHEAP(p);
     return 0;

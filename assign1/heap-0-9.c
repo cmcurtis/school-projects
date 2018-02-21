@@ -20,19 +20,19 @@ main(void)
     HEAP *p = newHEAP(displayINTEGER,rcompareINTEGER,freeINTEGER);
     for (i = 0; i < 195; ++i)
         {
-        int j = random() % 195;
+        int j = random();
         INTEGER *a = newINTEGER(j);
         insertHEAP(p,a);
         }
     printf("peek: %d\n",getINTEGER(peekHEAP(p)));
-    if (sizeHEAP(p) < 200)
-        {
-        printf("heap: ");
-        displayHEAP(p,stdout);
-        printf("\n");
-        printf("debug:\n");
-        displayHEAPdebug(p,stdout);
-        }
+    //if (sizeHEAP(p) < 200)
+    //    {
+    //    printf("heap: ");
+    //    displayHEAP(p,stdout);
+    //    printf("\n");
+    //    printf("debug:\n");
+    //    displayHEAPdebug(p,stdout);
+    //    }
     printf("size is %d\n",sizeHEAP(p));
     freeHEAP(p);
     return 0;

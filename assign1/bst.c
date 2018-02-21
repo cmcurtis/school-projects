@@ -258,7 +258,7 @@ void displayBSTdebug(BST *t,FILE *fp)
             if(getBSTNODEleft(current) != 0) { enqueue(Q2, getBSTNODEleft(current)); }
             if(getBSTNODEright(current) != 0) { enqueue(Q2, getBSTNODEright(current)); }
             t->display(getBSTNODEvalue(current), fp);
-            fprintf(fp, " ");
+            if (sizeQUEUE(Q1) > 1) { fprintf(fp, " "); }
             dequeue(Q1);
             }
         fprintf(fp, "\n");
@@ -269,7 +269,7 @@ void displayBSTdebug(BST *t,FILE *fp)
             if(getBSTNODEleft(second) != 0) { enqueue(Q1, getBSTNODEleft(second)); }
             if(getBSTNODEright(second) != 0) { enqueue(Q1, getBSTNODEright(second)); }
             t->display(getBSTNODEvalue(second), fp);
-            fprintf(fp, " ");
+            if (sizeQUEUE(Q2) > 1) { fprintf(fp, " "); }
             dequeue(Q2);
             }
         fprintf(fp, "\n");

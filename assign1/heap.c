@@ -10,6 +10,7 @@
 
 //helper function
 static void heapify(HEAP *h, BSTNODE *n);
+static void swapVal(BSTNODE *n, BSTNODE *r);
 
 struct heap
     {
@@ -27,64 +28,63 @@ HEAP *newHEAP(
     int (*c)(void *,void *),     //compare
     void (*f)(void *))           //free
     {
-        HEAP *heap = malloc(sizeof(HEAP));
-        assert(heap != 0);
-        
-        heap->tree = newBST(d, c, 0, f);
-        setBSTsize(heap->tree, 1);
-        heap->stack = newSTACK(0, 0);
-        heap->queue = newQUEUE(0, 0);
-        heap->size = 0;
-        heap->display = d;
-        heap->compare = c;
-        heap->free = f;
-        return heap;
+    HEAP *heap = malloc(sizeof(HEAP));
+    assert(heap != 0);
+    
+    heap->tree = newBST(d, c, 0, f);
+    setBSTsize(heap->tree, 1);
+    heap->stack = newSTACK(0, 0);
+    heap->queue = newQUEUE(0, 0);
+    heap->size = 0;
+    heap->display = d;
+    heap->compare = c;
+    heap->free = f;
+    return heap;
     }
   
 void insertHEAP(HEAP *h,void *value)
     {
-        assert(h != 0);
-        BSTNODE* inserted = newBSTNODE(value);
+    assert(h != 0);
+    BSTNODE* inserted = newBSTNODE(value);
 
-        if (getBSTroot(h->tree) == 0)
+    if (getBSTroot(h->tree) == 0)
+        {
+        setBSTroot(h->tree, inserted);
+        enqueue(h->queue, inserted);
+        push(h->stack, inserted);
+        h->size++;
+        }
+    else   
+        {
+        BSTNODE *temp = 0;
+        temp = peekQUEUE(h->queue);
+        if (getBSTNODEleft(temp) == 0 && getBSTNODEright(temp) == 0)
             {
-            setBSTroot(h->tree, inserted);
+            setBSTNODEleft(temp, inserted);
+            setBSTNODEparent(inserted, temp);
             enqueue(h->queue, inserted);
             push(h->stack, inserted);
+            int v = sizeBST(h->tree);
+            setBSTsize(h->tree, v + 1);
             h->size++;
             }
-        else   
+        else if(getBSTNODEleft(temp) != 0 && getBSTNODEright(temp) == 0)
             {
-            BSTNODE *temp = 0;
-            temp = peekQUEUE(h->queue);
-            if (getBSTNODEleft(temp) == 0 && getBSTNODEright(temp) == 0)
-                {
-                setBSTNODEleft(temp, inserted);
-                setBSTNODEparent(inserted, temp);
-                enqueue(h->queue, inserted);
-                push(h->stack, inserted);
-                int v = sizeBST(h->tree);
-                setBSTsize(h->tree, v + 1);
-                h->size++;
-                }
-            else if(getBSTNODEleft(temp) != 0 && getBSTNODEright(temp) == 0)
-                {
-                setBSTNODEright(temp, inserted);
-                setBSTNODEparent(inserted, temp);
-                enqueue(h->queue, inserted);
-                push(h->stack, inserted);
-                int v = sizeBST(h->tree);
-                setBSTsize(h->tree, v + 1);
-                h->size++;
-                }
-            else 
-                {
-                dequeue(h->queue);
-                free(inserted);
-                insertHEAP(h, value);
-                //free(inserted);
-                }
+            setBSTNODEright(temp, inserted);
+            setBSTNODEparent(inserted, temp);
+            enqueue(h->queue, inserted);
+            push(h->stack, inserted);
+            int v = sizeBST(h->tree);
+            setBSTsize(h->tree, v + 1);
+            h->size++;
             }
+        else 
+            {
+            dequeue(h->queue);
+            free(inserted);
+            insertHEAP(h, value);
+            }
+        }
     }
 
 
@@ -121,14 +121,28 @@ void *peekHEAP(HEAP *h)
 //This method returns the value at the “root” of the heap, rebuilding the heap. It should run in logarithmic time. 
 void *extractHEAP(HEAP *h)
     {
-    if (sizeHEAP(h) == 0) { return 0; }
-    BSTNODE *root = deleteBST(h->tree, peekHEAP(h));
-    if (sizeBST(h->tree) != 0) { heapify(h, getBSTroot(h->tree)); }
+    assert(sizeHEAP(h) !=0);
+    
+    BSTNODE *temp = 0;
+    temp = pop(h->stack);
+    // h->display(getBSTNODEvalue(temp), stdout);
+    // h->display(getBSTNODEvalue(getBSTroot(h->tree)), stdout);
+    if (sizeHEAP(h) > 1 ) { swapVal(temp, getBSTroot(h->tree)); }
+    
+    void *val = getBSTNODEvalue(temp);
+    pruneLeafBST(h->tree, temp);
+    
+    int v = sizeBST(h->tree);
+    setBSTsize(h->tree, --v);
     h->size--;
-    return getBSTNODEvalue(root);
+
+    if (sizeHEAP(h) != 0) { heapify(h, getBSTroot(h->tree)); }
+
+    free(temp);
+    return val;
     }
 
-//This method returns the number of values currently in the tree. It should run in amortized constant time.
+//returns the number of values currently in the tree
 int sizeHEAP(HEAP *h)
     {
     return h->size;
@@ -183,3 +197,14 @@ void heapify(HEAP *h, BSTNODE *n) //Look into this
         heapify(h, temp);
         }
     }
+
+    void swapVal(BSTNODE *n, BSTNODE *r)
+        {
+        void *val = 0;
+        void *valTwo = 0;
+        val = getBSTNODEvalue(n);
+        valTwo = getBSTNODEvalue(r);
+
+        setBSTNODEvalue(n, valTwo);
+        setBSTNODEvalue(r, val);
+        }
