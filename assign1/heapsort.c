@@ -32,7 +32,7 @@ main(int argc,char **argv)
     if (verbose) 
         {
         printf("Written by Caley Curtis\n");
-        //printf("My heapsort works in XX time because XXX\n");
+        printf("My heapsort works in n log n time because its reads in values in constant time, inserts them into a heap in linear time and removes the extreme value in logartithmic time.\n");
         return 0;   
         }
     HEAP *h = 0;
@@ -93,7 +93,7 @@ main(int argc,char **argv)
         {
         if (type == 0) //integers
             {
-            h = newHEAP(displayINTEGER, compareINTEGERdecr, freeINTEGER);
+            h = newHEAP(displayINTEGER, rcompareINTEGER, freeINTEGER);
             int x;
             x = readInt(f);
             while (!feof(f))
@@ -105,7 +105,7 @@ main(int argc,char **argv)
             }
         else if (type == 1) //reals
             {
-            h = newHEAP(displayREAL, compareREALdecr, freeREAL);
+            h = newHEAP(displayREAL, rcompareREAL, freeREAL);
             double x;
             x = readReal(f);
             while (!feof(f))
@@ -117,7 +117,7 @@ main(int argc,char **argv)
             }
         else //strings or tokens
             {
-            h = newHEAP(displaySTRING, compareSTRINGdecr, freeSTRING);
+            h = newHEAP(displaySTRING, rcompareSTRING, freeSTRING);
             char *x;
             if (stringPending(f)) 
                 {

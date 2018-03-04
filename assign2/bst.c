@@ -13,6 +13,7 @@ static void swap(BSTNODE *n, BSTNODE *r);
 static int maxHeight(BSTNODE* n);
 static int minHeight(BSTNODE* n);
 static void deletePostOrder(BST *t, BSTNODE *n);
+static void printParent(BST *t, BSTNODE *n, FILE *fp);
 
 struct bstnode
     {
@@ -50,9 +51,9 @@ void setBSTNODEleft(BSTNODE *n,BSTNODE *replacement) { n->left = replacement; }
 void setBSTNODEright(BSTNODE *n,BSTNODE *replacement) { n->right = replacement; }
 void setBSTNODEparent(BSTNODE *n,BSTNODE *replacement) { n->parent = replacement; }
 
-void freeBSTNODE(BSTNODE *n,void (*free)(void *))
+void freeBSTNODE(BSTNODE *n,void (*f)(void *))
     {
-        if(free != NULL) { free(n->value); } //frees the node's value if the free function is not null
+        if(f != NULL) { f(n->value); } //frees the node's value if the free function is not null
         free(n);
     }
 
@@ -142,7 +143,7 @@ BSTNODE *insertBST(BST *t,void *value)
 
 // This method returns the node that holds the searched-for value. If the value is not in the tree, 
 // the method should return null. 
-BSTNODE *findBST(BST *t,void *value)
+BSTNODE *findBST(BST *t, void *value)
     {
     BSTNODE *temp = 0;
     temp = t->root;
@@ -174,6 +175,7 @@ BSTNODE *deleteBST(BST *t,void *value)
         pruned = swapToLeafBST(t, temp);
         temp = pruned;
         pruneLeafBST(t,temp);
+        t->size--;
         return pruned;
     }
 
@@ -206,13 +208,13 @@ void pruneLeafBST(BST *t,BSTNODE *leaf)
     if (parent == 0 ) 
         {
         if (leaf == t->root) { t->root = 0; }
-        t->size--;
+ //       t->size--;
         return; 
         }
 
     if (getBSTNODEleft(parent) == leaf) { setBSTNODEleft(parent, 0); }
     if (getBSTNODEright(parent) == leaf) { setBSTNODEright(parent, 0); }
-    t->size--;
+ //   t->size--;
     }
 
 int sizeBST(BST *t)
@@ -274,6 +276,55 @@ void displayBSTdebug(BST *t,FILE *fp)
             dequeue(Q2);
             }
         fprintf(fp, "\n");
+        }
+    freeQUEUE(Q1);
+    freeQUEUE(Q2);
+    }
+
+
+void displayBSTdecorated(BST *t, FILE *fp)
+    {
+    if(t->root == 0) { return; }
+    QUEUE *Q1 = newQUEUE(0, 0);
+    QUEUE *Q2 = newQUEUE(0,0);
+    enqueue(Q1, t->root);
+    int count = 0;
+
+    while(sizeQUEUE(Q1) != 0 || sizeQUEUE(Q2) != 0)
+        {
+        while(sizeQUEUE(Q1) != 0)
+            {
+            fprintf(fp, "%d: ", count);
+            BSTNODE *current = peekQUEUE(Q1);
+            if(getBSTNODEleft(current) != 0) { enqueue(Q2, getBSTNODEleft(current)); }
+            if(getBSTNODEright(current) != 0) { enqueue(Q2, getBSTNODEright(current)); }
+            
+            if ( isLeaf(current) ) { fprintf(fp, "="); }
+            t->display(getBSTNODEvalue(current), fp);
+            printParent(t, current, fp);
+            if (sizeQUEUE(Q1) > 1) { fprintf(fp, " "); }
+            
+            dequeue(Q1);
+            }
+        fprintf(fp, "\n");
+        count++;
+        if (sizeQUEUE(Q2) == 0) { break; }
+        while(sizeQUEUE(Q2) != 0)
+            {
+            fprintf(fp, "%d: ", count);
+            BSTNODE *second = peekQUEUE(Q2); 
+            if(getBSTNODEleft(second) != 0) { enqueue(Q1, getBSTNODEleft(second)); }
+            if(getBSTNODEright(second) != 0) { enqueue(Q1, getBSTNODEright(second)); }
+            
+            if (isLeaf(second)) { fprintf(fp, "="); }
+            t->display(getBSTNODEvalue(second), fp);
+            printParent(t, second, fp);
+            if (sizeQUEUE(Q2) > 1) { fprintf(fp, " "); }
+            
+            dequeue(Q2);
+            }
+        fprintf(fp, "\n");
+        count++;
         }
     freeQUEUE(Q1);
     freeQUEUE(Q2);
@@ -358,4 +409,20 @@ void deletePostOrder(BST *t, BSTNODE *n)
     deletePostOrder(t, getBSTNODEright(n));
 
     freeBSTNODE(n, t->free);
+    }
+
+void printParent(BST *t, BSTNODE *n, FILE *fp)
+    {
+    fprintf(fp, "(");
+    //print parent
+    BSTNODE *temp = getBSTNODEparent(n);
+    if (n == t->root) { t->display(getBSTNODEvalue(n), fp); }
+    else { t->display(getBSTNODEvalue(temp), fp); }
+
+    fprintf(fp, ")");
+    
+    //print left or right child 
+    if (n == t->root) { fprintf(fp, "X"); return; }
+    if (getBSTNODEleft(temp) == n) { fprintf(fp, "L"); return; }
+    if (getBSTNODEright(temp) == n) { fprintf(fp, "R"); return; }
     }
