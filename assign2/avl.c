@@ -353,7 +353,6 @@ void deletionFixup(BSTNODE *n)
     //         }
     }
 
-//comment added for sourcetree/Git testing
 void updateBalance(BSTNODE *n)
     {
     BSTNODE *l = getBSTNODEleft(n);
