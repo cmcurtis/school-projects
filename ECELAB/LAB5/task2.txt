@@ -1,0 +1,5 @@
+.bss
+
+check_val: .space2
+ones_count: .space1
+first_one: .space1

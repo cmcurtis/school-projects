@@ -1,0 +1,61 @@
+Design Rule Check Report
+------------------------
+
+Report File:        F:\ECELAB\Lab6\Task1 (PCB - Design Rule Check Report).txt
+Report Written:     Wednesday, February 28, 2018
+Design Path:        F:\ECELAB\Lab6\Task1.pcb
+Design Title:       
+Created:            2/28/2018 9:51:15 AM
+Last Saved:         2/28/2018 10:16:51 AM
+Editing Time:       28 min
+Units:              mm (precision 1)
+
+
+Results
+=======
+
+
+No errors found
+
+
+Settings
+========
+
+
+Spacings
+
+=========
+
+Tracks        Yes
+Pads and Vias Yes
+Shapes        Yes
+Text          Yes
+Board         Yes
+Drills        Yes
+Components    No
+
+
+Manufacturing
+
+==============
+
+Min Drill Hole Size  Yes
+Min Track Width      Yes
+Min Annular Ring     Yes
+Copper Text In Board Yes
+Mirrored Text        Yes
+Routing Areas        Yes
+Drill Breakout       Yes
+
+
+Nets
+
+=====
+
+Net Completion               Yes
+Dangling Tracks              Yes
+Net Track Length Differences No
+
+
+
+End Of Report.
