@@ -4,6 +4,8 @@
 #include "avl.h"
 #include "bst.h"
 
+static void findAVLVALUE(AVL *a, void *value);
+static void deletionFixup(BSTNODE *n);
 static void updateBalance(BSTNODE *n);
 static void insertionFixup(BSTNODE *n);
 static BSTNODE* sibling(BSTNODE *n);
@@ -28,6 +30,9 @@ AVLVALUE *newAVLVALUE(void *value, void (*d)(void *,FILE *), int (*c)(void *,voi
 
     n->value = value;
     n->count = 1;
+    n->height = 0;
+    n->rHeight = 0;
+    n->lHeight = 0;
     n->balance = 0;
     n->display = d;
     n->compare = c;
@@ -132,7 +137,7 @@ void insertAVL(AVL *a, void *value)
         }
     else 
         {
-        AVLVALUE *temp = findAVL(a, value);
+        AVLVALUE *temp = findAVLVALUE(a, value);
         if (temp == NULL) //node value does not exist in tree;
             {
             AVLVALUE *new = newAVLVALUE(value, a->display, a->compare, a->free);
@@ -152,7 +157,7 @@ void insertAVL(AVL *a, void *value)
 //This method returns the frequency of the searched-for value. If the value is not in the tree, the method should return zero. 
 int findAVLcount(AVL *a, void *value)
     {
-    AVLVALUE *temp = findAVL(a, value);
+    AVLVALUE *temp = findAVLVALUE(a, value);
     return getAVLVALUEcount(temp);
     }
 
@@ -162,13 +167,11 @@ void *findAVL(AVL *a, void *value)
     {
     assert(a != 0);
 
-    AVLVALUE *find = newAVLVALUE(value, a->display, a->compare, a->free);
-    BSTNODE *temp = findBST(a->tree, find);
+    AVLVALUE *find = findAVLVALUE(a, value);
 
-    if (temp == 0) { return 0; }
+    if (find == 0) { return 0; }
     
-    AVLVALUE *found = getBSTNODEvalue(temp);
-    free(find);
+    void *found = getAVLVALUEvalue(find);
     return found;
     }
 
@@ -176,7 +179,7 @@ void *findAVL(AVL *a, void *value)
 void *deleteAVL(AVL *a, void *value)
     {
     assert(g != 0);
-    AVLVALUE *temp = findAVL(a, value);
+    AVLVALUE *temp = findAVLVALUE(a, value);
 
     if (temp == 0) { return 0; } //value not in tree
     
@@ -184,14 +187,15 @@ void *deleteAVL(AVL *a, void *value)
         {
         setAVLVALUEcount(temp, getAVLVALUEcount(temp) - 1);
         a->size -= 1;
-        return temp;
+        return getAVLVALUEvalue(temp);
         }
     else //node has no duplicates
         {
-        BSTNODE *deleted = deleteBST(a->tree, temp);
-        a->size -= 1;
-        insertionFixup(getBSTNODEparent(deleted));
-        return getBSTNODEvalue(deleted);
+        BSTNODE *deleted = findBST(a->tree, temp);
+        swapToLeafBST(a->tree, deleted);
+        deletionFixup(deleted);
+        pruneLeafBST(a->tree, deleted);
+        return getAVLVALUEvalue(temp);
         }
     }
 
@@ -237,26 +241,41 @@ void freeAVL(AVL *a)
 
 
 //helper functions
+void findAVLVALUE(AVL *a, void *value)
+    {
+    assert(a != 0);
+
+    AVLVALUE *find = newAVLVALUE(value, a->display, a->compare, a->free);
+    BSTNODE *temp = findBST(a->tree, find);
+
+    if (temp == 0) { return 0; }
+    
+    AVLVALUE *found = getBSTNODEvalue(temp);
+    free(find);
+    return found;
+    }
+
+
 void insertionFixup(BSTNODE *n)
     {
     //TODO: translate pseudo code;
 //      loop
             {
-            BSTNODE *par = getBSTNODEparent(x);
+            BSTNODE *par = getBSTNODEparent(n);
             if (par == NULL) break;
 
-            BSTNODE *sib = sibling(x);
+            BSTNODE *sib = sibling(n);
             AVLVALUE *sibVal = getBSTNODEvalue(sib);
-            AVLVALUE *xVal = getBSTNODEvalue(x);
-            else if (getAVLVALUEheight(sib) > getAVLVALUEheight(x))       //case 1
+            AVLVALUE *xVal = getBSTNODEvalue(n);
+            else if (getAVLVALUEheight(sib) > getAVLVALUEheight(n))       //case 1
                 {
                 updateBalance(par);
                 break;
                 }
-            else if (parent is balanced)               //case 2
+            else if (getAVLVALUEbalance(par) == 0)               //case 2
                 {
                 updateBalance(par);
-                x = par;
+                n = par; //update parent pointers
                 continue;
                 }
 //             else
@@ -281,6 +300,57 @@ void insertionFixup(BSTNODE *n)
 //                 }
 //             }
 //         }
+    }
+
+void deletionFixup(BSTNODE *n)
+    { //TODO: translate pseudo code
+    AVLVALUE *xVal = getBSTNODEvalue(n);
+    setAVLVALUEheight(xVal, 0);  
+    //loop
+        BSTNODE *par = getBSTNODEparent(n);
+        if (par == NULL) break;
+
+        BSTNODE *sib = sibling(n);
+        AVLVALUE *sibVal = getBSTNODEvalue(sib);
+
+    //         else if (parent favors x)                  //case 1
+    //             {
+    //             set the balance of parent
+    //             x = parent
+    //             //continue looping
+    //             }
+    //         else if (parent has no favorite)           //case 2
+    //             {
+    //             set the balance of parent
+    //             exit the loop
+    //             }
+    //         else 
+    //             {
+    //             p = parent of x
+    //             z = the sibling of x
+    //             y = favorite of z
+    //             if (y exists and y,z,p are not linear) //case 3
+    //                 {
+    //                 rotate y to z
+    //                 rotate y to p
+    //                 set the balance of p
+    //                 set the balance of z
+    //                 set the balance of y
+    //                 x = y
+    //                 //continue looping
+    //                 }
+    //             else
+    //                 {
+    //                 rotate z to p                      //case 4
+    //                 set the balance of p
+    //                 set the balance of z
+    //                 if (y does not exist)
+    //                     exit the loop
+    //                 x = z
+    //                 //continue looping
+    //                 }
+    //             }
+    //         }
     }
 
 void updateBalance(BSTNODE *n)

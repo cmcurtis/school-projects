@@ -5,6 +5,7 @@
 #include "gst.h"
 #include "bst.h"
 
+static GSTVALUE* findGSTVALUE(GST *g, void *value);
 
 typedef struct gstvalue{ 
     void *value;
@@ -84,7 +85,6 @@ GST *newGST(void (*d)(void *, FILE *), int (*c)(void *,void *), void (*f)(void *
     return g;
     }
 
-
 void insertGST(GST *g, void *value)
     {
     if (sizeGST(g) == 0) //first node in empty-tree; 
@@ -95,8 +95,8 @@ void insertGST(GST *g, void *value)
         }
     else 
         {
-        GSTVALUE *temp = findGST(g, value);
-        if (temp == NULL) //node value does not exist in tree;
+        GSTVALUE *temp = findGSTVALUE(g, value);
+        if (temp == 0) //node value does not exist in tree;
             {
             GSTVALUE *new = newGSTVALUE(value, g->display, g->compare, g->free);
             insertBST(g->tree, new); 
@@ -110,36 +110,31 @@ void insertGST(GST *g, void *value)
         }
     }
 
-
 //finds count of a GSTVALUE in the bst
 int findGSTcount(GST *g, void *value)
     {
-    GSTVALUE *temp = findGST(g, value);
+    GSTVALUE *temp = findGSTVALUE(g, value);
     int count = getGSTVALUEcount(temp);
     return count;
     }
-
 
 //finds the GSTVALUE in the bst, returns null if not in tree
 void *findGST(GST *g, void *value)
     {
     assert (g != 0);
-    
-    GSTVALUE *find = newGSTVALUE(value, g->display, g->compare, g->free);
-    BSTNODE *temp = findBST(g->tree, find);
 
-    if (temp == 0) { return 0; }
+    GSTVALUE *find = findGSTVALUE(g, value);
+
+    if (find == 0) { return 0; }
     
-    GSTVALUE *found = getBSTNODEvalue(temp);
-    free(find);
+    void *found = getGSTVALUEvalue(find);
     return found;
     }
-
 
 void *deleteGST(GST *g,void *value)
     {
     assert(g != 0);
-    GSTVALUE *temp = findGST(g, value);
+    GSTVALUE *temp = findGSTVALUE(g, value);
 
     if (temp == 0) { return 0; } //value not in tree
     
@@ -190,4 +185,20 @@ void freeGST(GST *g)
     {
     freeBST(g->tree);
     free(g);
+    }
+
+
+//helpers
+static GSTVALUE* findGSTVALUE(GST *g, void *value)
+    {
+    assert (g != 0);
+
+    GSTVALUE *find = newGSTVALUE(value, g->display, g->compare, g->free);
+    BSTNODE *temp = findBST(g->tree, find);
+
+    if (temp == 0) { return 0; }
+    
+    GSTVALUE *found = getBSTNODEvalue(temp);
+    free(find);
+    return found;
     }
