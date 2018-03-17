@@ -42,25 +42,19 @@ int
 compareREAL(void *v,void *w)
     {
     double d = getREAL(v) - getREAL(w);
-    if (d > 0)
-        d = d + 0.5;
-    else if (d < 0)
-        d = d - 0.5;
-    int y = (int)d;
 
-    return y;
+    if (d > 0) return 1;
+    else if (d < 0) return -1;
+    else return 0;
     }
 int 
 rcompareREAL(void *v,void *w)
     {
     double d = getREAL(w) - getREAL(v);
-    if (d > 0)
-        d = d + 0.5;
-    else if (d < 0)
-        d = d - 0.5;
-    int y = (int)d;
-
-    return y;
+    
+    if (d > 0) return 1;
+    else if (d < 0) return -1;
+    else return 0;
     }
 
 

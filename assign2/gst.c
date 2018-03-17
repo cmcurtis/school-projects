@@ -5,8 +5,6 @@
 #include "gst.h"
 #include "bst.h"
 
-static GSTVALUE* findGSTVALUE(GST *g, void *value);
-
 typedef struct gstvalue{ 
     void *value;
     int count;
@@ -29,6 +27,7 @@ GSTVALUE *newGSTVALUE(void *value, void (*d)(void *, FILE *), int (*c)(void *,vo
     return v;
     }
 
+static GSTVALUE* findGSTVALUE(GST *g, void *value);
 //accessors
 int getGSTVALUEcount(GSTVALUE *v) { return v->count; }
 void* getGSTVALUEvalue(GSTVALUE *v) {return v->value; }
@@ -136,7 +135,13 @@ void *deleteGST(GST *g,void *value)
     assert(g != 0);
     GSTVALUE *temp = findGSTVALUE(g, value);
 
-    if (temp == 0) { return 0; } //value not in tree
+    if (temp == 0) //value not in tree
+        {
+        printf("Value ");
+        g->display(value, stdout);
+        printf(" not found.");
+        return 0;
+        } 
     
     else if (getGSTVALUEcount(temp) > 1) //node has duplicates
         {
@@ -144,7 +149,7 @@ void *deleteGST(GST *g,void *value)
         g->size -= 1;
         return temp;
         }
-    else //node has no duplicates
+    else //node has no duplicates ??TODO: create delete helper function
         {
         BSTNODE *deleted = deleteBST(g->tree, temp);
         g->size -= 1;

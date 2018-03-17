@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "gst.h": "c",
+        "string.h": "c"
+    }
+}
