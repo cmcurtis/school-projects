@@ -324,7 +324,7 @@ void deletionFixup(BSTNODE *n) //TODO FIX UP
         {
             
         BSTNODE *par = getBSTNODEparent(n);
-        if (par == NULL) { break; }
+        if (par == n) { break; }
 
         BSTNODE *sib = sibling(n);
         AVLVALUE *z = getBSTNODEvalue(sib);

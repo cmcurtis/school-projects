@@ -107,7 +107,7 @@ BSTNODE *insertBST(BST *t,void *value)
         BSTNODE *inserted = newBSTNODE(value);
         setBSTNODEleft(inserted, 0);
         setBSTNODEright(inserted, 0);
-        setBSTNODEparent(inserted, 0);
+        setBSTNODEparent(inserted, inserted);
         t->root = inserted;
         t->size++;
         return inserted;
@@ -205,7 +205,7 @@ void pruneLeafBST(BST *t,BSTNODE *leaf)
     BSTNODE *parent = 0;
     parent = getBSTNODEparent(leaf);
 
-    if (parent == 0 ) 
+    if (parent == leaf ) 
         {
         if (leaf == t->root) { t->root = 0; }
  //       t->size--;

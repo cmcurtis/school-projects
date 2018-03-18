@@ -19,8 +19,8 @@ test-gst : test-gst.o integer.o sll.o queue.o bst.o gst.o
 test-avl : test-avl.o integer.o sll.o queue.o bst.o avl.o
 		gcc $(LOPTS) test-gst.o integer.o sll.o queue.o bst.o gst.o -o test-avl
 
-# trees : trees.o string.o scanner.o sll.o queue.o bst.o gst.o avl.o
-#  		gcc $(LOPTS) trees.o string.o scanner.o sll.o queue.o bst.o gst.o avl.o -o trees
+trees : trees.o string.o scanner.o sll.o queue.o bst.o gst.o avl.o
+ 		gcc $(LOPTS) trees.o string.o scanner.o sll.o queue.o bst.o gst.o avl.o -o trees
 
 test-sll.o : test-sll.c sll.h integer.h
 		gcc $(OOPTS) test-sll.c
@@ -37,8 +37,8 @@ test-gst.o : test-gst.c gst.h bst.h queue.h sll.h integer.h
 test-avl.o : test-avl.c avl.h bst.h queue.h sll.h integer.h
 		gcc $(OOPTS) test-avl.c
 
-# trees.o : trees.c string.h scanner.h sll.h queue.h bst.h gst.h avl.h
-#  		gcc $(OOPTS) trees.c
+trees.o : trees.c string.h scanner.h sll.h queue.h bst.h gst.h avl.h
+ 		gcc $(OOPTS) trees.c
 
 avl.o : avl.c bst.h queue.h sll.h
 		gcc $(OOPTS) avl.c

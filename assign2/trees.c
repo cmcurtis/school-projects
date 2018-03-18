@@ -1,8 +1,12 @@
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "scanner.h"
 #include "string.h"
 #include "gst.h"
 #include "avl.h"
-#include <string.h>
+
 
 /* options */
 int verbose = 0;
@@ -69,9 +73,21 @@ main(int argc,char **argv)
                 {
                 x = readToken(command);
                 }
-            switch(x) //??TODO: FIX SWITCH
+            if (strcmp(x, "i") == 0) //insert
                 {
-                case 'i': //insert
+                if (stringPending(command)) 
+                    {
+                    x = readString(command);
+                    }
+                else 
+                    {
+                    x = readToken(command);
+                    }
+                insertAVL(a, newSTRING(x));
+                continue;
+                }
+            else if(strcmp(x, "d") == 0) //delete
+                {
                     if (stringPending(command)) 
                         {
                         x = readString(command);
@@ -80,39 +96,32 @@ main(int argc,char **argv)
                         {
                         x = readToken(command);
                         }
-                    insertGST(g, newSTRING(x));
-                    break;
-                case 'd': //delete
-                    if (stringPending(command)) 
-                        {
-                        x = readString(command);
-                        }
-                    else 
-                        {
-                        x = readToken(command);
-                        }
-                    deleteGST(g, newSTRING(x));
-                    break;
-                case 'f': //return frequency
-                    if (stringPending(command)) 
-                        {
-                        x = readString(command);
-                        }
-                    else 
-                        {
-                        x = readToken(command);
-                        }
-                    int count = findGSTcount(g, newSTRING(x));
-                    printf("Frequency of %s: %d\n", x, count);
-                    break;
-                case 's': //display tree
-                    displayGST(g, stdout);
-                    break;
-                case 'r': //display stats
-                    statisticsGST(g, stdout);
-                    break; 
-                default:
-                    Fatal("option %s not understood\n",argv[argIndex]);  
+                    deleteAVL(a, newSTRING(x));
+                continue;
+                }
+            else if (strcmp(x, "f") == 0) //return frequency
+                {
+                if (stringPending(command)) 
+                    {
+                    x = readString(command);
+                    }
+                else 
+                    {
+                    x = readToken(command);
+                    }
+                int count = findAVLcount(a, newSTRING(x));
+                printf("Frequency of %s: %d\n", x, count);
+                continue;
+                }
+            else if (strcmp(x, "s") == 0) //display tree
+                {   
+                displayAVL(g, stdout);
+                continue;
+                }
+            else if(strcmp(x, "r") == 0) //display stats
+                {
+                statisticsAVL(g, stdout);
+                continue;
                 }
             }
         fclose(command);
@@ -155,20 +164,21 @@ main(int argc,char **argv)
                 {
                 x = readToken(command);
                 }
-            switch(x) //??TODO: FIX SWITCH
+            if (strcmp(x, "i") == 0) //insert
                 {
-                case 'i': //insert
-                    if (stringPending(command)) 
-                        {
-                        x = readString(command);
-                        }
-                    else 
-                        {
-                        x = readToken(command);
-                        }
-                    insertAVL(a, newSTRING(x));
-                    break;
-                case 'd': //delete
+                if (stringPending(command)) 
+                    {
+                    x = readString(command);
+                    }
+                else 
+                    {
+                    x = readToken(command);
+                    }
+                insertAVL(a, newSTRING(x));
+                continue;
+                }
+            else if(strcmp(x, "d") == 0) //delete
+                {
                     if (stringPending(command)) 
                         {
                         x = readString(command);
@@ -178,27 +188,31 @@ main(int argc,char **argv)
                         x = readToken(command);
                         }
                     deleteAVL(a, newSTRING(x));
-                    break;
-                case 'f': //return frequency
-                    if (stringPending(command)) 
-                        {
-                        x = readString(command);
-                        }
-                    else 
-                        {
-                        x = readToken(command);
-                        }
-                    int count = findAVLcount(a, newSTRING(x));
-                    printf("Frequency of %s: %d\n", x, count);
-                    break;
-                case 's': //display tree
-                    displayAVL(g, stdout);
-                    break;
-                case 'r': //display stats
-                    statisticsAVL(g, stdout);
-                    break; 
-                default:
-                    Fatal("option %s not understood\n",argv[argIndex]);  
+                continue;
+                }
+            else if (strcmp(x, "f") == 0) //return frequency
+                {
+                if (stringPending(command)) 
+                    {
+                    x = readString(command);
+                    }
+                else 
+                    {
+                    x = readToken(command);
+                    }
+                int count = findAVLcount(a, newSTRING(x));
+                printf("Frequency of %s: %d\n", x, count);
+                continue;
+                }
+            else if (strcmp(x, "s") == 0) //display tree
+                {   
+                displayAVL(g, stdout);
+                continue;
+                }
+            else if(strcmp(x, "r") == 0) //display stats
+                {
+                statisticsAVL(g, stdout);
+                continue;
                 }
             }
         fclose(command);
@@ -250,7 +264,8 @@ processOptions(int argc, char **argv)
                 treeType = 0;
                 break;
             default:
-                Fatal("option %s not understood\n",argv[argIndex]);
+                treeType = 0;
+                break;
             }
 
         if (separateArg && argUsed)
