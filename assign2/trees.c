@@ -2,6 +2,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include "scanner.h"
 #include "string.h"
 #include "gst.h"
@@ -25,10 +26,10 @@ main(int argc,char **argv)
     processOptions(argc,argv);
 
     FILE *corp;
-    corp = fopen(argv[argc - 2], "r");
+    corp = fopen(argv[argc - 1], "r");
 
     FILE *command;
-    command = fopen(argv[argc - 1], "r");
+    command = fopen(argv[argc], "r");
 
     if (verbose) 
         {
@@ -39,7 +40,7 @@ main(int argc,char **argv)
     if (treeType) // gst
         {
         GST *g = newGST(displaySTRING, compareSTRING, freeSTRING);
-        char *x;
+        char *x = 0;
         if (stringPending(corp)) 
             {
             x = readString(corp);
@@ -83,7 +84,7 @@ main(int argc,char **argv)
                     {
                     x = readToken(command);
                     }
-                insertAVL(a, newSTRING(x));
+                insertGST(g, newSTRING(x));
                 continue;
                 }
             else if(strcmp(x, "d") == 0) //delete
@@ -96,7 +97,13 @@ main(int argc,char **argv)
                         {
                         x = readToken(command);
                         }
-                    deleteAVL(a, newSTRING(x));
+                    void *val = deleteGST(g, newSTRING(x));
+                    if (val == 0)
+                        {
+                        printf("Value ");
+                        //g->display(x, stdout);
+                        printf(" not found.");
+                        }
                 continue;
                 }
             else if (strcmp(x, "f") == 0) //return frequency
@@ -109,18 +116,24 @@ main(int argc,char **argv)
                     {
                     x = readToken(command);
                     }
-                int count = findAVLcount(a, newSTRING(x));
-                printf("Frequency of %s: %d\n", x, count);
+                int count = findGSTcount(g, newSTRING(x));
+                if (count != 0) { printf("Frequency of %s: %d\n", x, count); }
+                else
+                   {
+                    printf("Value ");
+                    //g->display(x, stdout);
+                    printf(" not found.");
+                    } 
                 continue;
                 }
             else if (strcmp(x, "s") == 0) //display tree
                 {   
-                displayAVL(g, stdout);
+                displayGST(g, stdout);
                 continue;
                 }
             else if(strcmp(x, "r") == 0) //display stats
                 {
-                statisticsAVL(g, stdout);
+                statisticsGST(g, stdout);
                 continue;
                 }
             }
@@ -130,7 +143,7 @@ main(int argc,char **argv)
     else //avl
         {
         AVL *a = newAVL(displaySTRING, compareSTRING, freeSTRING);
-        char *x;
+        char *x = 0;
         if (stringPending(corp)) 
             {
             cleanString(x);
@@ -187,7 +200,13 @@ main(int argc,char **argv)
                         {
                         x = readToken(command);
                         }
-                    deleteAVL(a, newSTRING(x));
+                    void *val = deleteAVL(a, newSTRING(x));
+                    if (val == 0)
+                        {
+                        printf("Value ");
+                        //a->display(x, stdout);
+                        printf(" not found.");
+                        }
                 continue;
                 }
             else if (strcmp(x, "f") == 0) //return frequency
@@ -201,17 +220,23 @@ main(int argc,char **argv)
                     x = readToken(command);
                     }
                 int count = findAVLcount(a, newSTRING(x));
-                printf("Frequency of %s: %d\n", x, count);
+                if (count != 0) { printf("Frequency of %s: %d\n", x, count); }
+                else
+                    {
+                    printf("Value ");
+                    //a->display(x, stdout);
+                    printf(" not found.");
+                    }
                 continue;
                 }
             else if (strcmp(x, "s") == 0) //display tree
                 {   
-                displayAVL(g, stdout);
+                displayAVL(a, stdout);
                 continue;
                 }
             else if(strcmp(x, "r") == 0) //display stats
                 {
-                statisticsAVL(g, stdout);
+                statisticsAVL(a, stdout);
                 continue;
                 }
             }

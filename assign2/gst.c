@@ -28,6 +28,8 @@ GSTVALUE *newGSTVALUE(void *value, void (*d)(void *, FILE *), int (*c)(void *,vo
     }
 
 static GSTVALUE* findGSTVALUE(GST *g, void *value);
+static void freeGSTVALUE(void *g);
+
 //accessors
 int getGSTVALUEcount(GSTVALUE *v) { return v->count; }
 void* getGSTVALUEvalue(GSTVALUE *v) {return v->value; }
@@ -58,7 +60,7 @@ void gfree(void *v) // TODO: FIX
     {
     GSTVALUE *w = v;
     void *val = getGSTVALUEvalue(w);
-    if (w->free != NULL) { w->free(val); }
+    if (w->free != 0) { w->free(val); }
     free(w);
     }
 
@@ -137,9 +139,6 @@ void *deleteGST(GST *g,void *value)
 
     if (temp == 0) //value not in tree
         {
-        printf("Value ");
-        g->display(value, stdout);
-        printf(" not found.");
         return 0;
         } 
     
@@ -153,13 +152,15 @@ void *deleteGST(GST *g,void *value)
         {
         BSTNODE *deleted = deleteBST(g->tree, temp);
         g->size -= 1;
-        return getBSTNODEvalue(deleted);
+        GSTVALUE *removed = getBSTNODEvalue(deleted);
+        freeBSTNODE(deleted, freeGSTVALUE);
+        return getGSTVALUEvalue(removed);
         }
     }
 
 int sizeGST(GST *g)
     {
-    return g->size;
+    return sizeBST(g->tree);
     }
 
 int duplicates(GST *g)
@@ -177,6 +178,7 @@ void statisticsGST(GST *g, FILE *fp)
 ////The method calls the tree using a level-order traversal via decorated display of the underlying structure
 void displayGST(GST *g, FILE *fp) 
     {
+    if (sizeGST(g) == 0) { fprintf(fp, "EMPTY\n"); }
     displayBSTdecorated(g->tree, fp);
     }
 
@@ -200,10 +202,14 @@ static GSTVALUE* findGSTVALUE(GST *g, void *value)
 
     GSTVALUE *find = newGSTVALUE(value, g->display, g->compare, g->free);
     BSTNODE *temp = findBST(g->tree, find);
-
+    free(find);
     if (temp == 0) { return 0; }
     
     GSTVALUE *found = getBSTNODEvalue(temp);
-    free(find);
     return found;
+    }
+
+void freeGSTVALUE(void *g)
+    {
+    free(g);
     }

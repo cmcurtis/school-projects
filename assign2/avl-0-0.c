@@ -27,7 +27,7 @@ main(void)
     INTEGER *q = newINTEGER(2);
     printf("is ");
     displayINTEGER(q,stdout);
-    printf(" present? %s\n",findAVL(p,q) == 0? "no" : "yes");
+    printf(" present? %s\n",findAVL(p,q) == 0? "no" : "yes");   
     INTEGER *r = newINTEGER(3);
     freeINTEGER(deleteAVL(p,r));
     statisticsAVL(p,stdout);

@@ -147,7 +147,7 @@ BSTNODE *findBST(BST *t, void *value)
     {
     BSTNODE *temp = 0;
     temp = t->root;
-    if (t->size == 0) { return NULL; }
+    if (t->size == 0 || temp == 0) { return NULL; }
     while (t->compare(getBSTNODEvalue(temp), value) != 0)
         {
         if (temp == 0) { return 0; }
@@ -196,6 +196,11 @@ BSTNODE *swapToLeafBST(BST *t,BSTNODE *node)
             while(next->right != 0) { next = getBSTNODEright(next); }    
             }
         t->swapper(node, next);
+        if (node == t->root) 
+            {
+            setBSTroot(t, node);
+            setBSTNODEparent(node, node);
+            }
         return swapToLeafBST(t, next); 
         }
     }
@@ -204,17 +209,17 @@ void pruneLeafBST(BST *t,BSTNODE *leaf)
     {
     BSTNODE *parent = 0;
     parent = getBSTNODEparent(leaf);
-
-    if (parent == leaf ) 
+    
+    if (parent == leaf) 
         {
-        if (leaf == t->root) { t->root = 0; }
- //       t->size--;
+        t->root = 0;
         return; 
         }
 
     if (getBSTNODEleft(parent) == leaf) { setBSTNODEleft(parent, 0); }
     if (getBSTNODEright(parent) == leaf) { setBSTNODEright(parent, 0); }
- //   t->size--;
+    //if (t->size <= 2) { setBSTroot(t, parent); setBSTNODEparent(parent, parent);}
+    return;
     }
 
 int sizeBST(BST *t)
@@ -249,7 +254,7 @@ void displayBST(BST *t,FILE *fp)
 void displayBSTdebug(BST *t,FILE *fp)
     {
     if(t->root == 0) { return; }
-    QUEUE *Q1 = newQUEUE(0, 0);
+    QUEUE *Q1 = newQUEUE(0,0);
     QUEUE *Q2 = newQUEUE(0,0);
     enqueue(Q1, t->root);
 
@@ -289,12 +294,12 @@ void displayBSTdecorated(BST *t, FILE *fp)
     QUEUE *Q2 = newQUEUE(0,0);
     enqueue(Q1, t->root);
     int count = 0;
-
+    int first = 0;
     while(sizeQUEUE(Q1) != 0 || sizeQUEUE(Q2) != 0)
         {
         while(sizeQUEUE(Q1) != 0)
             {
-            fprintf(fp, "%d: ", count);
+            if (first == 0) { fprintf(fp, "%d: ", count); }
             BSTNODE *current = peekQUEUE(Q1);
             if(getBSTNODEleft(current) != 0) { enqueue(Q2, getBSTNODEleft(current)); }
             if(getBSTNODEright(current) != 0) { enqueue(Q2, getBSTNODEright(current)); }
@@ -305,13 +310,15 @@ void displayBSTdecorated(BST *t, FILE *fp)
             if (sizeQUEUE(Q1) > 1) { fprintf(fp, " "); }
             
             dequeue(Q1);
+            first++;
             }
         fprintf(fp, "\n");
         count++;
+        first = 0;
         if (sizeQUEUE(Q2) == 0) { break; }
         while(sizeQUEUE(Q2) != 0)
             {
-            fprintf(fp, "%d: ", count);
+            if (first == 0) { fprintf(fp, "%d: ", count); }
             BSTNODE *second = peekQUEUE(Q2); 
             if(getBSTNODEleft(second) != 0) { enqueue(Q1, getBSTNODEleft(second)); }
             if(getBSTNODEright(second) != 0) { enqueue(Q1, getBSTNODEright(second)); }
@@ -322,7 +329,9 @@ void displayBSTdecorated(BST *t, FILE *fp)
             if (sizeQUEUE(Q2) > 1) { fprintf(fp, " "); }
             
             dequeue(Q2);
+            first++;
             }
+        first = 0;
         fprintf(fp, "\n");
         count++;
         }
@@ -346,10 +355,10 @@ int isLeaf(BSTNODE *n)
     }
 
 void printPreOrder(BST *t, BSTNODE *n, FILE *fp)
-    {//maybe add separate helper functions for brackets
+    {
     if (n == 0) { return; }
 
-    if (getBSTNODEparent(n) != 0) { fprintf(fp, " "); }
+    if (getBSTNODEparent(n) != n) { fprintf(fp, " "); }
     fprintf(fp, "[");
     t->display(getBSTNODEvalue(n), fp);
 
