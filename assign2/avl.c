@@ -294,7 +294,7 @@ void insertionFixup(BST *t, BSTNODE *n)
         BSTNODE *sib = sibling(n);
         AVLVALUE *x = getBSTNODEvalue(n);
         AVLVALUE *p = getBSTNODEvalue(par);
-        //printf("INSERTION FIXUP\n");
+        printf("INSERTION FIXUP\n");
         AVLVALUE *z = 0;
         if (sib != 0) { z = getBSTNODEvalue(sib); }
         
@@ -303,15 +303,15 @@ void insertionFixup(BST *t, BSTNODE *n)
             
         if (zHeight > getAVLVALUEheight(x)) //parent favors the sibling
             {
-            //printf("parent favors sib\n");
+            printf("parent favors sib\n");
             updateBalance(par);
             return;
             }
-        else if (getAVLVALUEbalance(p) == 0) //parent is balanced
+        else if (getAVLVALUEbalance(p) == 0) //parent has no fav
             {
-            //printf("parent is balanced\n");
+            printf("parent is balanced\n");
             updateBalance(par);
-            //printf("UPDATED BALANCE:%d\n", getAVLVALUEbalance(p));
+            printf("UPDATED BALANCE:%d\n", getAVLVALUEbalance(p));
             n = par; 
             continue;
             }
@@ -321,7 +321,7 @@ void insertionFixup(BST *t, BSTNODE *n)
 
             if (y != 0 && linear(y, n, par) == 0) //y exists and y,n,p are not linear
                 {
-                //printf("NON linear rotation\n");
+                printf("NON linear rotation\n");
                 if (getBSTNODEleft(par) == n) //right left rotation
                     {
                     rightRotate(t, y); //rotate y to n
@@ -338,7 +338,7 @@ void insertionFixup(BST *t, BSTNODE *n)
                 }
             else                                   //case 4
                 {
-                //printf("Linear rotation\n");
+                printf("Linear rotation\n");
                 if (getBSTNODEleft(par) == n) //rotate right
                     {
                     rightRotate(t, n); //n to p
@@ -347,8 +347,8 @@ void insertionFixup(BST *t, BSTNODE *n)
                     {
                     leftRotate(t, n); //n to p
                     }
+                updateBalance(getBSTNODEparent(par));
                 updateBalance(par);
-                updateBalance(n);
                 }
             return;
             }
@@ -520,6 +520,8 @@ void rightRotate(BST *t, BSTNODE *n)
             else { setBSTNODEright(gp, n); }
         }
     
+    setBSTNODEparent(p, n);
+    setBSTNODEright(n, p);
     }
 
 void leftRotate(BST *t, BSTNODE *n)
@@ -547,6 +549,9 @@ void leftRotate(BST *t, BSTNODE *n)
             if (getBSTNODEleft(gp) == p) { setBSTNODEleft(gp, n); }
             else { setBSTNODEright(gp, n); }
         }
+    
+    setBSTNODEparent(p, n);
+    setBSTNODEleft(n, p);
     }
 
 void freeAVLVALUE(void *a)
