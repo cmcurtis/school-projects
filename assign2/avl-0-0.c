@@ -38,6 +38,24 @@ main(void)
     printf("debug: ");
     displayAVLdebug(p,stdout);
     printf("\n");
+    deleteAVL(p,newINTEGER(5));
+    printf("AVL:\n");
+    displayAVL(p,stdout);
+    deleteAVL(p,newINTEGER(4));
+    printf("AVL:\n");
+    displayAVL(p,stdout);
+    deleteAVL(p,newINTEGER(3));
+    printf("AVL:\n");
+    displayAVL(p,stdout);
+    deleteAVL(p,newINTEGER(2));
+    printf("AVL:\n");
+    displayAVL(p,stdout);
+    deleteAVL(p,newINTEGER(1));
+    printf("AVL:\n");
+    displayAVL(p,stdout);
+    deleteAVL(p,newINTEGER(0));
+    printf("AVL:\n");
+    displayAVL(p,stdout);
     freeAVL(p);
     return 0;
     }

@@ -151,6 +151,11 @@ BSTNODE *findBST(BST *t, void *value)
     while (t->compare(getBSTNODEvalue(temp), value) != 0)
         {
         if (temp == 0) { return 0; }
+        // printf("looking for: ");
+        // t->display(value, stdout);
+        // printf(" = ");
+        // t->display(getBSTNODEvalue(temp), stdout);
+        // printf("\n");
         if (t->compare(getBSTNODEvalue(temp), value) > 0) 
             { 
             if (getBSTNODEleft(temp) == 0) { return NULL; }

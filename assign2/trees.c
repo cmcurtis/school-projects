@@ -14,7 +14,8 @@ int verbose = 0;
 int treeType = 0;
 
 static int processOptions(int,char **);
-static char *cleanString(char *ch);
+static void trim(char *str);
+static char *cleanString(char *);
 void Fatal(char *,...);
 
 int
@@ -26,10 +27,10 @@ main(int argc,char **argv)
     processOptions(argc,argv);
 
     FILE *corp;
-    corp = fopen(argv[argc - 1], "r");
+    corp = fopen(argv[argc - 2], "r");
 
     FILE *command;
-    command = fopen(argv[argc], "r");
+    command = fopen(argv[argc - 1], "r");
 
     if (verbose) 
         {
@@ -52,7 +53,11 @@ main(int argc,char **argv)
         while (!feof(corp))
             {
             cleanString(x);
-            insertGST(g, newSTRING(x));
+            //  printf("cleaned x: \"%s\"\n", x);
+            if (strcmp(x, "") != 0)
+                {
+                insertGST(g, newSTRING(x));
+                }
             if (stringPending(corp)) 
                 {
                 x = readString(corp);
@@ -64,16 +69,16 @@ main(int argc,char **argv)
             }
         fclose(corp);
 
+        if (stringPending(command)) 
+            {
+            x = readString(command);
+            }
+        else 
+            {
+            x = readToken(command);
+            }
         while(!feof(command))
             {
-            if (stringPending(command)) 
-                {
-                x = readString(command);
-                }
-            else 
-                {
-                x = readToken(command);
-                }
             if (strcmp(x, "i") == 0) //insert
                 {
                 if (stringPending(command)) 
@@ -84,8 +89,11 @@ main(int argc,char **argv)
                     {
                     x = readToken(command);
                     }
-                insertGST(g, newSTRING(x));
-                continue;
+                cleanString(x);
+                if (strcmp(x, "") != 0)
+                    {
+                    insertGST(g, newSTRING(x));
+                    }
                 }
             else if(strcmp(x, "d") == 0) //delete
                 {
@@ -97,14 +105,15 @@ main(int argc,char **argv)
                         {
                         x = readToken(command);
                         }
-                    void *val = deleteGST(g, newSTRING(x));
-                    if (val == 0)
+                    cleanString(x);
+                    if (strcmp(x, "") != 0)
                         {
-                        printf("Value ");
-                        //g->display(x, stdout);
-                        printf(" not found.");
+                        void *val = deleteGST(g, newSTRING(x));
+                        if (val == 0 && strcmp(x, " ") != 0)
+                            {
+                            printf("Value %s not found.\n", x);
+                            }
                         }
-                continue;
                 }
             else if (strcmp(x, "f") == 0) //return frequency
                 {
@@ -116,25 +125,29 @@ main(int argc,char **argv)
                     {
                     x = readToken(command);
                     }
-                int count = findGSTcount(g, newSTRING(x));
-                if (count != 0) { printf("Frequency of %s: %d\n", x, count); }
-                else
-                   {
-                    printf("Value ");
-                    //g->display(x, stdout);
-                    printf(" not found.");
-                    } 
-                continue;
+                cleanString(x);
+                if (strcmp(x, "") != 0)
+                    {
+                    int count = findGSTcount(g, newSTRING(x));
+                    printf("Frequency of %s: %d\n", x, count);
+                    }
                 }
             else if (strcmp(x, "s") == 0) //display tree
                 {   
                 displayGST(g, stdout);
-                continue;
                 }
             else if(strcmp(x, "r") == 0) //display stats
                 {
                 statisticsGST(g, stdout);
-                continue;
+                }
+            
+            if (stringPending(command)) 
+                {
+                x = readString(command);
+                }
+            else 
+                {
+                x = readToken(command);
                 }
             }
         fclose(command);
@@ -146,7 +159,6 @@ main(int argc,char **argv)
         char *x = 0;
         if (stringPending(corp)) 
             {
-            cleanString(x);
             x = readString(corp);
             }
         else 
@@ -155,7 +167,11 @@ main(int argc,char **argv)
             }
         while (!feof(corp))
             {
-            insertAVL(a, newSTRING(x));
+            cleanString(x);
+            if (strcmp(x, "") != 0)
+                {
+                insertAVL(a, newSTRING(x));
+                }
             if (stringPending(corp)) 
                 {
                 x = readString(corp);
@@ -167,16 +183,16 @@ main(int argc,char **argv)
             }
         fclose(corp);
 
+        if (stringPending(command)) 
+            {
+            x = readString(command);
+            }
+        else 
+            {
+            x = readToken(command);
+            }
         while(!feof(command))
             {
-            if (stringPending(command)) 
-                {
-                x = readString(command);
-                }
-            else 
-                {
-                x = readToken(command);
-                }
             if (strcmp(x, "i") == 0) //insert
                 {
                 if (stringPending(command)) 
@@ -187,8 +203,11 @@ main(int argc,char **argv)
                     {
                     x = readToken(command);
                     }
-                insertAVL(a, newSTRING(x));
-                continue;
+                cleanString(x);
+                if (strcmp(x, "") != 0)
+                    {
+                    insertAVL(a, newSTRING(x));
+                    }
                 }
             else if(strcmp(x, "d") == 0) //delete
                 {
@@ -200,14 +219,15 @@ main(int argc,char **argv)
                         {
                         x = readToken(command);
                         }
-                    void *val = deleteAVL(a, newSTRING(x));
-                    if (val == 0)
+                    cleanString(x);
+                    if (strcmp(x, "") != 0)
                         {
-                        printf("Value ");
-                        //a->display(x, stdout);
-                        printf(" not found.");
+                        void *val = deleteAVL(a, newSTRING(x));
+                        if (val == 0)
+                            {
+                            printf("Value %s not found.\n", x);
+                            }
                         }
-                continue;
                 }
             else if (strcmp(x, "f") == 0) //return frequency
                 {
@@ -219,25 +239,29 @@ main(int argc,char **argv)
                     {
                     x = readToken(command);
                     }
-                int count = findAVLcount(a, newSTRING(x));
-                if (count != 0) { printf("Frequency of %s: %d\n", x, count); }
-                else
+                cleanString(x);
+                if (strcmp(x, "") != 0)
                     {
-                    printf("Value ");
-                    //a->display(x, stdout);
-                    printf(" not found.");
-                    }
-                continue;
+                    int count = findAVLcount(a, newSTRING(x));
+                    printf("Frequency of %s: %d\n", x, count);
+                    } 
                 }
             else if (strcmp(x, "s") == 0) //display tree
                 {   
                 displayAVL(a, stdout);
-                continue;
                 }
             else if(strcmp(x, "r") == 0) //display stats
                 {
                 statisticsAVL(a, stdout);
-                continue;
+                }
+            //read next string    
+            if (stringPending(command)) 
+                {
+                x = readString(command);
+                }
+            else 
+                {
+                x = readToken(command);
                 }
             }
         fclose(command);
@@ -304,9 +328,11 @@ processOptions(int argc, char **argv)
 
 char *cleanString(char *x) 
     {
+    //trim(x);
+    //printf("x: \"%s\"\n", x);
     char *orig = x;
     char *cleaned = x;
-    
+
     do 
         {
         if (isspace((unsigned char)*orig))
@@ -315,15 +341,50 @@ char *cleanString(char *x)
                 {
                 orig++;
                 }
-            *cleaned++ = ' ';
+            if (strcmp(orig+1, "\0") == 0) { *cleaned++ = 0; }
+            else { *cleaned++ = ' '; }
             }
         else if (isalpha((unsigned char)*orig) || *orig == 0) 
             {
             *cleaned++ = tolower((unsigned char)*orig);
             }
         } while(*orig++ != 0);
-
-    // if (*orig == ' ') { *cleaned++; } //remove front whitespace
-    // if (/*end of string*/) { *cleaned-- = 0; } //remove back whitespace
+    //printf("new x: \"%s\"\n", x);
+    trim(x);
+    //printf("trimmed x: \"%s\"\n", x);
     return x;
     }
+
+void trim(char * str)
+{
+    int i, j;
+
+    i = 0;
+    while(str[i] == ' ')
+        {
+        i++;
+        }
+        
+    if(i != 0)
+        {
+        j = 0;
+        while(str[j + i] != '\0')
+            {
+            str[j] = str[j + i];
+            j++;
+            }
+        str[j] = '\0'; 
+        }
+
+    j = 0;
+    i = -1;
+    while(str[j] != '\0')
+        {
+        if(str[j] != ' ')
+            {
+            i = j;
+            }
+        j++;
+        }
+    str[i + 1] = '\0';
+}

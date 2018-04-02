@@ -21,11 +21,16 @@ main(void)
         {
         int j = random() % 19;
         INTEGER *a = newINTEGER(j);
+        
         if (findAVL(p,a) == 0)
+            {
             insertAVL(p,a);
+          
+            }
         else
             {
             insertAVL(p,a);
+           
             freeINTEGER(a);
             }
         }

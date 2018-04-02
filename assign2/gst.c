@@ -115,6 +115,7 @@ void insertGST(GST *g, void *value)
 int findGSTcount(GST *g, void *value)
     {
     GSTVALUE *temp = findGSTVALUE(g, value);
+    if (temp == 0) { return 0; }
     int count = getGSTVALUEcount(temp);
     return count;
     }
@@ -153,8 +154,9 @@ void *deleteGST(GST *g,void *value)
         BSTNODE *deleted = deleteBST(g->tree, temp);
         g->size -= 1;
         GSTVALUE *removed = getBSTNODEvalue(deleted);
+        void *val = getGSTVALUEvalue(removed);
         freeBSTNODE(deleted, freeGSTVALUE);
-        return getGSTVALUEvalue(removed);
+        return val;
         }
     }
 
@@ -165,7 +167,7 @@ int sizeGST(GST *g)
 
 int duplicates(GST *g)
     {
-    return sizeGST(g) - sizeBST(g->tree);
+    return g->size - sizeBST(g->tree);
     }
 
 void statisticsGST(GST *g, FILE *fp)
@@ -202,7 +204,7 @@ static GSTVALUE* findGSTVALUE(GST *g, void *value)
 
     GSTVALUE *find = newGSTVALUE(value, g->display, g->compare, g->free);
     BSTNODE *temp = findBST(g->tree, find);
-    free(find);
+    freeGSTVALUE(find);
     if (temp == 0) { return 0; }
     
     GSTVALUE *found = getBSTNODEvalue(temp);
