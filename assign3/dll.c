@@ -3,21 +3,21 @@
 #include <assert.h>
 #include "dll.h"
 
-typedef struct NODE
+typedef struct DLLNODE
     {
     void *value;
-    struct NODE *next;
-    struct NODE *prev;
-    }NODE;
+    struct DLLNODE *next;
+    struct DLLNODE *prev;
+    }DLLNODE;
 
 /*************** public interface *************/
 
 /* constructors */
 
-NODE *
-newNODE(void *v,NODE *n,NODE *prev)
+DLLNODE *
+newDLLNODE(void *v, DLLNODE *n, DLLNODE *prev)
     {
-    NODE *p = malloc(sizeof(NODE));
+    DLLNODE *p = malloc(sizeof(DLLNODE));
     if (p == 0) { fprintf(stderr,"out of memory\n"); exit(1); }
     p->value = v;
     p->next = n;
@@ -27,18 +27,18 @@ newNODE(void *v,NODE *n,NODE *prev)
 
 /* accessors */
 
-void  *getNODEvalue(NODE *n) { return n->value; }
-NODE  *getNODEnext(NODE *n)  { return n->next; }
-NODE  *getNODEprev(NODE *n)  { return n->prev; }
+void  *getDLLNODEvalue(DLLNODE *n) { return n->value; }
+DLLNODE  *getDLLNODEnext(DLLNODE *n)  { return n->next; }
+DLLNODE  *getDLLNODEprev(DLLNODE *n)  { return n->prev; }
 
 /* mutators */
 
-void  setNODEvalue(NODE *n,void *v) { n->value = v; }
-void  setNODEnext(NODE *n,NODE *p)  { n->next = p; }
-void  setNODEprev(NODE *n,NODE *p)  { n->prev = p; }
+void  setDLLNODEvalue(DLLNODE *n,void *v) { n->value = v; }
+void  setDLLNODEnext(DLLNODE *n,DLLNODE *p)  { n->next = p; }
+void  setDLLNODEprev(DLLNODE *n,DLLNODE *p)  { n->prev = p; }
 
 
-void freeNODE(NODE *n,void (*release)(void *))
+void freeDLLNODE(DLLNODE *n,void (*release)(void *))
     {
     if (release != 0) release(n->value);
     free(n);
@@ -46,9 +46,9 @@ void freeNODE(NODE *n,void (*release)(void *))
 
 struct dll 
     {
-    NODE *head;
-    NODE *tail;
-    NODE *curr;
+    DLLNODE *head;
+    DLLNODE *tail;
+    DLLNODE *curr;
     int size;
     void (*display)();
     void (*free)();
@@ -69,14 +69,14 @@ DLL *newDLL(void (*d)(void *,FILE *),void (*f)(void *))
     }
 
 
-void insertDLL(DLL *items,int index,void *value)
+void* insertDLL(DLL *items,int index,void *value)
     {
     assert(items != 0);
     assert(index <= items->size);
     assert(index >= 0);
 
-    NODE *inserted = NULL;
-    inserted = newNODE(value, 0, 0);
+    DLLNODE *inserted = NULL;
+    inserted = newDLLNODE(value, 0, 0);
 
     int count = 0;
     if (index == 0) 
@@ -85,10 +85,10 @@ void insertDLL(DLL *items,int index,void *value)
             { 
             items->tail = items->head = inserted;
             items->size++;
-            return;
+            return inserted;
             }
-        setNODEnext(inserted, items->head);
-        setNODEprev(items->head, inserted);
+        setDLLNODEnext(inserted, items->head);
+        setDLLNODEprev(items->head, inserted);
         items->head = inserted;
         }
     else if (index == items->size) 
@@ -96,50 +96,51 @@ void insertDLL(DLL *items,int index,void *value)
         if (items->size == 1) 
             {
             items->tail = inserted; 
-            setNODEnext(items->head, items->tail);
-            setNODEprev(items->tail, items->head);
+            setDLLNODEnext(items->head, items->tail);
+            setDLLNODEprev(items->tail, items->head);
             items->size++;
-            return;
+            return inserted;
             }
-        setNODEprev(inserted, items->tail);
-        setNODEnext(items->tail, inserted);
+        setDLLNODEprev(inserted, items->tail);
+        setDLLNODEnext(items->tail, inserted);
         items->tail = inserted;
         }
     else 
         {
-        NODE *temp = NULL;
+        DLLNODE *temp = NULL;
         if (index > (items->size / 2) && items->size > 3)
             {
             temp = items->tail;
             count = items->size;
             while (count != index)
                 {
-                temp = getNODEprev(temp);
+                temp = getDLLNODEprev(temp);
                 count--;
                 }
-            setNODEnext(inserted, temp->next);
-            setNODEprev(inserted, temp);
-            setNODEprev(temp->next, inserted);
-            setNODEnext(temp, inserted);
+            setDLLNODEnext(inserted, temp->next);
+            setDLLNODEprev(inserted, temp);
+            setDLLNODEprev(temp->next, inserted);
+            setDLLNODEnext(temp, inserted);
             }
         else
             {
             temp = items->head;
             while(count != index - 1)
                 {
-                temp = getNODEnext(temp);
+                temp = getDLLNODEnext(temp);
                 count++;
                 }
-            setNODEnext(inserted, temp->next);
-            setNODEprev(inserted, temp);
-            setNODEprev(temp->next, inserted);
-            setNODEnext(temp, inserted);
+            setDLLNODEnext(inserted, temp->next);
+            setDLLNODEprev(inserted, temp);
+            setDLLNODEprev(temp->next, inserted);
+            setDLLNODEnext(temp, inserted);
             }
         
         }
     
     items->size++;
     
+    return inserted;
     }
 
 void *removeDLL(DLL *items,int index)
@@ -148,8 +149,8 @@ void *removeDLL(DLL *items,int index)
     assert(index >= 0);
     assert(index < items->size);
 
-    NODE *temp = 0;
-    NODE *deleted = 0;
+    DLLNODE *temp = 0;
+    DLLNODE *deleted = 0;
     void *val = 0;
 
     temp = items->head;
@@ -157,9 +158,9 @@ void *removeDLL(DLL *items,int index)
     if (index == 0) 
         {
         deleted = temp;
-        items->head = getNODEnext(temp);
+        items->head = getDLLNODEnext(temp);
         items->size--;
-        val = getNODEvalue(deleted);
+        val = getDLLNODEvalue(deleted);
         free(deleted);
         return val;
         }
@@ -169,15 +170,15 @@ void *removeDLL(DLL *items,int index)
         if(items->size == 2) 
             {
             items->tail = items->head;
-            setNODEnext(items->tail, 0);
+            setDLLNODEnext(items->tail, 0);
             items->size--;
-            val = getNODEvalue(deleted);
+            val = getDLLNODEvalue(deleted);
             free(deleted);
             return val;
             }
-        val = getNODEvalue(deleted);
+        val = getDLLNODEvalue(deleted);
         items->tail = deleted->prev;
-        setNODEnext(items->tail, 0);
+        setDLLNODEnext(items->tail, 0);
         free(deleted);
         }
     else 
@@ -188,21 +189,21 @@ void *removeDLL(DLL *items,int index)
             count = items->size - 1;
             while (count != index)
                 {
-                temp = getNODEprev(temp);
+                temp = getDLLNODEprev(temp);
                 count--;
                 }
             deleted = temp;
-            val = getNODEvalue(deleted);
-            setNODEnext(getNODEprev(temp), getNODEnext(temp));
+            val = getDLLNODEvalue(deleted);
+            setDLLNODEnext(getDLLNODEprev(temp), getDLLNODEnext(temp));
             if (index == items->size - 2) 
                 {
-                    setNODEprev(items->tail, getNODEprev(temp));
-                    setNODEnext(getNODEprev(temp), items->tail);
+                    setDLLNODEprev(items->tail, getDLLNODEprev(temp));
+                    setDLLNODEnext(getDLLNODEprev(temp), items->tail);
                 }
             else 
                 { 
-                setNODEprev(getNODEnext(temp), getNODEprev(temp));
-                setNODEnext(getNODEprev(temp), getNODEnext(temp));
+                setDLLNODEprev(getDLLNODEnext(temp), getDLLNODEprev(temp));
+                setDLLNODEnext(getDLLNODEprev(temp), getDLLNODEnext(temp));
                 }
             free(deleted);
             }
@@ -210,13 +211,13 @@ void *removeDLL(DLL *items,int index)
             {
             while(count <= index - 1)
                 {
-                temp = getNODEnext(temp);
+                temp = getDLLNODEnext(temp);
                 count++;
                 }
             deleted = temp;
-            val = getNODEvalue(deleted);
-            setNODEnext(getNODEprev(temp), getNODEnext(temp));
-            setNODEprev(getNODEnext(temp), getNODEprev(temp));
+            val = getDLLNODEvalue(deleted);
+            setDLLNODEnext(getDLLNODEprev(temp), getDLLNODEnext(temp));
+            setDLLNODEprev(getDLLNODEnext(temp), getDLLNODEprev(temp));
             free(deleted);
             }
         }
@@ -238,8 +239,8 @@ void unionDLL(DLL *recipient,DLL *donor)
         }
     else
         {
-        setNODEnext(recipient->tail, donor->head);
-        setNODEprev(donor->head, recipient->tail);
+        setDLLNODEnext(recipient->tail, donor->head);
+        setDLLNODEprev(donor->head, recipient->tail);
         recipient->tail = donor->tail;
         }
     recipient->size += donor->size;
@@ -253,11 +254,11 @@ void *getDLL(DLL *items,int index)
     assert(index < items->size);
     assert(index >= 0);
 
-    NODE *temp = 0;
+    DLLNODE *temp = 0;
     temp = items->head;
     int count = 0;
-    if (index == 0) { return getNODEvalue(items->head); }
-    else if (index == items->size - 1) { return getNODEvalue(items->tail); }
+    if (index == 0) { return getDLLNODEvalue(items->head); }
+    else if (index == items->size - 1) { return getDLLNODEvalue(items->tail); }
     else
         {
         if (index > (items->size / 2) && items->size > 3)
@@ -266,7 +267,7 @@ void *getDLL(DLL *items,int index)
             count = items->size - 1;
             while (count != index)
                 {
-                temp = getNODEprev(temp);
+                temp = getDLLNODEprev(temp);
                 count--;
                 }
             }
@@ -274,11 +275,11 @@ void *getDLL(DLL *items,int index)
             {
                 while(count != index)
                 {
-                temp = getNODEnext(temp);
+                temp = getDLLNODEnext(temp);
                 count++;
                 }
             }
-        return getNODEvalue(temp);
+        return getDLLNODEvalue(temp);
         }
     }
 
@@ -289,21 +290,21 @@ void *setDLL(DLL *items,int index,void *value)
     assert(index <= items->size);
     assert(index >= 0);
         
-    NODE *temp = 0;
+    DLLNODE *temp = 0;
     temp = items->head;
     void *val = 0;
 
     int count = 0;
     if (index == 0) 
         {
-        val = getNODEvalue(items->head);
-        setNODEvalue(items->head, value);
+        val = getDLLNODEvalue(items->head);
+        setDLLNODEvalue(items->head, value);
         return val;
         }
     else if (index == items->size) 
         {
-        NODE *inserted = newNODE(value, NULL, items->tail);
-        setNODEnext(items->tail, inserted);
+        DLLNODE *inserted = newDLLNODE(value, NULL, items->tail);
+        setDLLNODEnext(items->tail, inserted);
         items->tail = inserted;
         items->size++;
         return 0;
@@ -316,7 +317,7 @@ void *setDLL(DLL *items,int index,void *value)
             count = items->size - 1;
             while (count != index)
                 {
-                temp = getNODEprev(temp);
+                temp = getDLLNODEprev(temp);
                 count--;
                 }
             }
@@ -324,12 +325,12 @@ void *setDLL(DLL *items,int index,void *value)
             {
             while(count != index)
                 {
-                temp = getNODEnext(temp);
+                temp = getDLLNODEnext(temp);
                 count++;
                 }
             }
-        val = getNODEvalue(temp);
-        setNODEvalue(temp, value);
+        val = getDLLNODEvalue(temp);
+        setDLLNODEvalue(temp, value);
         }
     return val;
     }
@@ -344,13 +345,13 @@ void displayDLL(DLL *items,FILE *fp)
     fprintf(fp, "{{");
     if (items->size != 0)
         {
-        NODE *temp = 0;
+        DLLNODE *temp = 0;
         temp = items->head;
         while (temp != 0)
             {
             items->display(temp->value, fp);
             if(temp->next != 0) { fprintf(fp, ","); }
-            temp = getNODEnext(temp);
+            temp = getDLLNODEnext(temp);
             }
         }   
     fprintf(fp, "}}");
@@ -360,7 +361,7 @@ void displayDLL(DLL *items,FILE *fp)
 
 void displayDLLdebug(DLL *items,FILE *fp)
     {
-    NODE *temp = 0;
+    DLLNODE *temp = 0;
     fprintf(fp, "head->{{");
     if (items->size != 0) 
         {
@@ -369,7 +370,7 @@ void displayDLLdebug(DLL *items,FILE *fp)
             {
             items->display(temp->value, fp);
             if(temp->next != NULL) { fprintf(fp, ","); }
-            temp = getNODEnext(temp);
+            temp = getDLLNODEnext(temp);
             }
         }
     fprintf(fp, "}},tail->{{");
@@ -383,56 +384,56 @@ void displayDLLdebug(DLL *items,FILE *fp)
 
 void freeDLL(DLL *items)
     {
-    NODE *temp = 0;
-    NODE *deleted = 0;
+    DLLNODE *temp = 0;
+    DLLNODE *deleted = 0;
 
     temp = items->head;
     while(temp != 0)
         {
         deleted = temp;
-        temp = getNODEnext(temp);
-        freeNODE(deleted, items->free);
+        temp = getDLLNODEnext(temp);
+        freeDLLNODE(deleted, items->free);
         }
     free(items);
     return;
     }
 
-//sets the head and tail to null, the size to zero. Only freeing of list nodes, not values, is to be done. 
+//sets the head and tail to null, the size to zero. Only freeing of list DLLNODEs, not values, is to be done. 
 void removeDLLall(DLL *items)
     {
-    NODE *temp = 0;
-    NODE *deleted = 0;
+    DLLNODE *temp = 0;
+    DLLNODE *deleted = 0;
 
     temp = items->head;
     while(temp != 0)
         {
         deleted = temp;
-        temp = getNODEnext(temp);
+        temp = getDLLNODEnext(temp);
         free(deleted);
         }
     items->head = 0;
     items->tail = 0;
     }
 
-//removes the given node from the linked list, return the value of the removed node 
-void *removeDLLnode(DLL *items, void *n)
+//removes the given DLLNODE from the linked list, return the value of the removed DLLNODE 
+void *removeDLLDLLNODE(DLL *items, void *n)
     {
-    NODE *temp = 0;
+    DLLNODE *temp = 0;
     temp = items->head;
-    while(getNODEvalue(temp) != n || temp == items->tail) //??maybe use compare?
+    while(getDLLNODEvalue(temp) != n || temp == items->tail) //??maybe use compare?
         {
-        temp = getNODEnext(temp);
+        temp = getDLLNODEnext(temp);
         }
 
-    if (temp == items->tail && getNODEvalue(temp) != n) { return 0; } //??maybe use compare?
-    NODE *next = 0;
-    NODE *prev = 0;
+    if (temp == items->tail && getDLLNODEvalue(temp) != n) { return 0; } //??maybe use compare?
+    DLLNODE *next = 0;
+    DLLNODE *prev = 0;
     next = temp->next;
     prev = temp->prev;
-    setNODEprev(next, prev);
-    setNODEnext(prev, next);
+    setDLLNODEprev(next, prev);
+    setDLLNODEnext(prev, next);
 
-    void *val = getNODEvalue(temp);
+    void *val = getDLLNODEvalue(temp);
     free(temp);
     return val;
     }
@@ -455,18 +456,18 @@ int moreDLL(DLL *items)
 
 void nextDLL(DLL *items)
     {
-    assert(items->curr != 0)
-    items->curr = getNODEnext(items->curr);
+    assert(items->curr != 0);
+    items->curr = getDLLNODEnext(items->curr);
     }
 
 void prevDLL(DLL *items)
     {
-    assert(items->curr != 0)
-    items->curr = getNODEprev(items->curr);
+    assert(items->curr != 0);
+    items->curr = getDLLNODEprev(items->curr);
     }
 
 void *currentDLL(DLL *items)
     {
-    assert(items->curr != 0)
-    return getNODEvalue(items->curr);
+    assert(items->curr != 0);
+    return getDLLNODEvalue(items->curr);
     }

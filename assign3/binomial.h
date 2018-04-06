@@ -13,8 +13,8 @@ extern BINOMIAL *newBINOMIAL(
 extern void *insertBINOMIAL(BINOMIAL *b,void *value);
 extern int sizeBINOMIAL(BINOMIAL *b);
 extern void unionBINOMIAL(BINOMIAL *r,BINOMIAL *d);
-extern void deleteBINOMIAL(BINOMIAL *b,void *node);
-extern void decreaseKeyBINOMIAL(BINOMIAL *b,void *node,void *value);
+extern void deleteBINOMIAL(BINOMIAL *b,void *n);
+extern void decreaseKeyBINOMIAL(BINOMIAL *b,void *n,void *value);
 extern void *peekBINOMIAL(BINOMIAL *b);
 extern void *extractBINOMIAL(BINOMIAL *b);
 extern void statisticsBINOMIAL(BINOMIAL *b,FILE *fp);
