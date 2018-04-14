@@ -416,25 +416,38 @@ void removeDLLall(DLL *items)
     }
 
 //removes the given DLLNODE from the linked list, return the value of the removed DLLNODE 
-void *removeDLLDLLNODE(DLL *items, void *n)
+void *removeDLLnode(DLL *items, void *n)
     {
-    DLLNODE *temp = 0;
-    temp = items->head;
-    while(getDLLNODEvalue(temp) != n || temp == items->tail) //??maybe use compare?
-        {
-        temp = getDLLNODEnext(temp);
-        }
-
-    if (temp == items->tail && getDLLNODEvalue(temp) != n) { return 0; } //??maybe use compare?
-    DLLNODE *next = 0;
-    DLLNODE *prev = 0;
-    next = temp->next;
-    prev = temp->prev;
-    setDLLNODEprev(next, prev);
-    setDLLNODEnext(prev, next);
-
+    DLLNODE *temp = n;
     void *val = getDLLNODEvalue(temp);
-    free(temp);
+
+    DLLNODE *next = temp->next;
+    DLLNODE *prev = temp->prev;
+    if (temp == items->head) 
+        {
+        if (items->size == 1) 
+            {
+            items->head = NULL;
+            items->size--;
+            return val;
+            }
+        else items->head = next;
+        }
+    if (temp == items->tail)
+        {
+        if (items->size == 1) 
+            {
+            items->tail = NULL;
+            items->size--;
+            return val;
+            }
+        else items->tail = prev;
+        }
+    if (next != 0) setDLLNODEprev(next, prev);
+    if (prev != 0) setDLLNODEnext(prev, next);
+
+    //free(temp);
+    items->size--;
     return val;
     }
  

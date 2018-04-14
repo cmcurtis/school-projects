@@ -7,11 +7,17 @@
 #include "binomial.h"
 #include "queue.h"
 
+static void bDisplay(void *b, FILE *fp);
+static void bFree(void *b);
+
 typedef struct bnode
     {
     void *value;
+    void *owner;
     struct bnode *parent;
     DLL *childList;
+    void (*display)();
+    void (*free)();
     }bNODE;
 
 bNODE *newBNODE(void *v, void (*d)(void *,FILE *), void (*f)(void *))
@@ -19,10 +25,25 @@ bNODE *newBNODE(void *v, void (*d)(void *,FILE *), void (*f)(void *))
     bNODE *n = malloc(sizeof(bNODE));
 
     n->value = v;
+    n->owner = 0;
     n->parent = 0;
-    n->childList = newDLL(d, f);
-
+    n->childList = newDLL(bDisplay, bFree);
+    n->display = d;
+    n->free = f;
     return n;
+    }
+
+void bDisplay(void *b, FILE *fp)
+    {
+    bNODE *x = b;
+    x->display(x->value, fp);
+    }
+
+void bFree(void *b)
+    {
+    bNODE *x = b;
+    if (x->free != 0) { x->free(x->value); }
+    free(x);
     }
 
 static bNODE* combine(BINOMIAL *b, bNODE *x, bNODE *y);
@@ -45,9 +66,9 @@ BINOMIAL* newBINOMIAL(void (*d)(void *,FILE *), int (*c)(void *,void *), void (*
     {
     BINOMIAL *b = malloc(sizeof(BINOMIAL));
 
-    b->rootList = newDLL(d, f); //?? DIFF DISPLAY?
+    b->rootList = newDLL(bDisplay, bFree); //?? DIFF DISPLAY?
     b->size = 0;
-    b->extremeVal = 0;
+    b->extremeVal = NULL;
     b->display = d;
     b->compare = c;
     b->update = u;
@@ -58,11 +79,15 @@ BINOMIAL* newBINOMIAL(void (*d)(void *,FILE *), int (*c)(void *,void *), void (*
 
 void *insertBINOMIAL(BINOMIAL *b, void *value)
     {
-    bNODE *n = newBNODE(value, b->display, b->free); //set a variable n to a new node containing value v
+    bNODE *n = newBNODE(value, b->display, b->free); 
     n->parent = n;
-    insertDLL(b->rootList, 0, n); // insert n into the rootlist of b (via linked-list insert)
+    n->owner = insertDLL(b->rootList, 0, n); // insert n into the rootlist of b (via linked-list insert)
     b->size = sizeBINOMIAL(b) + 1;
+    // printf("INSERT :");
+    // bDisplay(n, stdout);
+    // printf("\n");
     consolidate(b);
+    //displayBINOMIAL(b, stdout);
     return n;
     }
 
@@ -104,20 +129,22 @@ void *peekBINOMIAL(BINOMIAL *b)
 void *extractBINOMIAL(BINOMIAL *b)
     {
     bNODE *y = b->extremeVal;
-    void *deleted = removeDLLnode(b->rootList, y); 
+    bNODE *deleted = removeDLLnode(b->rootList, y->owner); 
     
     firstDLL(y->childList);
-    bNODE *temp = currentDLL(y->childList);
-    while(temp != 0)
+    bNODE *temp = 0;
+    while(moreDLL(y->childList) != 0)
         {
+        temp = currentDLL(y->childList);
         temp->parent = temp;
         nextDLL(y->childList);
-        temp = currentDLL(y->childList);
         }
+    unionDLL(y->childList, b->rootList);
     unionDLL(b->rootList, y->childList);
     consolidate(b);
     b->size -= 1;
-    return deleted;
+    freeDLL(y->childList);
+    return deleted->value;
     }
 
 void statisticsBINOMIAL(BINOMIAL *b,FILE *fp)
@@ -138,63 +165,60 @@ void displayBINOMIAL(BINOMIAL *b,FILE *fp)
     fprintf(fp, "rootlist:");
     int count = 0;
     firstDLL(b->rootList);
-    bNODE *temp = currentDLL(b->rootList);
-    while (temp != 0)
+    bNODE *temp = 0; 
+    while (moreDLL(b->rootList) == 1)
         {
-        if (count == sizeDLL(temp->childList))
+        temp = currentDLL(b->rootList); 
+        if (count == sizeDLL(temp->childList))  
             {
             fprintf(fp, " "); 
-            b->display(temp, fp); 
+            temp->display(temp->value, fp);
+            if (temp == b->extremeVal && temp != NULL) { fprintf(fp, "*"); }
+            nextDLL(b->rootList);                                    
             }
-        else { fprintf(fp, " NULL"); }
-        if (temp == b->extremeVal) { fprintf(fp, "*"); }
+        else 
+            {
+            fprintf(fp, " NULL"); 
+            }
         count++;
-        nextDLL(b->rootList);
-        temp = currentDLL(b->rootList);
         }
+    fprintf(fp, "\n");
     }
 
-//The method displays the entire heap, using a level-order traversal of each subheap in turn. Suppose the values 0 
-//through 12 were inserted, in order, into an empty heap. The display of that heap would look like: 
-//     {{12,8,0}}
-//     {{9,10}}{{1,2,4}}
-//     {{11}}{{3}}{{5,6}}
-//     {{7}}
-// Note that the rootlist and all the child values are always ordered from low degree to high degree.
 void displayBINOMIALdebug(BINOMIAL *b,FILE *fp)
     {
     displayDLL(b->rootList, fp);
     //print childLists if they exist;
     firstDLL(b->rootList);
-    bNODE *root = currentDLL(b->rootList);
-    QUEUE *Q1 = newQUEUE(0,0);
-    QUEUE *Q2 = newQUEUE(0,0);
+    bNODE *root = 0;
+    QUEUE *Q1 = newQUEUE(bDisplay,0);
+    QUEUE *Q2 = newQUEUE(bDisplay,0);
     
-    while(root != 0)
+    while(moreDLL(b->rootList) != 0)
         {
+        root = currentDLL(b->rootList);
         enqueue(Q1, root);
         nextDLL(b->rootList);
-        root = currentDLL(b->rootList);
         }
-    
+    fprintf(fp, "\n");
     while(sizeQUEUE(Q1) != 0 || sizeQUEUE(Q2) != 0)
         {
         while(sizeQUEUE(Q1) != 0)
             {
             bNODE *current = peekQUEUE(Q1);
+            
             if(current->childList != 0) 
                 {
                 firstDLL(current->childList);
-                bNODE *temp1 = currentDLL(current->childList);
-                while(temp1 != 0)
-                    {
+                bNODE *temp1 = 0;
+                while(moreDLL(current->childList) != 0)
+                    {   
+                    temp1 = currentDLL(current->childList);
                     enqueue(Q2, temp1);
                     nextDLL(current->childList);
-                    temp1 = currentDLL(current->childList);
                     }
                 }
-            if (current->childList != 0) { displayDLL(current->childList, fp); }
-            if (sizeQUEUE(Q1) > 1) { fprintf(fp, " "); }
+            if (sizeDLL(current->childList) != 0) { displayDLL(current->childList, fp); }
             dequeue(Q1);
             }
         fprintf(fp, "\n");
@@ -205,19 +229,18 @@ void displayBINOMIALdebug(BINOMIAL *b,FILE *fp)
             if(second->childList != 0) 
                 {
                 firstDLL(second->childList);
-                bNODE *temp2 = currentDLL(second->childList);
-                while(temp2 != 0)
+                bNODE *temp2 = 0;
+                while(moreDLL(second->childList))
                     {
+                    temp2 = currentDLL(second->childList);
                     enqueue(Q1, temp2);
                     nextDLL(second->childList);
-                    temp2 = currentDLL(second->childList);
                     }
                 }
-            if (second->childList != 0) { displayDLL(second->childList, fp); }
-            if (sizeQUEUE(Q2) > 1) { fprintf(fp, " "); }
+            if (sizeDLL(second->childList) != 0) { displayDLL(second->childList, fp); }
             dequeue(Q2);
             }
-        fprintf(fp, "\n");
+        if (sizeQUEUE(Q1) != 0) { fprintf(fp, "\n"); }
         }
     freeQUEUE(Q1);
     freeQUEUE(Q2);
@@ -225,7 +248,61 @@ void displayBINOMIALdebug(BINOMIAL *b,FILE *fp)
 
 void freeBINOMIAL(BINOMIAL *b)
     {
+    firstDLL(b->rootList);
+    firstDLL(b->rootList);
+    bNODE *root = 0;
+    QUEUE *Q1 = newQUEUE(bDisplay,0);
+    QUEUE *Q2 = newQUEUE(bDisplay,0);
+    
+    while(moreDLL(b->rootList) != 0)
+        {
+        root = currentDLL(b->rootList);
+        enqueue(Q1, root);
+        nextDLL(b->rootList);
+        }
+    while(sizeQUEUE(Q1) != 0 || sizeQUEUE(Q2) != 0)
+        {
+        while(sizeQUEUE(Q1) != 0)
+            {
+            bNODE *current = peekQUEUE(Q1);
+            
+            if(current->childList != 0) 
+                {
+                firstDLL(current->childList);
+                bNODE *temp1 = 0;
+                while(moreDLL(current->childList) != 0)
+                    {   
+                    temp1 = currentDLL(current->childList);
+                    enqueue(Q2, temp1);
+                    nextDLL(current->childList);
+                    }
+                }
+            if (sizeDLL(current->childList) != 0) { freeDLL(current->childList, fp); }
+            dequeue(Q1);
+            }
+        if (sizeQUEUE(Q2) == 0) { break; }
+        while(sizeQUEUE(Q2) != 0)
+            {
+            bNODE *second = peekQUEUE(Q2); 
+            if(second->childList != 0) 
+                {
+                firstDLL(second->childList);
+                bNODE *temp2 = 0;
+                while(moreDLL(second->childList))
+                    {
+                    temp2 = currentDLL(second->childList);
+                    enqueue(Q1, temp2);
+                    nextDLL(second->childList);
+                    }
+                }
+            if (sizeDLL(second->childList) != 0) { freeDLL(second->childList, fp); }
+            dequeue(Q2);
+            }
+        }
+    freeQUEUE(Q1);
+    freeQUEUE(Q2);
 
+    free(b);
     }
 
 
@@ -234,15 +311,15 @@ void freeBINOMIAL(BINOMIAL *b)
 // The combine routine takes two subheaps and makes the subheap, whose root is less extreme, a child of the other: 
 bNODE* combine(BINOMIAL *b, bNODE *x, bNODE *y) //returns binomial heap node
     {
-    if (b->compare(x->value, y->value) >= 0)
+    if (b->compare(x->value, y->value) < 0) 
         {
-        insertDLL(x->childList, sizeDLL(x->childList), y);
+        y->owner = insertDLL(x->childList, sizeDLL(x->childList), y);
         y->parent = x;
         return x;
         }
     else
         {
-        insertDLL(y->childList, sizeDLL(y->childList), x);
+        x->owner = insertDLL(y->childList, sizeDLL(y->childList), x);
         x->parent = y;
         return y;
         }
@@ -251,29 +328,35 @@ bNODE* combine(BINOMIAL *b, bNODE *x, bNODE *y) //returns binomial heap node
 void consolidate(BINOMIAL *b)
     {
     int size = (log(sizeBINOMIAL(b))/log(2)) + 1;
-    bNODE **D = malloc(sizeof(bNODE)*size);
-    int i;
-    for (i = 0; i < size; i++) { D[i] = 0; }
+    bNODE **D = malloc(size*sizeof(bNODE));
+    for (int i = 0; i < size; i++) { D[i] = NULL; } //initialize array to null.
 
-    while (sizeDLL(b->rootList) != 0)
+    int j = 0;
+    bNODE *temp = NULL;
+    while(sizeDLL(b->rootList) != 0)
         {
         firstDLL(b->rootList);
-        bNODE *n = currentDLL(b->rootList); //set a variable spot to the head node in b's root list
-        if (n != 0) //remove spot from the root list (via linked-list remove)
-            { 
-            void *temp = removeDLLnode(b->rootList, n); 
-            n = temp;
-            }
-        updateConsolidationArray(b, D, n);
-        }
+        temp = currentDLL(b->rootList);
 
-    b->extremeVal = 0;
-    for (i = 0; i < size; ++i)
-        {
-        if (D[i] != 0)
+        j = sizeDLL(temp->childList);
+        if (D[j] != NULL) 
             {
-            insertDLL(b->rootList, 0, D[i]);
-            if (b->compare(D[i], b->extremeVal) > 0) { b->extremeVal = D[i]; }
+            bNODE *combined = removeDLLnode(b->rootList, temp->owner);
+            updateConsolidationArray(b, D, combined);
+            }
+        else { D[j] = removeDLLnode(b->rootList, temp->owner); }
+        }
+    
+    b->extremeVal = NULL;
+    for (int k = 0; k < size; ++k)
+        {
+        if (D[k] != NULL) 
+            {
+            D[k]->owner = insertDLL(b->rootList, sizeDLL(b->rootList), D[k]); 
+            if (b->extremeVal == NULL || b->compare(b->extremeVal->value,D[k]->value) > 0)
+                {
+                b->extremeVal = D[k];
+                }
             }
         }
     free(D);
@@ -281,14 +364,17 @@ void consolidate(BINOMIAL *b)
 
 void updateConsolidationArray(BINOMIAL *b, bNODE **D, bNODE *n)
     {
-    int i = sizeDLL(n->childList);   // set a variable degree to the number of spot's children (using linked-list size)
-    while (D[i] != 0)
+    int j = sizeDLL(n->childList);
+    
+    bNODE* temp = 0;
+    while(D[j] != NULL) 
         {
-        n = combine(b, n, D[i]); // combine spot and D[degree], setting spot to the combined subheap
-        D[i] = 0;
-        i++;
+        temp = combine(b, n, D[j]);
+        D[j] = 0;
+        j++;
+        n = temp;
         }
-    D[i] = n;
+    D[j] = n;
     }
 
 bNODE* bubbleUp(BINOMIAL *b, bNODE *n)
