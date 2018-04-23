@@ -9,12 +9,33 @@
 #include "edge.h"
 #include "avl.h"
 #include "integer.h"
+#include "binomial.h"
+#include "queue.h"
 
 /* options */
 int verbose = 0;
 
 static int processOptions(int,char **);
-void Fatal(char *,...);
+void Fatal(char *,...); 
+
+//static void *PRIMS(BINOMIAL* b, VERTEX* s);
+
+static void update(void *w, void *o)
+    {
+    VERTEX *v = w;
+    setVERTEXowner(v, o);
+    }
+
+static int compareV(void *a,void *b)
+    {
+    VERTEX *x = a;
+    VERTEX *y = b;
+
+    if (getVERTEXkey(x) > getVERTEXkey(y))
+        return 1;
+    else 
+        return -1;
+    }
 
 int
 main(int argc,char **argv)
@@ -35,64 +56,201 @@ main(int argc,char **argv)
 
     AVL* vertexTree = newAVL(displayVERTEX, compareVERTEX, freeVERTEX);
     AVL* edgeTree = newAVL(displayEDGE, compareEDGE, freeEDGE);
+    BINOMIAL* heap = newBINOMIAL(displayVERTEX, compareVERTEX, update, freeVERTEX);
+
     int n1 = 0;
     int n2 = 0;
     int weight = 0; 
+    char *separator = 0; 
 
     n1 = readInt(graph);
     n2 = readInt(graph);
     weight = readInt(graph);
-
-    int firstVertex = n1;
+    separator = readToken(graph);
     
+    int firstVertex = n1;
+
+    //READ IN GRAPH
     while(!feof(graph))
         {
+        EDGE *w = 0;
+        if(n1 > n2) { w = newEDGE(n1, n2, weight); }
+        else { w = newEDGE(n2, n1, weight); }
         VERTEX *v1 = newVERTEX(n1);
-        VERTEX *v2 = newVERTEX(n2);
-        EDGE *w = newEDGE(n1, n2, weight);
+        if(n1 == firstVertex) { setVERTEXkey(v1, 0); }
         
-        insertVERTEXneighbor(v1, v2);
-        insertVERTEXneighbor(v1, v2);
+        VERTEX *v2 = newVERTEX(n2);
 
         VERTEX *find1 = findAVL(vertexTree, v1);
         VERTEX *find2 = findAVL(vertexTree, v2);
         EDGE *findW = findAVL(edgeTree, w);
 
-        if(find1 == NULL) 
+        if (n1 == n2 || findW != NULL) 
             {
-            insertAVL(vertexTree, v1);
-            if(find2 == NULL) { insertAVL(vertexTree, v2); }
+            n1 = readInt(graph);
+            n2 = readInt(graph);
+            weight = readInt(graph);
+            separator = readToken(graph);
+            continue;
+            }
+        else
+            {
+            if(find1 == NULL) 
+                {
+                insertAVL(vertexTree, v1);
+                insertVERTEXneighbor(v1, v2);
+                insertVERTEXweight(v1, weight);
+                setVERTEXowner(v1, insertBINOMIAL(heap, v1));
+                }
+            else 
+                {
+                insertVERTEXneighbor(find1, v2);
+                insertVERTEXweight(find1, weight);
+                }
+            if(find2 == NULL) 
+                {
+                insertAVL(vertexTree, v2);
+                insertVERTEXneighbor(v2, v1);
+                insertVERTEXweight(v2, weight);
+                setVERTEXowner(v2, insertBINOMIAL(heap, v2));
+                }
             else 
                 {
                 insertVERTEXneighbor(find2, v1);
                 insertVERTEXweight(find2, weight); 
                 }
-            }
-        else
-            {
-            insertVERTEXneighbor(find1, v2);
-            insertVERTEXweight(find1, weight);
-            if(find2 == NULL) { insertAVL(vertexTree, v2); }
-            else 
+            if (findW == NULL)
                 {
-                insertVERTEXneighbor(find2, find1);
-                insertVERTEXweight(find2, weight);
+                insertAVL(edgeTree, w);
                 }
+            n1 = readInt(graph);
+            n2 = readInt(graph);
+            weight = readInt(graph);
+            separator = readToken(graph);
             }
+        }
+    free(separator);
 
-        if (findW == NULL)
+    VERTEX *start = peekBINOMIAL(heap);
+    //RUN PRIMS
+    VERTEX *u = 0;
+    VERTEX *v = 0;
+    INTEGER *w = 0;
+    VERTEX *p = 0;
+    DLL *n = 0;
+    DLL *m = 0;
+    
+
+    displayBINOMIALdebug(heap, stdout);
+    while(sizeBINOMIAL(heap) != 0)
+        {
+        u = extractBINOMIAL(heap);
+        p = getVERTEXpred(u);
+        
+        if (p != NULL) { insertVERTEXsuccessor(p, u); }
+    
+        setVERTEXflag(u, 1);
+        displayDLL(getVERTEXneighbors(u), stdout);
+        n = getVERTEXneighbors(u);
+        m = getVERTEXweights(u);
+        firstDLL(n);
+        firstDLL(m);
+        while(moreDLL(n))
             {
-            insertAVL(edgeTree, w);
+            v = currentDLL(n);
+            w = currentDLL(m);
+            if(getVERTEXflag(v) == 0 && compareINTEGER(w, newINTEGER(getVERTEXkey(v))) > 0)
+                {
+                // printf("VERTEX TO BE UPDATED: ");
+                // displayVERTEX(v, stdout);
+                // printf("::");
+                setVERTEXpred(v, u);
+                // printf("KEY TO BE UPDATED TO: ");
+                // displayINTEGER(w, stdout);
+                // printf("\n");
+                //printf("::");
+                setVERTEXkey(v, getINTEGER(w));
+                decreaseKeyBINOMIAL(heap, getVERTEXowner(v), w);
+                // printf("NEW KEY : %d \n", getVERTEXkey(v));
+                }
+            nextDLL(n);
+            nextDLL(m);
             }
-        else { freeEDGE(w); }
-
-        n1 = readInt(graph);
-        n2 = readInt(graph);
-        weight = readInt(graph);
+        
         }
 
+    displayDLL(getVERTEXsuccessors(start), stdout);
+    //PRINT MST
+    BINOMIAL *printer = newBINOMIAL(displayVERTEX, compareV, 0, freeVERTEX);
 
-
+    QUEUE *Q1 = newQUEUE(0,0);
+    QUEUE *Q2 = newQUEUE(0,0);
+    enqueue(Q1, start);
+    int count = 0;
+    int first = 0;
+    while(sizeQUEUE(Q1) != 0 || sizeQUEUE(Q2) != 0)
+        {
+        while(sizeQUEUE(Q1) != 0)
+            {
+            if (first == 0) { printf("%d: ", count); }
+            VERTEX *current = peekQUEUE(Q1);
+            if(getVERTEXsuccessors(current) != 0) 
+                {
+                firstDLL(getVERTEXsuccessors(current));
+                VERTEX *temp1 = 0;
+                while(moreDLL(getVERTEXsuccessors(current)) != 0)
+                    {   
+                    temp1 = currentDLL(getVERTEXsuccessors(current));
+                    insertBINOMIAL(printer, temp1);
+                    nextDLL(getVERTEXsuccessors(current));
+                    }
+                while(sizeBINOMIAL(printer) != 0) 
+                    {
+                    VERTEX *ordered1 = extractBINOMIAL(printer);
+                    enqueue(Q2, ordered1);
+                    }
+                }
+            displayVERTEX(current, stdout);
+            if (sizeQUEUE(Q1) > 1) { printf(" "); }
+            dequeue(Q1);
+            first++;
+            }
+        printf("\n");
+        count++;
+        first = 0;
+        if (sizeQUEUE(Q2) == 0) { break; }
+        while(sizeQUEUE(Q2) != 0)
+            {
+            if (first == 0) { printf("%d: ", count); }
+            VERTEX *second = peekQUEUE(Q2); 
+            if(getVERTEXsuccessors(second) != 0) 
+                {
+                firstDLL(getVERTEXsuccessors(second));
+                VERTEX *temp2 = 0;
+                while(moreDLL(getVERTEXsuccessors(second)) != 0)
+                    {   
+                    temp2 = currentDLL(getVERTEXsuccessors(second));
+                    insertBINOMIAL(printer, temp2);
+                    nextDLL(getVERTEXsuccessors(second));
+                    }
+                while(sizeBINOMIAL(printer) != 0) 
+                    {
+                    VERTEX *temp2 = extractBINOMIAL(printer);
+                    enqueue(Q1, temp2);
+                    }
+                }
+            displayVERTEX(second, stdout);
+            if (sizeQUEUE(Q2) > 1) { printf(" "); }
+            
+            dequeue(Q2);
+            first++;
+            }
+        first = 0;
+        printf("\n");
+        count++;
+        }
+    freeQUEUE(Q1);
+    freeQUEUE(Q2);
     }
 
 void
@@ -146,3 +304,9 @@ processOptions(int argc, char **argv)
 
     return argIndex;
     }
+
+// void *PRIMS(BINOMIAL* b, VERTEX* s)
+//     {
+//     setVERTEXkey(s, 0);
+
+//     }

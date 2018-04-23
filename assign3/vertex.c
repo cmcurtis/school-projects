@@ -45,6 +45,7 @@ newVERTEX(int n)
     v->neighbors = newDLL(displayVERTEX,0);
     v->weights = newDLL(displayINTEGER,freeINTEGER);
     v->successors = newDLL(displayVERTEX,0);
+    v->owner = 0;
     return v;
     }
 

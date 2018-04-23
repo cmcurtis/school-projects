@@ -429,6 +429,7 @@ void *removeDLLnode(DLL *items, void *n)
             {
             items->head = NULL;
             items->size--;
+            free(temp);
             return val;
             }
         else items->head = next;
@@ -439,6 +440,7 @@ void *removeDLLnode(DLL *items, void *n)
             {
             items->tail = NULL;
             items->size--;
+            free(temp);
             return val;
             }
         else items->tail = prev;
@@ -446,7 +448,7 @@ void *removeDLLnode(DLL *items, void *n)
     if (next != 0) setDLLNODEprev(next, prev);
     if (prev != 0) setDLLNODEnext(prev, next);
 
-    //free(temp);
+    free(temp);
     items->size--;
     return val;
     }

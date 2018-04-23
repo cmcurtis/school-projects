@@ -19,11 +19,11 @@ test-bst : test-bst.o integer.o sll.o queue.o bst.o
 test-avl : test-avl.o integer.o sll.o queue.o bst.o avl.o
 		gcc $(LOPTS) test-avl.o integer.o sll.o queue.o bst.o avl.o -o test-avl
 
-test-binomial : test-binomial.o binomial.o queue.o sll.o integer.o dll.o 
+test-binomial : test-binomial.o binomial.o queue.o sll.o integer.o dll.o
 		gcc $(LOPTS) test-binomial.o binomial.o queue.o sll.o integer.o dll.o -lm -o test-binomial 
 
-prim : prim.o integer.o scanner.o sll.o queue.o bst.o dll.o avl.o edge.o vertex.o
-		gcc $(LOPTS) prim.o integer.o scanner.o sll.o queue.o bst.o dll.o avl.o edge.o vertex.o -o prim
+prim : prim.o integer.o scanner.o sll.o queue.o bst.o dll.o avl.o edge.o binomial.o vertex.o
+		gcc $(LOPTS) prim.o integer.o scanner.o sll.o queue.o bst.o dll.o avl.o edge.o binomial.o vertex.o -lm -o prim
 
 test-sll.o : test-sll.c sll.h integer.h
 		gcc $(OOPTS) test-sll.c
@@ -46,14 +46,11 @@ prim.o : prim.c integer.h scanner.h sll.h queue.h bst.h binomial.h avl.h dll.h v
 avl.o : avl.c bst.h queue.h sll.h
 		gcc $(OOPTS) avl.c
 
-binomial.o : binomial.c dll.h
+binomial.o : binomial.c dll.h queue.h sll.h
 		gcc $(OOPTS) binomial.c
 
 bst.o : bst.c bst.h queue.h sll.h
 		gcc $(OOPTS) bst.c
-
-stack.o : stack.c stack.h dll.h
-		gcc $(OOPTS) stack.c
 
 queue.o : queue.c queue.h sll.h
 		gcc $(OOPTS) queue.c

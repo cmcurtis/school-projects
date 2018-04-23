@@ -4,8 +4,8 @@
 #include <math.h>
 
 #include "dll.h"
-#include "binomial.h"
 #include "queue.h"
+#include "binomial.h"
 
 static void bDisplay(void *b, FILE *fp);
 static void bFree(void *b);
@@ -43,6 +43,7 @@ void bFree(void *b)
     {
     bNODE *x = b;
     if (x->free != 0) { x->free(x->value); }
+    freeDLL(x->childList);
     free(x);
     }
 
@@ -66,7 +67,7 @@ BINOMIAL* newBINOMIAL(void (*d)(void *,FILE *), int (*c)(void *,void *), void (*
     {
     BINOMIAL *b = malloc(sizeof(BINOMIAL));
 
-    b->rootList = newDLL(bDisplay, bFree); //?? DIFF DISPLAY?
+    b->rootList = newDLL(bDisplay, bFree); 
     b->size = 0;
     b->extremeVal = NULL;
     b->display = d;
@@ -83,11 +84,7 @@ void *insertBINOMIAL(BINOMIAL *b, void *value)
     n->parent = n;
     n->owner = insertDLL(b->rootList, 0, n); // insert n into the rootlist of b (via linked-list insert)
     b->size = sizeBINOMIAL(b) + 1;
-    // printf("INSERT :");
-    // bDisplay(n, stdout);
-    // printf("\n");
     consolidate(b);
-    //displayBINOMIAL(b, stdout);
     return n;
     }
 
@@ -110,7 +107,7 @@ void deleteBINOMIAL(BINOMIAL *b, void *n)
     {
     decreaseKeyBINOMIAL(b, n, 0);
     void *temp = extractBINOMIAL(b);
-    free(temp);
+    bFree(temp);
     }
 
 void decreaseKeyBINOMIAL(BINOMIAL *b, void *n, void *value)
@@ -128,9 +125,12 @@ void *peekBINOMIAL(BINOMIAL *b)
 
 void *extractBINOMIAL(BINOMIAL *b)
     {
+    assert(b->extremeVal != NULL);
+    
     bNODE *y = b->extremeVal;
     bNODE *deleted = removeDLLnode(b->rootList, y->owner); 
-    
+    void *val = deleted->value;
+
     firstDLL(y->childList);
     bNODE *temp = 0;
     while(moreDLL(y->childList) != 0)
@@ -143,8 +143,9 @@ void *extractBINOMIAL(BINOMIAL *b)
     unionDLL(b->rootList, y->childList);
     consolidate(b);
     b->size -= 1;
-    freeDLL(y->childList);
-    return deleted->value;
+    free(deleted->childList);
+    free(deleted);
+    return val;
     }
 
 void statisticsBINOMIAL(BINOMIAL *b,FILE *fp)
@@ -221,7 +222,7 @@ void displayBINOMIALdebug(BINOMIAL *b,FILE *fp)
             if (sizeDLL(current->childList) != 0) { displayDLL(current->childList, fp); }
             dequeue(Q1);
             }
-        fprintf(fp, "\n");
+        if (sizeQUEUE(Q2) != 0) { fprintf(fp, "\n"); }
         if (sizeQUEUE(Q2) == 0) { break; }
         while(sizeQUEUE(Q2) != 0)
             {
@@ -248,60 +249,7 @@ void displayBINOMIALdebug(BINOMIAL *b,FILE *fp)
 
 void freeBINOMIAL(BINOMIAL *b)
     {
-    firstDLL(b->rootList);
-    firstDLL(b->rootList);
-    bNODE *root = 0;
-    QUEUE *Q1 = newQUEUE(bDisplay,0);
-    QUEUE *Q2 = newQUEUE(bDisplay,0);
-    
-    while(moreDLL(b->rootList) != 0)
-        {
-        root = currentDLL(b->rootList);
-        enqueue(Q1, root);
-        nextDLL(b->rootList);
-        }
-    while(sizeQUEUE(Q1) != 0 || sizeQUEUE(Q2) != 0)
-        {
-        while(sizeQUEUE(Q1) != 0)
-            {
-            bNODE *current = peekQUEUE(Q1);
-            
-            if(current->childList != 0) 
-                {
-                firstDLL(current->childList);
-                bNODE *temp1 = 0;
-                while(moreDLL(current->childList) != 0)
-                    {   
-                    temp1 = currentDLL(current->childList);
-                    enqueue(Q2, temp1);
-                    nextDLL(current->childList);
-                    }
-                }
-            if (sizeDLL(current->childList) != 0) { freeDLL(current->childList, fp); }
-            dequeue(Q1);
-            }
-        if (sizeQUEUE(Q2) == 0) { break; }
-        while(sizeQUEUE(Q2) != 0)
-            {
-            bNODE *second = peekQUEUE(Q2); 
-            if(second->childList != 0) 
-                {
-                firstDLL(second->childList);
-                bNODE *temp2 = 0;
-                while(moreDLL(second->childList))
-                    {
-                    temp2 = currentDLL(second->childList);
-                    enqueue(Q1, temp2);
-                    nextDLL(second->childList);
-                    }
-                }
-            if (sizeDLL(second->childList) != 0) { freeDLL(second->childList, fp); }
-            dequeue(Q2);
-            }
-        }
-    freeQUEUE(Q1);
-    freeQUEUE(Q2);
-
+    freeDLL(b->rootList);
     free(b);
     }
 
