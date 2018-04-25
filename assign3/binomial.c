@@ -57,10 +57,10 @@ struct binomial
     DLL *rootList;
     int size;
     bNODE *extremeVal;
-    void (*display)();
-    int (*compare)();
-    void (*update)();
-    void (*free)();
+    void (*display)(void*, FILE*);
+    int (*compare)(void*, void*);
+    void (*update)(void*, void*);
+    void (*free)(void*);
     };
 
 BINOMIAL* newBINOMIAL(void (*d)(void *,FILE *), int (*c)(void *,void *), void (*u)(void *,void *), void (*f)(void *))
@@ -115,7 +115,21 @@ void decreaseKeyBINOMIAL(BINOMIAL *b, void *n, void *value)
     bNODE *m = n;
     m->value = value;
     bNODE *temp = bubbleUp(b, m);
-    if (b->compare(temp, b->extremeVal) >= 0) { b->extremeVal = temp; }
+    // if (b->extremeVal != NULL)
+    //     {
+    //     // printf("decreasekey comparing ");
+    //     // b->display(b->extremeVal->value, stdout);
+    //     // printf(" with ");
+    //     // b->display(temp->value, stdout);
+    //     // printf("\n");
+    //     }
+    if (b->compare(b->extremeVal->value, temp->value) >= 0) 
+        {
+        // printf("decrease key setting extreme Value to: ");
+        // b->display(temp->value, stdout);
+        // printf("\n");
+        b->extremeVal = temp; 
+        }
     }
 
 void *peekBINOMIAL(BINOMIAL *b)
@@ -155,7 +169,7 @@ void statisticsBINOMIAL(BINOMIAL *b,FILE *fp)
     if (b->size != 0) 
         {
         fprintf(fp, "extreme: ");
-        b->display(b->extremeVal->value);
+        b->display(b->extremeVal->value, stdout);
         fprintf(fp, "\n");
         }
     }
@@ -254,8 +268,6 @@ void freeBINOMIAL(BINOMIAL *b)
     }
 
 
-
-
 // The combine routine takes two subheaps and makes the subheap, whose root is less extreme, a child of the other: 
 bNODE* combine(BINOMIAL *b, bNODE *x, bNODE *y) //returns binomial heap node
     {
@@ -296,13 +308,25 @@ void consolidate(BINOMIAL *b)
         }
     
     b->extremeVal = NULL;
+
     for (int k = 0; k < size; ++k)
         {
         if (D[k] != NULL) 
             {
             D[k]->owner = insertDLL(b->rootList, sizeDLL(b->rootList), D[k]); 
-            if (b->extremeVal == NULL || b->compare(b->extremeVal->value,D[k]->value) > 0)
+            // if (b->extremeVal != NULL)
+            //     {
+            //     printf("comparing ");
+            //     b->display(b->extremeVal->value, stdout);
+            //     printf(" with ");
+            //     b->display(D[k]->value, stdout);
+            //     printf("\n");
+            //     }
+            if (b->extremeVal == NULL || b->compare(b->extremeVal->value, D[k]->value) > 0)
                 {
+                // printf("setting extreme Value to: ");
+                // b->display(D[k]->value, stdout);
+                // printf("\n");
                 b->extremeVal = D[k];
                 }
             }
@@ -330,9 +354,12 @@ bNODE* bubbleUp(BINOMIAL *b, bNODE *n)
     bNODE* p = n->parent;
     if (n == p) return n;
     if (b->compare(n->value,p->value) >= 0) return n;
-    if (b->update != 0) b->update(n->value,p);
-    if (b->update != 0) b->update(p->value,n);
-    bNODE* temp = n->value;
+    if (b->update != 0) 
+        {
+        b->update(n->value,p);
+        b->update(p->value,n);
+        }
+    void* temp = n->value;
     n->value = p->value;
     p->value = temp;
     return bubbleUp(b, p);
