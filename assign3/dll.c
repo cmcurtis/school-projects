@@ -445,12 +445,15 @@ void *removeDLLnode(DLL *items, void *n)
             }
         else items->tail = prev;
         }
-    if (temp == items->current)
-        {
-        nextDLL(items);
-        }
+
     if (next != 0) setDLLNODEprev(next, prev);
     if (prev != 0) setDLLNODEnext(prev, next);
+
+    if (temp == items->curr)
+        {
+        if (next != 0) nextDLL(items);
+        else prevDLL(items);
+        }
 
     free(temp);
     items->size--;
