@@ -162,6 +162,7 @@ void *removeDLL(DLL *items,int index)
         items->size--;
         val = getDLLNODEvalue(deleted);
         free(deleted);
+        //if(items->curr == temp) { items->curr = items->head; }
         return val;
         }
     else if (index == items->size - 1)
@@ -173,11 +174,13 @@ void *removeDLL(DLL *items,int index)
             setDLLNODEnext(items->tail, 0);
             items->size--;
             val = getDLLNODEvalue(deleted);
+            //if(items->curr == temp) { items->curr = items->head; }
             free(deleted);
             return val;
             }
         val = getDLLNODEvalue(deleted);
         items->tail = deleted->prev;
+        //if(items->curr == temp) { items->curr = items->tail; }
         setDLLNODEnext(items->tail, 0);
         free(deleted);
         }
@@ -205,6 +208,7 @@ void *removeDLL(DLL *items,int index)
                 setDLLNODEprev(getDLLNODEnext(temp), getDLLNODEprev(temp));
                 setDLLNODEnext(getDLLNODEprev(temp), getDLLNODEnext(temp));
                 }
+            //if(items->curr == temp) { nextDLL(items); }
             free(deleted);
             }
         else
@@ -216,6 +220,7 @@ void *removeDLL(DLL *items,int index)
                 }
             deleted = temp;
             val = getDLLNODEvalue(deleted);
+            //if(items->curr == temp) { nextDLL(items); }
             setDLLNODEnext(getDLLNODEprev(temp), getDLLNODEnext(temp));
             setDLLNODEprev(getDLLNODEnext(temp), getDLLNODEprev(temp));
             free(deleted);
@@ -401,18 +406,28 @@ void freeDLL(DLL *items)
 //sets the head and tail to null, the size to zero. Only freeing of list DLLNODEs, not values, is to be done. 
 void removeDLLall(DLL *items)
     {
-    DLLNODE *temp = 0;
-    DLLNODE *deleted = 0;
-
-    temp = items->head;
-    while(temp != 0)
-        {
-        deleted = temp;
-        temp = getDLLNODEnext(temp);
-        free(deleted);
-        }
+    // printf("IN REMOVE DLL ALL \n");
+    // if (items == NULL) return;
+    // DLLNODE *temp = 0;
+    // DLLNODE *deleted = 0;
+    // displayDLL(items, stdout);
+    // printf("\n");
+    // firstDLL(items);
+    // while(moreDLL(items))
+    //     {
+    //     temp = currentDLL(items);
+    //     printf("removing node: ");
+    //     items->display(temp, stdout);
+    //     printf("\n");
+    //     deleted = temp;
+    //     nextDLL(items);
+    //     free(deleted);
+    //     }
+    
     items->head = 0;
     items->tail = 0;
+    items->curr = 0;
+    items->size = 0;
     }
 
 //removes the given DLLNODE from the linked list, return the value of the removed DLLNODE 
@@ -420,7 +435,7 @@ void *removeDLLnode(DLL *items, void *n)
     {
     DLLNODE *temp = n;
     void *val = getDLLNODEvalue(temp);
-
+    // printf("IN REMOVE DLL NODE \n");
     DLLNODE *next = temp->next;
     DLLNODE *prev = temp->prev;
     if (temp == items->head) 
@@ -428,6 +443,7 @@ void *removeDLLnode(DLL *items, void *n)
         if (items->size == 1) 
             {
             items->head = NULL;
+            items->curr = NULL;
             items->size--;
             free(temp);
             return val;
@@ -439,6 +455,7 @@ void *removeDLLnode(DLL *items, void *n)
         if (items->size == 1) 
             {
             items->tail = NULL;
+            items->curr = NULL;
             items->size--;
             free(temp);
             return val;
@@ -462,34 +479,40 @@ void *removeDLLnode(DLL *items, void *n)
  
 void firstDLL(DLL *items)
     {
+    //printf("FIRST DLL\n");
     items->curr = items->head;
     }
 
 void lastDLL(DLL *items)
     {
+    //printf("LAST DLL\n");
     items->curr = items->tail;
     }
 
 int moreDLL(DLL *items)
     {
-    if (items->curr != 0) return 1;
+    //printf("MORE DLL\n");
+    if (items->curr != NULL) return 1;
     else return 0;
     }
 
 void nextDLL(DLL *items)
     {
+    //printf("NEXT DLL\n");
     assert(items->curr != 0);
     items->curr = getDLLNODEnext(items->curr);
     }
 
 void prevDLL(DLL *items)
     {
+    //printf("PREV DLL\n");
     assert(items->curr != 0);
     items->curr = getDLLNODEprev(items->curr);
     }
 
 void *currentDLL(DLL *items)
     {
+    //printf("CURRENT DLL\n");
     assert(items->curr != 0);
     return getDLLNODEvalue(items->curr);
     }
