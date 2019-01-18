@@ -1,13 +1,73 @@
-program :
-        |
+program : def
+        | def program
 
-unary : INTEGER
+def : classDef
+    | varDef
+    
+operator : PLUS
+         | MINUS
+         | SUM
+         | EQUALS
+         | TIMES
+         | EXPONENTIAL
+         | MODULO
+
+unary : VAR
+      | INTEGER
       | REAL
-      | 
+      | STRING
+      | CHAR
+      | UMINUS unary
+      | BOOL
+      | VAR OBRACE optParamList CBRACE
 
-function : 
-         |
+comparison : AND
+           | OR
+           | NOT
+           | EQUALTO
+           | GREATER_THAN
+           | LESS_THAN
 
-expr :
-     | 
+modifier : DECREMENT DECREMENT VAR
+         | VAR DECREMENT DECREMENT
+         | INCREMENT INCREMENT VAR
+         | VAR INCREMENT INCREMENT
 
+varDef : LET VAR EQUALS unary
+       | LET VAR
+
+classDef : CLASS VAR
+         | CLASS VAR OBRACE optArgList CBRACE block
+
+block : BEGIN statements END
+
+statements : statement
+           | statement statements
+
+statement : expr
+          | if
+          | loop
+          | classDef
+
+expr : operator unary
+     | unary operator unary
+     | unary comparison unary
+     | modifier
+
+parameters : unary
+          | unary COMMA parameters
+
+optParamList : parameters
+             | EMPTY
+
+arguments : unary
+          | unary COMMA arguments
+
+optArgList : arguments
+           | EMPTY
+
+if : IF OBRACE expr CBRACE block optElse
+
+optElse : ELSE block
+        : ELSE if
+        | EMPTY
