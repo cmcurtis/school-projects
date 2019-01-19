@@ -1,14 +1,16 @@
 program : def
         | def program
 
-def : classDef
+def : class
     | varDef
+    | function
     
 operator : PLUS
          | MINUS
          | SUM
          | EQUALS
          | TIMES
+	       | DIVIDE
          | EXPONENTIAL
          | MODULO
 
@@ -19,7 +21,8 @@ unary : VAR
       | CHAR
       | UMINUS unary
       | BOOL
-      | VAR OBRACE optParamList CBRACE
+      | function
+      | class
 
 comparison : AND
            | OR
@@ -36,8 +39,20 @@ modifier : DECREMENT DECREMENT VAR
 varDef : LET VAR EQUALS unary
        | LET VAR
 
-classDef : CLASS VAR
-         | CLASS VAR OBRACE optArgList CBRACE block
+class : classDef
+      | classCall
+
+classDef : CLASS VAR OBRACE optParamList CBRACE block
+         | CLASS VAR
+
+classCall : NEW CLASS VAR OBRACE optArgList CBRACE
+
+function : functionDef
+	       | functionCall
+
+functionDef : LET VAR OBRACE optParamList CBRACE block
+
+functionCall : LET VAR OBRACE optArgList CBRACE
 
 block : BEGIN statements END
 
@@ -47,7 +62,8 @@ statements : statement
 statement : expr
           | if
           | loop
-          | classDef
+          | function
+          | class
 
 expr : operator unary
      | unary operator unary
@@ -71,3 +87,10 @@ if : IF OBRACE expr CBRACE block optElse
 optElse : ELSE block
         : ELSE if
         | EMPTY
+
+loop : forLoop
+     | whileLoop
+
+forLoop : FOR OBRACE expr TILDE expr TILDE expr CBRACE block
+
+whileLoop : WHILE OBRACE expr CBRACE block
