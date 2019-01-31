@@ -7,34 +7,30 @@ def : class
     
 operator : PLUS
          | MINUS
-         | SUM
          | EQUALS
          | TIMES
 	       | DIVIDE
          | EXPONENTIAL
          | MODULO
+         | AND
+         | OR
+         | EQUALTO
+         | GREATER_THAN
+         | LESS_THAN
 
 unary : VAR
       | INTEGER
       | REAL
       | STRING
       | CHAR
+      | NOT expr
       | UMINUS unary
       | BOOL
       | function
       | class
 
-comparison : AND
-           | OR
-           | NOT
-           | EQUALTO
-           | GREATER_THAN
-           | LESS_THAN
-
 modifier : DECREMENT DECREMENT VAR
-         | VAR DECREMENT DECREMENT
          | INCREMENT INCREMENT VAR
-         | VAR INCREMENT INCREMENT
 
 varDef : LET VAR EQUALS unary
        | LET VAR
@@ -64,8 +60,9 @@ statement : expr
           | loop
           | function
           | class
+          | varDef
 
-expr : operator unary
+expr : unary
      | unary operator unary
      | unary comparison unary
      | modifier

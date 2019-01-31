@@ -1,0 +1,23 @@
+let main {} BEGIN
+
+let x = 5
+let y
+
+class example {n, m} BEGIN
+  let part1 = n
+  let part2 = m
+  END
+
+if {x == 5} BEGIN
+  if {y == 2} BEGIN
+    new class {x, y}
+    END
+  else BEGIN
+    while {y != 2} BEGIN
+      y++
+      END
+    END
+for{ let z = 10 ~ z > 0 ~ --z } BEGIN
+
+  END
+END
