@@ -12,9 +12,16 @@
 //Pending Functions
 int programPending();
 int classPending();
+int classDefPending();
+int classCallPending();
 int varDefPending();
 int functionPending();
+int funcDefPending();
+int funcCallPending();
 int exprPending();
+int unaryPending();
+int modifierPending();
+int ifPending();
 int opPending();
 int statementPending();
 int parametersPending();

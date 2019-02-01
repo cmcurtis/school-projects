@@ -36,19 +36,18 @@ varDef : LET VAR EQUALS unary
        | LET VAR
 
 class : classDef
-      | classCall
+      | classInit
 
 classDef : CLASS VAR OBRACE optParamList CBRACE block
-         | CLASS VAR
 
-classCall : NEW CLASS VAR OBRACE optArgList CBRACE
+classInit : NEW CLASS VAR OBRACE optArgList CBRACE
 
 function : functionDef
 	       | functionCall
 
 functionDef : LET VAR OBRACE optParamList CBRACE block
 
-functionCall : LET VAR OBRACE optArgList CBRACE
+functionCall : VAR OBRACE optArgList CBRACE
 
 block : BEGIN statements END
 
@@ -64,7 +63,6 @@ statement : expr
 
 expr : unary
      | unary operator unary
-     | unary comparison unary
      | modifier
 
 parameters : unary

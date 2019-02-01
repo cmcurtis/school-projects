@@ -43,6 +43,7 @@ extern char *ELSEIF;
 extern char *ELSE;
 extern char *WHILE;
 extern char *FOR;
+extern char *NEW;
 
 // types
 extern char *type_INT;

@@ -8,4 +8,6 @@
 #include "types.h"
 #include "lexeme.h"
 
+typedef struct Lexer lexer;
+
 lexeme *lex(FILE *fp);

@@ -45,6 +45,7 @@ char *ELSEIF = "ELSEIF";
 char *ELSE = "ELSE";
 char *WHILE = "WHILE";
 char *FOR = "FOR";
+char *NEW = "NEW";
 
 // types
 char *type_INT = "type_INT";
