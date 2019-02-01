@@ -90,20 +90,24 @@ lexeme *lexVariableOrKeyword(FILE *fp) {
   // printf("ch: %c\n", ch);
   myPushback(ch);
 
-  if (strcmp(token,"if") == 0) return newLexemeKeyword(IF, "if");
-  else if (strcmp(token,"elseif") == 0) return newLexemeKeyword(ELSEIF, "elseif");
-  else if (strcmp(token,"else") == 0) return newLexemeKeyword(ELSE, "else");
-  else if (strcmp(token,"while") == 0) return newLexemeKeyword(WHILE, "while");
-  else if (strcmp(token,"let") == 0) return newLexemeKeyword(LET, "let");
-  else if (strcmp(token,"int") == 0) return newLexemeKeyword(INT, "int");
-  else if (strcmp(token,"real") == 0) return newLexemeKeyword(REAL, "real");
-  else if (strcmp(token,"char") == 0) return newLexemeKeyword(CHAR, "char");
-  else if (strcmp(token,"string") == 0) return newLexemeKeyword(STRING, "string");
-  else if (strcmp(token,"bool") == 0) return newLexemeKeyword(BOOL, "bool");
-  else if (strcmp(token,"BEGIN") == 0) return newLexemeKeyword(BEGIN, "BEGIN");
-  else if (strcmp(token,"END") == 0) return newLexemeKeyword(END, "END");
+  if (strcmp(token,"if") == 0) return newLexemeKeyword(IF, "if", lineNumber);
+  else if (strcmp(token,"else_if") == 0) return newLexemeKeyword(ELSEIF, "else_if", lineNumber);
+  else if (strcmp(token,"else") == 0) return newLexemeKeyword(ELSE, "else", lineNumber);
+  else if (strcmp(token,"while") == 0) return newLexemeKeyword(WHILE, "while", lineNumber);
+  else if (strcmp(token,"let") == 0) return newLexemeKeyword(LET, "let", lineNumber);
+  else if (strcmp(token,"int") == 0) return newLexemeKeyword(INT, "int", lineNumber);
+  else if (strcmp(token,"real") == 0) return newLexemeKeyword(REAL, "real", lineNumber);
+  else if (strcmp(token,"char") == 0) return newLexemeKeyword(CHAR, "char", lineNumber);
+  else if (strcmp(token,"string") == 0) return newLexemeKeyword(STRING, "string", lineNumber);
+  else if (strcmp(token,"bool") == 0) return newLexemeKeyword(BOOL, "bool", lineNumber);
+  else if (strcmp(token,"BEGIN") == 0) return newLexemeKeyword(BEGIN, "BEGIN", lineNumber);
+  else if (strcmp(token,"END") == 0) return newLexemeKeyword(END, "END", lineNumber);
+  else if (strcmp(token,"function") == 0) return newLexemeKeyword(FUNCTION, "function", lineNumber);
+  else if (strcmp(token,"class") == 0) return newLexemeKeyword(CLASS, "class", lineNumber);
+  else if (strcmp(token,"define") == 0) return newLexemeKeyword(DEFINE, "define", lineNumber);
+  else if (strcmp(token,"new") == 0) return newLexemeKeyword(NEW, "new", lineNumber);
   else 
-    return newLexemeKeyword(VARIABLE, token);
+    return newLexemeKeyword(VARIABLE, token, lineNumber);
 }
 
 lexeme *lexNumber(FILE *fp) {
@@ -120,8 +124,8 @@ lexeme *lexNumber(FILE *fp) {
     ch = myRead(fp);
   }
   // myPushback(ch);
-  if (real) return newLexemeReal(atof(buffer));
-  else return newLexemeInt(atoi(buffer));
+  if (real) return newLexemeReal(atof(buffer), lineNumber);
+  else return newLexemeInt(atoi(buffer), lineNumber);
 }
 
 lexeme *lexString(FILE *fp) {
@@ -133,7 +137,16 @@ lexeme *lexString(FILE *fp) {
     ch = myRead(fp);
   }
   // myPushback(ch);
-  return newLexemeChar(type_STRING, buffer);
+  return newLexemeChar(type_STRING, buffer, lineNumber);
+}
+
+void lexComment(FILE *fp){
+  char ch = myRead(fp);
+
+  while(!EOF && ch != '#') {
+    ch = myRead(fp);
+  }
+  return;
 }
 
 lexeme *lex(FILE *fp)
@@ -147,43 +160,43 @@ lexeme *lex(FILE *fp)
   if (ch == EOF) 
   {
   // printf("EOF: %c", ch);
-  return newLexeme(END_OF_FILE);
+  return newLexeme(END_OF_FILE, lineNumber);
   }
 
   switch(ch) 
     { 
     // single character tokens 
 
-    case '(': return newLexeme(OPAREN); 
-    case ')': return newLexeme(CPAREN); 
-    case ',': return newLexeme(COMMA); 
-    case '+': return newLexeme(PLUS);
-    case '*': return newLexeme(TIMES); 
-    case '-': return newLexeme(MINUS); 
-    case '/': return newLexeme(DIVIDE); 
-    case '<': return newLexeme(LTHAN); 
-    case '>': return newLexeme(GTHAN); 
-    case '=': return newLexeme(EQUALS); 
-    case '{': return newLexeme(OBRACE);
-    case '}': return newLexeme(CBRACE);
-    case '!': return newLexeme(NOT);
-    case '~': return newLexeme(TILDE);
+    case '(': return newLexeme(OPAREN, lineNumber); 
+    case ')': return newLexeme(CPAREN, lineNumber); 
+    case ',': return newLexeme(COMMA, lineNumber); 
+    case '+': return newLexeme(PLUS, lineNumber);
+    case '*': return newLexeme(TIMES, lineNumber); 
+    case '-': return newLexeme(MINUS, lineNumber); 
+    case '/': return newLexeme(DIVIDE, lineNumber); 
+    case '<': return newLexeme(LTHAN, lineNumber); 
+    case '>': return newLexeme(GTHAN, lineNumber); 
+    case '=': return newLexeme(EQUALS, lineNumber); 
+    case '{': return newLexeme(OBRACE, lineNumber);
+    case '}': return newLexeme(CBRACE, lineNumber);
+    case '!': return newLexeme(NOT, lineNumber);
+    case '~': return newLexeme(TILDE, lineNumber);
 
     default: 
-      if (isdigit(ch)) 
-        { 
+      if (isdigit(ch)) { 
         myPushback(ch); 
         return lexNumber(fp); 
-        } 
-      else if (isalpha(ch)) 
-        {
+      } 
+      else if (isalpha(ch)){
         myPushback(ch);
         return lexVariableOrKeyword(fp);
-        } 
-      else if (ch == '\"') 
-        { 
+      } 
+      else if (ch == '\"'){ 
         return lexString(fp); 
-        } 
+      } 
+      else if (ch == '#'){
+        lexComment(fp);
+      }
       else
         printf("Fatal Error @ line %d", lineNumber);
         exit(1); 

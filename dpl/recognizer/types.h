@@ -44,6 +44,8 @@ extern char *ELSE;
 extern char *WHILE;
 extern char *FOR;
 extern char *NEW;
+extern char *FUNCTION;
+extern char *DEFINE;
 
 // types
 extern char *type_INT;

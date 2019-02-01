@@ -18,8 +18,6 @@ void display(lexeme *l) {
 }
 
 void recognizer(FILE *fileName){ 
-  current = newLexeme("BLANK");
-
   current = lex(fileName); 
   if (programPending()) {
     program();
@@ -45,7 +43,7 @@ int check(char *type){
 }
 
 void *match(char *type){
-  if (!check(type)) newErrorLexeme("ERROR", "Syntax error");
+  if (!check(type)) newErrorLexeme("ERROR", "Match Error", getLineNum(current));
   advance();
 } //return lexeme for parsing??TODO
 
@@ -54,7 +52,10 @@ void advance(){
 }
 
 lexeme *cons(char *type, lexeme *left, lexeme *right){
-  //??TODO
+  lexeme *n = newLexeme(type, getLineNum(current));
+  setLeftLex(n, left);
+  setRightLex(n, right);
+  return n;
 }
 
 /*
@@ -219,7 +220,7 @@ lexeme *classDef(){
   lexeme *p = optParameterList();
   match(CBRACE);
   lexeme *b = block();
-  return newLexeme("TODO");
+  return newLexeme("TODO", 1);
 }
 
 lexeme *classInit(){
@@ -244,7 +245,7 @@ lexeme *functionDef(){
   lexeme *p = optParameterList();
   match(CBRACE);
   lexeme *b = match(block);
-  return newLexeme("TODO");
+  return newLexeme("TODO", 1);
 }
 
 lexeme *functionCall(){
@@ -283,7 +284,7 @@ lexeme *expr(){
     if (opPending()) {
       lexeme *o = op();
       lexeme *u2 = unary();
-      return newLexeme("TODO");
+      return newLexeme("TODO", 1);
     }
     return u;
   }
@@ -326,7 +327,7 @@ lexeme *ifStatement(){
   lexeme *b = block();
   if (elsePending()) {
     lexeme *el = optElse();
-    return newLexeme("TODO");
+    return newLexeme("TODO", 1);
   }
   return cons("IF_ST", e, b);
 }
@@ -358,7 +359,7 @@ lexeme *forLoop() {
   lexeme *z = expr();
   match(CBRACE);
   lexeme *b = block();
-  return newLexeme("TODO");
+  return newLexeme("TODO", 1);
 }
 
 lexeme *whileLoop() {

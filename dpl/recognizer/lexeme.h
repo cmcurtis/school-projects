@@ -8,15 +8,19 @@
 typedef struct Lexeme lexeme;
 
 extern char *getType(lexeme *l);
+extern int getLineNum(lexeme *l);
 
-extern lexeme *newLexeme(char *t);
+extern void setLeftLex(lexeme *x, lexeme *l);
+extern void setRightLex(lexeme *x, lexeme *r);
 
-extern lexeme *newErrorLexeme(char *err, char *message);
+extern lexeme *newLexeme(char *t, int n);
 
-extern lexeme *newLexemeInt(int x);
+extern lexeme *newErrorLexeme(char *err, char *message, int n);
 
-extern lexeme *newLexemeReal(double x);
+extern lexeme *newLexemeInt(int x, int n);
 
-extern lexeme *newLexemeChar(char *type, char *x);
+extern lexeme *newLexemeReal(double x, int n);
 
-extern lexeme *newLexemeKeyword(char *type, char *x);
+extern lexeme *newLexemeChar(char *type, char *x, int n);
+
+extern lexeme *newLexemeKeyword(char *type, char *x, int n);
