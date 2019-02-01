@@ -11,16 +11,16 @@
 #include "lexeme.h"
 #include "lexer.h"
 
-// struct Lexer {
-//   FILE *fp;
-//   lexeme (*lex)();
-// };
+struct Lexer {
+  FILE *fp;
+  lexeme (*lex)();
+};
 
-// lexer *newLexer(FILE *text){
-//   lexer l = malloc(sizeof(lexer));
-//   l.fp = text;
-//   l.lex = ; 
-// }
+lexer *newLexer(FILE *text){
+  lexer l = malloc(sizeof(lexer));
+  l->fp = text;
+  l->lex = lex(FILE *); 
+}
 
 int lineNumber = 1;
 int CharacterHasBeenPushed = 0;

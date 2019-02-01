@@ -18,7 +18,8 @@ void display(lexeme *l) {
 }
 
 void recognizer(FILE *fileName){ 
-  current = lex(fileName); 
+  lexer *LEXER = newLexer(fileName);
+  current = LEXER->lex(LEXER->fp); 
   if (programPending()) {
     program();
   }
