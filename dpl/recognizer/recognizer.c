@@ -18,11 +18,13 @@ void display(lexeme *l) {
 }
 
 void recognizer(FILE *fileName){ 
-  lexer *LEXER = newLexer(fileName);
-  current = LEXER->lex(LEXER->fp); 
+  // lexer *LEXER = newLexer(fileName);
+  current = lex(fileName); 
+
   if (programPending()) {
     program();
   }
+  printf("\nlegal\n");
 }
 
 int main(int argc, char **argv){
@@ -44,8 +46,15 @@ int check(char *type){
 }
 
 void *match(char *type){
-  if (!check(type)) newErrorLexeme("ERROR", "Match Error", getLineNum(current));
+  // printf("%s === ", type);
+  // display(current);
+  if (!check(type)) {
+    newErrorLexeme("ERROR", "Match error", getLineNum(current));
+    printf("\nillegal\n");
+    exit(1);
+  }
   advance();
+  return NULL;
 } //return lexeme for parsing??TODO
 
 void advance(){
@@ -67,19 +76,23 @@ int programPending(){
 }
 
 int classPending(){
-  return classDefPending() || classInitPending();
+  return classInitPending() || classDefPending() || classInitPending();
+}
+
+int classInitPending(){
+  return check(NEW);
 }
 
 int classDefPending(){
   return check(CLASS);
 }
 
-int classInitPending() {
-  return check(NEW);
+int loopPending(){
+  return check(FOR) || check(WHILE);
 }
 
 int varDefPending() {
-//??TODO 
+  return check(LET);
 }
 
 int functionPending() {
@@ -87,7 +100,7 @@ int functionPending() {
 }
 
 int funcDefPending() {
-//??TODO 
+  return check(FUNCTION);
 }
 
 int funcCallPending(){
@@ -95,7 +108,7 @@ int funcCallPending(){
 }
 
 int exprPending(){
-  return check(unary) || modifierPending();
+  return unaryPending() || modifierPending();
 }
 
 int unaryPending(){
@@ -140,7 +153,7 @@ Grammar definition functions
 */
 lexeme *program(){
   lexeme *d = def();
-  if (programPending) return program();
+  if (programPending()) return program();
   lexeme *e = match(END_OF_FILE);
   return cons("PROGRAM", d, e);
 }
@@ -149,6 +162,7 @@ lexeme *def() {
   if (classPending()) return classFunc(); 
   else if (varDefPending()) return varDef();
   else if (functionPending()) return function();
+  return newErrorLexeme("ERROR", "Error in def ", getLineNum(current));
 }
 
 lexeme *op() {
@@ -164,6 +178,7 @@ lexeme *op() {
   else if (check(EQUALTO)) return match(EQUALTO);
   else if (check(GTHAN)) return match(GTHAN);
   else if (check(LTHAN)) return match(LTHAN);
+  return newErrorLexeme("ERROR", "Error in op", getLineNum(current));
 }
 
 lexeme *unary(){
@@ -174,28 +189,30 @@ lexeme *unary(){
   else if (check(type_CHAR)) return match(type_CHAR);
   else if (check(NOT)) return match(NOT);
   else if (check(BOOL)) return match(BOOL);
-  else if (functionPending()) { function(); }
-  else if (classPending()) { classFunc(); }
+  else if (functionPending()) { return function(); }
+  else if (classPending()) { return classFunc(); }
   else if (check(MINUS)) {
     lexeme *m = match(MINUS);
     lexeme *u = unary();
     return cons(UMINUS, m, u);
   }
+  return newErrorLexeme("ERROR", "Error in unary", getLineNum(current));
 }
 
 lexeme *modifier(){
   if(check(PLUS)){
-    match(PLUS);
-    match(PLUS);
-    match(VARIABLE);
-    return cons("MODIFIER", cons("DPLUS", PLUS, PLUS), VARIABLE);
+    lexeme *p1 = match(PLUS);
+    lexeme *p2 = match(PLUS);
+    lexeme *v = match(VARIABLE);
+    return cons("MODIFIER", cons("DPLUS", p1, p2), v);
   }
   else if(check(MINUS)){
-    match(MINUS);
-    match(MINUS);
-    match(VARIABLE);
-    return cons("MODIFIER", cons("DMINUS", MINUS, MINUS), VARIABLE);
+    lexeme *m1 = match(MINUS);
+    lexeme *m2 = match(MINUS);
+    lexeme *v = match(VARIABLE);
+    return cons("MODIFIER", cons("DMINUS", m1, m2), v);
   }
+    return newErrorLexeme("ERROR", "Error in modifier", getLineNum(current));
 }
 
 lexeme *varDef(){
@@ -204,14 +221,17 @@ lexeme *varDef(){
   if (check(EQUALS)) {
     match(EQUALS);
     lexeme *u = unary();
+    match(SEMI);
     return cons("VARDEF", v, u);
   }
+  match(SEMI);
   return cons("VARDEF", v, NULL);
 }
 
 lexeme *classFunc() {
   if (classDefPending()) return classDef();
   else if (classInitPending()) return classInit();
+  return newErrorLexeme("ERROR", "Error in class ", getLineNum(current));
 }
 
 lexeme *classDef(){
@@ -221,7 +241,7 @@ lexeme *classDef(){
   lexeme *p = optParameterList();
   match(CBRACE);
   lexeme *b = block();
-  return newLexeme("TODO", 1);
+  return cons("classDEF", v, cons("", p, b));
 }
 
 lexeme *classInit(){
@@ -235,18 +255,19 @@ lexeme *classInit(){
 }
 
 lexeme *function(){
-  if (check(LET)) return functionDef();
+  if (check(FUNCTION)) return functionDef();
   else if (check(VARIABLE)) return functionCall();
+  return newErrorLexeme("ERROR", "Error in function", getLineNum(current));
 }
 
 lexeme *functionDef(){
-  match(LET);
+  match(FUNCTION);
   lexeme *f = match(VARIABLE);
   match(OBRACE);
   lexeme *p = optParameterList();
   match(CBRACE);
-  lexeme *b = match(block);
-  return newLexeme("TODO", 1);
+  lexeme *b = block();
+  return cons("funcDEF", f , cons("PAR/BLOCK", p, b));
 }
 
 lexeme *functionCall(){
@@ -260,6 +281,9 @@ lexeme *functionCall(){
 lexeme *block(){
   match(BEGIN);
   lexeme *s = statements();
+  if(statementPending()) { 
+    statements();
+  }
   match(END);
   return s;
 }
@@ -272,11 +296,12 @@ lexeme *statements() {
 
 lexeme *statement(){
   if(exprPending()) return expr();
-  else if(check(IF)) return ifStatement();
+  else if(ifPending()) return ifStatement();
   else if(loopPending()) return loop();
   else if(functionPending()) return function();
   else if(classPending()) return classFunc();
   else if(varDefPending()) return varDef();
+  return newErrorLexeme("ERROR", "Error in statement", getLineNum(current));
 }
 
 lexeme *expr(){
@@ -285,13 +310,14 @@ lexeme *expr(){
     if (opPending()) {
       lexeme *o = op();
       lexeme *u2 = unary();
-      return newLexeme("TODO", 1);
+      return cons("expr", u, cons("OP/U", o, u2));
     }
     return u;
   }
   else if(modifierPending()){
     return modifier();
   }
+  return newErrorLexeme("ERROR", "Error in expr", getLineNum(current));
 }
 
 lexeme *parameters(){
@@ -300,6 +326,7 @@ lexeme *parameters(){
     match(COMMA);
     return parameters();
   }
+  return u;
 }
 
 lexeme *optParameterList(){
@@ -313,6 +340,7 @@ lexeme *arguments(){
     match(COMMA);
     return arguments();
   }
+  return u;
 }
 
 lexeme *optArgList(){
@@ -328,14 +356,14 @@ lexeme *ifStatement(){
   lexeme *b = block();
   if (elsePending()) {
     lexeme *el = optElse();
-    return newLexeme("TODO", 1);
+    return cons("optEL", e, cons("bl/EL", b, el));
   }
   return cons("IF_ST", e, b);
 }
 
 lexeme *optElse(){
   lexeme *e = match(ELSE);
-  if (ifPending) {
+  if (ifPending()) {
     lexeme *i = ifStatement();
     return cons("ELSEIF", e, i);
   }
@@ -343,11 +371,13 @@ lexeme *optElse(){
     lexeme *b = block();
     return cons("ELSE", e, b);
   }
+  return newErrorLexeme("ERROR", "Error in optElse", getLineNum(current));
 }
 
 lexeme *loop(){
   if (check(FOR)) return forLoop();
   else if (check(WHILE)) return whileLoop();
+  return newErrorLexeme("ERROR", "Error in loop", getLineNum(current));
 }
 
 lexeme *forLoop() {
@@ -360,7 +390,7 @@ lexeme *forLoop() {
   lexeme *z = expr();
   match(CBRACE);
   lexeme *b = block();
-  return newLexeme("TODO", 1);
+  return cons("forLoop", cons("", x, y), cons("", z, b)); //TODO
 }
 
 lexeme *whileLoop() {
@@ -369,4 +399,5 @@ lexeme *whileLoop() {
   lexeme *e = expr();
   match(CBRACE);
   lexeme *b = block();
+  return cons("whileLoop", e, b); //TODO
 }

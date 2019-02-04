@@ -12,6 +12,7 @@ extern char *COMMA;
 extern char *TILDE;
 extern char *COLON;
 extern char *DQUOTE;
+extern char *SEMI;
 
 // Operators
 extern char *PLUS;

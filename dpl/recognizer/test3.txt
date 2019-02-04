@@ -1,0 +1,11 @@
+function main { } BEGIN
+  let c; 
+  let b = 1;
+
+  function foo {x, y} BEGIN
+    x + y
+  END
+
+  let v;
+
+END

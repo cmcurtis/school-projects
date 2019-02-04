@@ -12,6 +12,7 @@
 //Pending Functions
 int programPending();
 int classPending();
+int classInitPending();
 int classDefPending();
 int classCallPending();
 int varDefPending();
@@ -23,6 +24,7 @@ int unaryPending();
 int modifierPending();
 int ifPending();
 int opPending();
+int loopPending();
 int statementPending();
 int parametersPending();
 int argumentsPending();
@@ -42,6 +44,7 @@ lexeme *unary();
 lexeme *modifier();
 lexeme *varDef();
 lexeme *classFunc();
+lexeme *classInit();
 lexeme *classDef();
 lexeme *classCall();
 lexeme *function();

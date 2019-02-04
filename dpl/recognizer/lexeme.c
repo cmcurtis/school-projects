@@ -50,7 +50,7 @@ lexeme *newErrorLexeme(char *err, char *message, int n){
 
   e->type = err;
   e->lineNum = n;
-  printf("%s @ line: %d", message, n);
+  printf("%s @ line: %d\n", message, n);
  
   // exit(1);
   return e;

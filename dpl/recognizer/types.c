@@ -14,6 +14,7 @@ char *COMMA = "COMMA";
 char *TILDE = "TILDE";
 char *COLON = "COLON";
 char *DQUOTE = "DQOUTE";
+char *SEMI = "SEMI";
 
 // Operators
 char *PLUS = "PLUS";
@@ -57,5 +58,4 @@ char *type_STRING = "type_STRING";
 char *type_BOOL = "type_BOOL";
 char *VARIABLE = "VARIABLE";
 char *UMINUS = "UMINUS";
-char *CLASS = "CLASS";
 char *END_OF_FILE = "ENDofINPUT";

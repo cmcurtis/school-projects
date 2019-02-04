@@ -6,20 +6,24 @@ CC = gcc
 FLAGS = -g -c -Wall 
 LFLAGS = 
 
-all: $(OBJS) 
+all : $(OBJS) 
 	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS) 
 
-types.o: types.c 
+types.o : types.c
 	$(CC) $(FLAGS) types.c -std=c99 
 
-recognizer.o: recognizer.c 
+recognizer.o : recognizer.c
 	$(CC) $(FLAGS) recognizer.c -std=c99
 
-lexer.o: lexer.c 
+lexer.o : lexer.c 
 	$(CC) $(FLAGS) lexer.c -std=c99
 
-recognizer : 
-	$(OBJS) $(CC) -g \ $(OBJS) -o recognizer
+run : all
+	-./recognizer test1.txt
+	-./recognizer test2.txt
+	-./recognizer test3.txt
+	-./recognizer test4.txt
+	-./recognizer test5.txt
 
 test1 : 
 	./recognizer test1.txt

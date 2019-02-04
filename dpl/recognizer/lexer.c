@@ -11,18 +11,7 @@
 #include "lexeme.h"
 #include "lexer.h"
 
-struct Lexer {
-  FILE *fp;
-  lexeme (*lex)();
-};
-
-lexer *newLexer(FILE *text){
-  lexer l = malloc(sizeof(lexer));
-  l->fp = text;
-  l->lex = lex(FILE *); 
-}
-
-int lineNumber = 1;
+int lineNumber = 0;
 int CharacterHasBeenPushed = 0;
 char PushbackChar;
 
@@ -90,9 +79,10 @@ lexeme *lexVariableOrKeyword(FILE *fp) {
   // printf("ch: %c\n", ch);
   myPushback(ch);
 
-  if (strcmp(token,"if") == 0) return newLexemeKeyword(IF, "if", lineNumber);
+  if (strcmp(token,"if") == 0) return newLexemeKeyword(IF, "IF", lineNumber);
   else if (strcmp(token,"else_if") == 0) return newLexemeKeyword(ELSEIF, "else_if", lineNumber);
   else if (strcmp(token,"else") == 0) return newLexemeKeyword(ELSE, "else", lineNumber);
+  else if (strcmp(token,"for") == 0) return newLexemeKeyword(FOR, "for", lineNumber);
   else if (strcmp(token,"while") == 0) return newLexemeKeyword(WHILE, "while", lineNumber);
   else if (strcmp(token,"let") == 0) return newLexemeKeyword(LET, "let", lineNumber);
   else if (strcmp(token,"int") == 0) return newLexemeKeyword(INT, "int", lineNumber);
@@ -180,6 +170,7 @@ lexeme *lex(FILE *fp)
     case '{': return newLexeme(OBRACE, lineNumber);
     case '}': return newLexeme(CBRACE, lineNumber);
     case '!': return newLexeme(NOT, lineNumber);
+    case ';': return newLexeme(SEMI, lineNumber);
     case '~': return newLexeme(TILDE, lineNumber);
 
     default: 
@@ -203,3 +194,14 @@ lexeme *lex(FILE *fp)
     }
   }
 
+// struct Lexer {
+//   FILE *fp;
+//   lexeme (*lex)();
+//   lexeme *current;
+// };
+
+// lexer *newLexer(FILE *text){
+//   lexer *l = malloc(sizeof(lexer));
+//   l->fp = text;
+//   l->lex = lex; 
+// }

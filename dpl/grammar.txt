@@ -32,8 +32,8 @@ unary : VAR
 modifier : DECREMENT DECREMENT VAR
          | INCREMENT INCREMENT VAR
 
-varDef : LET VAR EQUALS unary
-       | LET VAR
+varDef : LET VAR EQUALS unary SEMI
+       | LET VAR SEMI
 
 class : classDef
       | classInit
@@ -42,10 +42,12 @@ classDef : CLASS VAR OBRACE optParamList CBRACE block
 
 classInit : NEW CLASS VAR OBRACE optArgList CBRACE
 
+classCall : 
+
 function : functionDef
 	       | functionCall
 
-functionDef : LET VAR OBRACE optParamList CBRACE block
+functionDef : FUNCTION VAR OBRACE optParamList CBRACE block
 
 functionCall : VAR OBRACE optArgList CBRACE
 
@@ -63,6 +65,7 @@ statement : expr
 
 expr : unary
      | unary operator unary
+     | unary operator expr
      | modifier
 
 parameters : unary
