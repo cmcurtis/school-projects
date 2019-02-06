@@ -1,11 +1,13 @@
 function main { } BEGIN
-  let y = 2;
-  let i;
+  let y = 2
+  let i
 
   for { i = 0 ~ i < 9 ~ ++i } BEGIN
     function test { x, z} BEGIN
-      let x = 7;
-      let z = 1;
+      let x = 7
+      let z = 1
     END
+
+    call test { 10 , y }
   END
 END

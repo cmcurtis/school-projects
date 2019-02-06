@@ -46,7 +46,7 @@ extern char *WHILE;
 extern char *FOR;
 extern char *NEW;
 extern char *FUNCTION;
-extern char *DEFINE;
+extern char *CALL;
 
 // types
 extern char *type_INT;

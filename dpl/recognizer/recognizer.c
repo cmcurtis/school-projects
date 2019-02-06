@@ -101,7 +101,7 @@ int funcDefPending() {
 }
 
 int funcCallPending(){
-  return check(VARIABLE);
+  return check(CALL);
 }
 
 int exprPending(){
@@ -218,10 +218,8 @@ lexeme *varDef(){
   if (check(EQUALS)) {
     match(EQUALS);
     lexeme *u = unary();
-    match(SEMI);
     return cons(VAR_DEF, v, u);
   }
-  match(SEMI);
   return cons(VAR_DEF, v, NULL);
 }
 
@@ -252,8 +250,8 @@ lexeme *classInit(){
 }
 
 lexeme *function(){
-  if (check(FUNCTION)) return functionDef();
-  else if (check(VARIABLE)) return functionCall();
+  if (funcDefPending()) return functionDef();
+  else if (funcCallPending()) return functionCall();
   return newErrorLexeme(ERROR, "Error in function", getLineNum(current));
 }
 
@@ -268,6 +266,7 @@ lexeme *functionDef(){
 }
 
 lexeme *functionCall(){
+  match(CALL);
   lexeme *v = match(VARIABLE);
   match(OBRACE);
   lexeme *a = optArgList();
@@ -278,9 +277,7 @@ lexeme *functionCall(){
 lexeme *block(){
   match(BEGIN);
   lexeme *s = statements();
-  if(statementPending()) { 
-    statements();
-  }
+  if(statementPending()) { statements(); }
   match(END);
   return s;
 }
@@ -302,22 +299,18 @@ lexeme *statement(){
 }
 
 lexeme *expr(){ //FIX
-  lexeme *u2;
+  lexeme *u;
   if (unaryPending()) {
-    lexeme *u = unary();
+    u = unary();
     if (opPending()) {
-      lexeme *o = op(); // if op is = or ()?
+      lexeme *o, *u2;
+      o = op();
       if (strcmp(getType(o),EQUALS) == 0) {
-        if(exprPending()) {
-          u2 = expr();
-        }
-        else {
-          u2 = unary();
-        }
+        if(exprPending()) { u2 = expr(); }
+        else { u2 = unary(); }
       }
-      if(unaryPending()) {
-        u2 = unary();
-      }
+      if(unaryPending()) { u2 = unary(); }
+
       return cons(EXPR, u, cons(JOIN, o, u2));
     }
     return u;

@@ -90,7 +90,7 @@ lexeme *lexVariableOrKeyword(FILE *fp) {
   else if (strcmp(token,"END") == 0) return newLexemeKeyword(END, "END", lineNumber);
   else if (strcmp(token,"function") == 0) return newLexemeKeyword(FUNCTION, "function", lineNumber);
   else if (strcmp(token,"class") == 0) return newLexemeKeyword(CLASS, "class", lineNumber);
-  else if (strcmp(token,"define") == 0) return newLexemeKeyword(DEFINE, "define", lineNumber);
+  else if (strcmp(token,"call") == 0) return newLexemeKeyword(CALL, "call", lineNumber);
   else if (strcmp(token,"new") == 0) return newLexemeKeyword(NEW, "new", lineNumber);
   else 
     return newLexemeKeyword(VARIABLE, token, lineNumber);

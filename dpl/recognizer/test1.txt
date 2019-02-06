@@ -1,7 +1,9 @@
 function main {} BEGIN
 
-let x = 52.4;
-let y;
+let x = 52.4
+let y
+
+y = x + 10
 
 if {x > 5} BEGIN
   if {y < 2} BEGIN

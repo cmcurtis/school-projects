@@ -32,8 +32,8 @@ unary : VAR
 modifier : DECREMENT DECREMENT VAR
          | INCREMENT INCREMENT VAR
 
-varDef : LET VAR EQUALS unary SEMI
-       | LET VAR SEMI
+varDef : LET VAR EQUALS unary
+       | LET VAR
 
 class : classDef
       | classInit
