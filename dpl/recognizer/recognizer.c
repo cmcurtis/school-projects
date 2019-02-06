@@ -193,7 +193,7 @@ lexeme *unary(){
     lexeme *u = unary();
     return cons(UMINUS, m, u);
   }
-  return newErrorLexeme("ERROR", "Error in unary", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in unary", getLineNum(current));
 }
 
 lexeme *modifier(){
@@ -201,15 +201,15 @@ lexeme *modifier(){
     lexeme *p1 = match(PLUS);
     lexeme *p2 = match(PLUS);
     lexeme *v = match(VARIABLE);
-    return cons("MODIFIER", cons("DPLUS", p1, p2), v);
+    return cons(MODIFIER, cons(JOIN, p1, p2), v);
   }
   else if(check(MINUS)){
     lexeme *m1 = match(MINUS);
     lexeme *m2 = match(MINUS);
     lexeme *v = match(VARIABLE);
-    return cons("MODIFIER", cons("DMINUS", m1, m2), v);
+    return cons(MODIFIER, cons(JOIN, m1, m2), v);
   }
-    return newErrorLexeme("ERROR", "Error in modifier", getLineNum(current));
+    return newErrorLexeme(ERROR, "Error in modifier", getLineNum(current));
 }
 
 lexeme *varDef(){
@@ -219,16 +219,16 @@ lexeme *varDef(){
     match(EQUALS);
     lexeme *u = unary();
     match(SEMI);
-    return cons("VARDEF", v, u);
+    return cons(VAR_DEF, v, u);
   }
   match(SEMI);
-  return cons("VARDEF", v, NULL);
+  return cons(VAR_DEF, v, NULL);
 }
 
 lexeme *classFunc() {
   if (classDefPending()) return classDef();
   else if (classInitPending()) return classInit();
-  return newErrorLexeme("ERROR", "Error in class ", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in class ", getLineNum(current));
 }
 
 lexeme *classDef(){
@@ -238,7 +238,7 @@ lexeme *classDef(){
   lexeme *p = optParameterList();
   match(CBRACE);
   lexeme *b = block();
-  return cons("CLASS_DEF", v, cons("", p, b));
+  return cons(CLASS_DEF, v, cons(JOIN, p, b));
 }
 
 lexeme *classInit(){
@@ -248,13 +248,13 @@ lexeme *classInit(){
   match(OBRACE);
   lexeme *a = optArgList();
   match(CBRACE);
-  return cons("CLASS_INIT", v, a);
+  return cons(CLASS_INIT, v, a);
 }
 
 lexeme *function(){
   if (check(FUNCTION)) return functionDef();
   else if (check(VARIABLE)) return functionCall();
-  return newErrorLexeme("ERROR", "Error in function", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in function", getLineNum(current));
 }
 
 lexeme *functionDef(){
@@ -264,7 +264,7 @@ lexeme *functionDef(){
   lexeme *p = optParameterList();
   match(CBRACE);
   lexeme *b = block();
-  return cons("funcDEF", f , cons("PAR/BLOCK", p, b));
+  return cons(FUNC_DEF, f , cons(JOIN, p, b));
 }
 
 lexeme *functionCall(){
@@ -272,7 +272,7 @@ lexeme *functionCall(){
   match(OBRACE);
   lexeme *a = optArgList();
   match(CBRACE);
-  return cons("FUNC_CALL", v, a);
+  return cons(FUNC_CALL, v, a);
 }
 
 lexeme *block(){
@@ -298,7 +298,7 @@ lexeme *statement(){
   else if(functionPending()) return function();
   else if(classPending()) return classFunc();
   else if(varDefPending()) return varDef();
-  return newErrorLexeme("ERROR", "Error in statement", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in statement", getLineNum(current));
 }
 
 lexeme *expr(){ //FIX
@@ -318,14 +318,14 @@ lexeme *expr(){ //FIX
       if(unaryPending()) {
         u2 = unary();
       }
-      return cons("expr", u, cons("OP/U", o, u2));
+      return cons(EXPR, u, cons(JOIN, o, u2));
     }
     return u;
   }
   else if(modifierPending()){
     return modifier();
   }
-  return newErrorLexeme("ERROR", "Error in expr", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in expr", getLineNum(current));
 }
 
 lexeme *parameters(){
@@ -337,7 +337,7 @@ lexeme *parameters(){
   }
   else p = NULL;
 
-  return cons("ParamList", v, p);
+  return cons(VAR_LIST, v, p);
 }
 
 lexeme *optParameterList(){
@@ -346,12 +346,13 @@ lexeme *optParameterList(){
 }
 
 lexeme *arguments(){
-  lexeme *u = unary();
+  lexeme *u, *a;
+  u = unary();
   if (check(COMMA)) {
     match(COMMA);
-    return arguments();
+    a = arguments();
   }
-  return u;
+  return cons(VAR_LIST, u, a);
 }
 
 lexeme *optArgList(){
@@ -367,28 +368,28 @@ lexeme *ifStatement(){
   lexeme *b = block();
   if (elsePending()) {
     lexeme *el = optElse();
-    return cons("optEL", e, cons("bl/EL", b, el));
+    return cons(ELSE, e, cons(JOIN, b, el));
   }
-  return cons("IF_ST", e, b);
+  return cons(IF_ST, e, b);
 }
 
 lexeme *optElse(){
-  lexeme *e = match(ELSE);
+  lexeme *e = match(ELSE); //??FIX
   if (ifPending()) {
     lexeme *i = ifStatement();
-    return cons("ELSEIF", e, i);
+    return cons(ELSEIF_ST, e, i);
   }
   else {
     lexeme *b = block();
-    return cons("ELSE", e, b);
+    return cons(ELSE_ST, e, b);
   }
-  return newErrorLexeme("ERROR", "Error in optElse", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in optElse", getLineNum(current));
 }
 
 lexeme *loop(){
   if (check(FOR)) return forLoop();
   else if (check(WHILE)) return whileLoop();
-  return newErrorLexeme("ERROR", "Error in loop", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in loop", getLineNum(current));
 }
 
 lexeme *forLoop() {
@@ -401,7 +402,7 @@ lexeme *forLoop() {
   lexeme *z = expr();
   match(CBRACE);
   lexeme *b = block();
-  return cons("forLoop", cons("", x, y), cons("", z, b)); //TODO
+  return cons(FOR_LOOP, cons(JOIN, x, y), cons(JOIN, z, b)); //TODO
 }
 
 lexeme *whileLoop() {
@@ -410,5 +411,5 @@ lexeme *whileLoop() {
   lexeme *e = expr();
   match(CBRACE);
   lexeme *b = block();
-  return cons("whileLoop", e, b); //TODO
+  return cons(WHILE_LOOP, e, b); //TODO
 }

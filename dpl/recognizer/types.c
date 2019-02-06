@@ -61,3 +61,23 @@ char *UMINUS = "UMINUS";
 char *END_OF_FILE = "ENDofINPUT";
 
 //types for building parse trees
+char *ERROR = "ERROR";
+char *JOIN = "JOIN";
+char *ENV = "ENV";
+char *TABLE = "TABLE";
+char *PROGRAM = "PROGRAM";
+char *CLASS_DEF = "CLASS_DEF";
+char *CLASS_INIT = "CLASS_INIT";
+char *FUNC_DEF = "FUNC_DEF";
+char *FUNC_CALL = "FUNC_CALL";
+char *VAR_DEF = "VAR_DEF";
+char *MODIFIER = "MODIFIER";
+char *EXPR = "EXPR";
+char *VAR_LIST = "VAR_LIST";
+char *STAT = "STAT";
+char *BLOCK = "BLOCK";
+char *IF_ST = "IF_ST";
+char *ELSE_ST = "ELSE_ST";
+char *ELSEIF_ST = "ELSEIF_ST";
+char *FOR_LOOP = "FOR_LOOP";
+char *WHILE_LOOP = "WHILE_LOOP";
