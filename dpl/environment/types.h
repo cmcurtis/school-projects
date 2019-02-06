@@ -59,11 +59,3 @@ extern char *UMINUS;
 extern char *END_OF_FILE;
 
 //types for building parse trees
-extern char *JOIN;
-extern char *ENV;
-extern char *TABLE;
-extern char *PROGRAM;
-extern char *CLASS_DEF;
-extern char *CLASS_INIT;
-extern char *FUNC_DEF;
-extern char *FUNC_CALL;

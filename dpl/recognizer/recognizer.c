@@ -17,8 +17,7 @@ void display(lexeme *l) {
   
 }
 
-void recognizer(FILE *fileName){ 
-  // lexer *LEXER = newLexer(fileName);
+void recognizer(FILE *fileName){
   current = lex(fileName); 
 
   if (programPending()) {
@@ -46,26 +45,24 @@ int check(char *type){
 }
 
 void *match(char *type){
+  lexeme *temp = current;
   // printf("%s === ", type);
   // display(current);
+  // printf("ival: %d, ", getIval(current));
+  // // printf("sval: %s, ", getSval(current));
+  // printf("rval: %f, ", getRval(current));
+  // // printf("kval: %s", getKval(current));
   if (!check(type)) {
     newErrorLexeme("ERROR", "Match error", getLineNum(current));
     printf("\nillegal\n");
     exit(1);
   }
   advance();
-  return NULL;
-} //return lexeme for parsing??TODO
+  return temp;
+}
 
 void advance(){
   current = lex(fp);
-}
-
-lexeme *cons(char *type, lexeme *left, lexeme *right){
-  lexeme *n = newLexeme(type, getLineNum(current));
-  setLeftLex(n, left);
-  setRightLex(n, right);
-  return n;
 }
 
 /*
@@ -114,7 +111,7 @@ int exprPending(){
 int unaryPending(){
   return check(VARIABLE) || check(type_INT) || check(type_REAL) || 
     check(type_STRING) || check(type_CHAR) || check(type_BOOL) || 
-    check(NOT) || check(MINUS) || functionPending() || classPending();
+    check(NOT) || check(MINUS) || funcCallPending();
 }
 
 int modifierPending(){
@@ -137,11 +134,11 @@ int statementPending(){
 }
 
 int parametersPending(){
-  return unaryPending();
+  return check(VARIABLE);
 }
 
 int argumentsPending(){
-  return unaryPending();
+  return unaryPending() || exprPending();
 }
 
 int elsePending(){
@@ -241,7 +238,7 @@ lexeme *classDef(){
   lexeme *p = optParameterList();
   match(CBRACE);
   lexeme *b = block();
-  return cons("classDEF", v, cons("", p, b));
+  return cons("CLASS_DEF", v, cons("", p, b));
 }
 
 lexeme *classInit(){
@@ -304,12 +301,23 @@ lexeme *statement(){
   return newErrorLexeme("ERROR", "Error in statement", getLineNum(current));
 }
 
-lexeme *expr(){
+lexeme *expr(){ //FIX
+  lexeme *u2;
   if (unaryPending()) {
     lexeme *u = unary();
     if (opPending()) {
-      lexeme *o = op();
-      lexeme *u2 = unary();
+      lexeme *o = op(); // if op is = or ()?
+      if (strcmp(getType(o),EQUALS) == 0) {
+        if(exprPending()) {
+          u2 = expr();
+        }
+        else {
+          u2 = unary();
+        }
+      }
+      if(unaryPending()) {
+        u2 = unary();
+      }
       return cons("expr", u, cons("OP/U", o, u2));
     }
     return u;
@@ -321,12 +329,15 @@ lexeme *expr(){
 }
 
 lexeme *parameters(){
-  lexeme *u = unary();
+  lexeme *v, *p;
+  v = match(VARIABLE);
   if (check(COMMA)) {
     match(COMMA);
-    return parameters();
+    p = parameters();
   }
-  return u;
+  else p = NULL;
+
+  return cons("ParamList", v, p);
 }
 
 lexeme *optParameterList(){

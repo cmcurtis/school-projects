@@ -38,16 +38,12 @@ lexeme *cdr(lexeme *x){ return x->right; }
 void setCar(lexeme *x, lexeme *y){ x->left = y; }
 void setCdr(lexeme *x, lexeme *y){ x->right = y; }
 
-lexeme *cons(char *type, lexeme *left, lexeme *right){
-  int x;
-  if (left == NULL) { x = right->lineNum; }
-  else { x = left->lineNum; }
-
-  lexeme *n = newLexeme(type, x);
-  setCar(n, left);
-  setCdr(n, right);
-  return n;
-}
+// lexeme *cons(char *type, lexeme *left, lexeme *right){
+//   lexeme *n = newLexeme(type, left->lineNum);
+//   setCar(n, left);
+//   setCdr(n, right);
+//   return n;
+// }
 
 /*
 constructors
@@ -109,3 +105,4 @@ lexeme *newLexemeKeyword(char *type, char *x, int n){
   p->lineNum = n;
   return p;
 }
+

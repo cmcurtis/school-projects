@@ -34,7 +34,7 @@ int elsePending();
 int check(char *type);
 void *match(char *type); //return lexeme for parsing
 void advance();
-lexeme *cons(char *type, lexeme *left, lexeme *right);
+// lexeme *cons(char *type, lexeme *left, lexeme *right);
 
 //Rule functions: return lists for parsing
 lexeme *program();

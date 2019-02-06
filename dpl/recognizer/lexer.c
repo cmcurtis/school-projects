@@ -33,9 +33,7 @@ char myRead(FILE *fp)
     {
     if (CharacterHasBeenPushed)
         {
-        // printf("getting pushed character\n");
         CharacterHasBeenPushed = 0;
-        // return PushbackChar
         char tmp = PushbackChar;
         PushbackChar = '\0';
         return tmp;
@@ -46,8 +44,6 @@ char myRead(FILE *fp)
 
 void myPushback(char ch)
     {
-    // printf("pushback char: %c\n", PushbackChar);
-    // printf("HasBeenPushed: %d\n", CharacterHasBeenPushed);
     if (CharacterHasBeenPushed) {
       printf("too many pushbacks\n");
       exit(1);
@@ -104,16 +100,18 @@ lexeme *lexNumber(FILE *fp) {
   int real = 0;
   char* buffer = malloc(sizeof(char[64]));
   char ch = myRead(fp);
+  // printf("ch: %c ", ch);
 
-  while(!EOF && (isdigit(ch)|| ch == '.')) {
-    buffer += ch;
+  while(ch != EOF && (isdigit(ch) || ch == '.')) {
+    append(buffer, ch);
+    // printf("buffer: %s", buffer);
     if(ch == '.' && real) { 
-      printf("Bad Number @ line %d", lineNumber);
-      exit(1); }
+      return newErrorLexeme("ERROR", "Bad Number", lineNumber);
+      }
     if(ch == '.') real = 1;
     ch = myRead(fp);
   }
-  // myPushback(ch);
+  myPushback(ch);
   if (real) return newLexemeReal(atof(buffer), lineNumber);
   else return newLexemeInt(atoi(buffer), lineNumber);
 }
@@ -123,10 +121,10 @@ lexeme *lexString(FILE *fp) {
   char ch = myRead(fp);
 
   while(!EOF && ch != '\"') {
-    buffer += ch;
+    append(buffer, ch);
     ch = myRead(fp);
   }
-  // myPushback(ch);
+  myPushback(ch);
   return newLexemeChar(type_STRING, buffer, lineNumber);
 }
 
@@ -156,7 +154,6 @@ lexeme *lex(FILE *fp)
   switch(ch) 
     { 
     // single character tokens 
-
     case '(': return newLexeme(OPAREN, lineNumber); 
     case ')': return newLexeme(CPAREN, lineNumber); 
     case ',': return newLexeme(COMMA, lineNumber); 
@@ -175,7 +172,7 @@ lexeme *lex(FILE *fp)
 
     default: 
       if (isdigit(ch)) { 
-        myPushback(ch); 
+        myPushback(ch);
         return lexNumber(fp); 
       } 
       else if (isalpha(ch)){
@@ -193,15 +190,3 @@ lexeme *lex(FILE *fp)
         exit(1); 
     }
   }
-
-// struct Lexer {
-//   FILE *fp;
-//   lexeme (*lex)();
-//   lexeme *current;
-// };
-
-// lexer *newLexer(FILE *text){
-//   lexer *l = malloc(sizeof(lexer));
-//   l->fp = text;
-//   l->lex = lex; 
-// }

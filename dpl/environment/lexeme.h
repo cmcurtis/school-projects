@@ -18,7 +18,7 @@ extern lexeme *car(lexeme *x);
 extern lexeme *cdr(lexeme *x);
 extern void setCar(lexeme *x, lexeme *y);
 extern void setCdr(lexeme *x, lexeme *y);
-extern lexeme *cons(char *type, lexeme *left, lexeme *right);
+// extern lexeme *cons(char *type, lexeme *left, lexeme *right);
 
 extern lexeme *newLexeme(char *t, int n);
 
@@ -31,3 +31,5 @@ extern lexeme *newLexemeReal(double x, int n);
 extern lexeme *newLexemeChar(char *type, char *x, int n);
 
 extern lexeme *newLexemeKeyword(char *type, char *x, int n);
+
+

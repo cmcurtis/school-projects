@@ -68,8 +68,8 @@ expr : unary
      | unary operator expr
      | modifier
 
-parameters : unary
-          | unary COMMA parameters
+parameters : VAR
+          | VAR COMMA parameters
 
 optParamList : parameters
              | EMPTY
