@@ -68,7 +68,7 @@ lexeme *lexVariableOrKeyword(FILE *fp) {
   char token[30] = {0};
   
   ch = myRead(fp);
-  while (isalpha(ch) || isdigit(ch)){
+  while (isalpha(ch) || isdigit(ch) || ch == '_'){
     append(token, ch);
     ch = myRead(fp);
     }

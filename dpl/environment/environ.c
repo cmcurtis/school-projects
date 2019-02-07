@@ -1,11 +1,14 @@
+//author: Caley Curtis
+
 #include <stdio.h>
-#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+#include <stdarg.h>
 
 #include "lexeme.h"
 #include "environ.h"
+
+void Fatal(char *,...); 
 
 int sameVar(lexeme *id, lexeme *var) {
   if (strcmp(getSval(id), getSval(var)) == 0) { return 1; }
@@ -70,4 +73,16 @@ lexeme *insertEnv(lexeme *env, lexeme *id, lexeme *val){
 
 lexeme *extendEnv(lexeme *env, lexeme *vars, lexeme *vals){
   return cons("ENV", cons("VALUES", vars, vals), env);
+}
+
+//from Lusth
+void Fatal(char *fmt, ...) {
+  va_list ap;
+
+  fprintf(stderr,"An error occured: ");
+  va_start(ap, fmt);
+  vfprintf(stderr, fmt, ap);
+  va_end(ap);
+
+  exit(-1);
 }
