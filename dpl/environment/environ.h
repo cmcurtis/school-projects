@@ -14,3 +14,5 @@ extern lexeme *updateEnv(lexeme *env, lexeme *id, lexeme *val);
 extern lexeme *insertEnv(lexeme *env, lexeme *id, lexeme *val);
 extern lexeme *extendEnv(lexeme *env, lexeme *vars, lexeme *vals);
 
+extern void displayEnv(lexeme *env);
+extern void displayLocal(lexeme *env);

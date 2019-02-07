@@ -106,3 +106,17 @@ lexeme *newLexemeKeyword(char *type, char *x, int n){
   return p;
 }
 
+void displayLexeme(lexeme *x){
+  if (x->type == VARIABLE){
+    printf("%s", x->kval);
+  }
+  else if(x->type == type_INT){
+    printf("%d", x->ival);
+  }
+  else if(x->type == type_REAL){
+    printf("%f", x->rval);
+  }
+  else if(x->type == type_STRING){
+    printf("%s", x->sval);
+  }
+}

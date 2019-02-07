@@ -9,6 +9,7 @@
 #include "environ.h"
 
 void Fatal(char *,...); 
+void displayVars(lexeme *x, lexeme *y);
 
 int sameVar(lexeme *id, lexeme *var) {
   if (strcmp(getSval(id), getSval(var)) == 0) { return 1; }
@@ -73,6 +74,51 @@ lexeme *insertEnv(lexeme *env, lexeme *id, lexeme *val){
 
 lexeme *extendEnv(lexeme *env, lexeme *vars, lexeme *vals){
   return cons("ENV", cons("VALUES", vars, vals), env);
+}
+
+void displayEnv(lexeme *env){
+  printf("The environment is:\n");
+  if (env == NULL) { 
+    printf("EMPTY"); 
+    return; 
+  }
+
+  while(env != NULL) {
+    lexeme *table = car(env);
+    lexeme *vars = car(table);
+    lexeme *vals = cdr(table);
+    //display vars & vals
+    while(vars != NULL) {
+      displayVars(vars, vals);
+      vars = cdr(vars);
+      vals = cdr(vals);
+    }
+    env = cdr(env);
+  }
+}
+
+void displayLocal(lexeme *env) {
+  printf("The local environment is:\n");
+  if (env == NULL) { printf("EMPTY"); }
+  
+  lexeme *table = car(env);
+  lexeme *vars = car(table);
+  lexeme *vals = cdr(table);
+  
+  while(vars != NULL) {
+    //TODO
+    displayVars(vars, vals);
+    vars = cdr(vars);
+    vals = cdr(vals);
+  }
+}
+
+void displayVars(lexeme *x, lexeme *y){
+  printf("\t");
+  displayLexeme(x);
+  printf(" = ");
+  displayLexeme(y);
+  printf("\n");
 }
 
 //from Lusth
