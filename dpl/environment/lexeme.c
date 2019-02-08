@@ -39,7 +39,7 @@ void setCar(lexeme *x, lexeme *y){ x->left = y; }
 void setCdr(lexeme *x, lexeme *y){ x->right = y; }
 
 lexeme *cons(char *type, lexeme *left, lexeme *right){
-  lexeme *n = newLexeme(type, left->lineNum);
+  lexeme *n = newLexeme(type, 0);
   setCar(n, left);
   setCdr(n, right);
   return n;
