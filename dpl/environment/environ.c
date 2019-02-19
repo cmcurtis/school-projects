@@ -15,67 +15,111 @@ void displayVars(lexeme *x, lexeme *y);
 int sameVar(lexeme *id, lexeme *var);
 
 lexeme *createEnv() {
-  return cons(ENV, cons(TABLE, NULL, NULL), NULL);
+  return cons(ENV, NULL, cons("VALUES", NULL, NULL)); //add type
+  // ch 4
+  // return cons(ENV, cons(TABLE, NULL, NULL), NULL);
 }
 
 lexeme *lookupVal(lexeme *env, lexeme *id) {
-  while (env != NULL)
-    {
-    lexeme *table = car(env);
-    lexeme *vars = car(table);
-    lexeme *vals = cdr(table);
-    while (vars != NULL)
-        {
-        if (sameVar(id,car(vars)))
-            {
-            return car(vals);
-            }
-        vars = cdr(vars);
-        vals = cdr(vals);
-        }
-    env = cdr(env);
+  while (env != NULL) {
+    lexeme *vars = car(env);
+    lexeme *vals = car(cdr(env));
+    while (vars != NULL) {
+      if (sameVar(id,car(vars))) { return car(vals); }
+      vars = cdr(vars);
+      vals = cdr(vals);
+      }
+    env = cdr(cdr(env));
     }
 
   Fatal("variable %s is undefined\n", getKval(id));
+
   return NULL;
+
+  //ch 4
+  // while (env != NULL)
+  //   {
+  //   lexeme *table = car(env);
+  //   lexeme *vars = car(table);
+  //   lexeme *vals = cdr(table);
+  //   while (vars != NULL)
+  //       {
+  //       if (sameVar(id,car(vars)))
+  //           {
+  //           return car(vals);
+  //           }
+  //       vars = cdr(vars);
+  //       vals = cdr(vals);
+  //       }
+  //   env = cdr(env);
+  //   }
+
+  // Fatal("variable %s is undefined\n", getKval(id));
+  // return NULL;
 }
 
 lexeme *updateEnv(lexeme *env, lexeme *id, lexeme *val){
-  while (env != NULL)
-    {
-    lexeme *table = car(env);
-    lexeme *vars = car(table);
-    lexeme *vals = cdr(table);
-    while (vars != NULL)
-        {
-        if (sameVar(id,car(vars)))
-            {
-            setCar(vals, val);
-            return car(vals);
-            }
-        vars = cdr(vars);
-        vals = cdr(vals);
+  while (env != NULL) {
+    lexeme *vars = car(env);
+    lexeme *vals = car(cdr(env));
+    while (vars != NULL) {
+      if (sameVar(id,car(vars))) { 
+        setCar(vals, val);
+        return car(vals);
         }
-    env = cdr(env);
+      vars = cdr(vars);
+      vals = cdr(vals);
+      }
+    env = cdr(cdr(env));
     }
 
   Fatal("variable %s is undefined\n", getKval(id));
+
   return NULL;
+  
+  //ch 4
+  // while (env != NULL)
+  //   {
+  //   lexeme *table = car(env);
+  //   lexeme *vars = car(table);
+  //   lexeme *vals = cdr(table);
+  //   while (vars != NULL)
+  //       {
+  //       if (sameVar(id,car(vars)))
+  //           {
+  //           setCar(vals, val);
+  //           return car(vals);
+  //           }
+  //       vars = cdr(vars);
+  //       vals = cdr(vals);
+  //       }
+  //   env = cdr(env);
+  //   }
+
+  // Fatal("variable %s is undefined\n", getKval(id));
+  // return NULL;
 }
 
 lexeme *insertEnv(lexeme *env, lexeme *id, lexeme *val){
-  lexeme *table = car(env);
-  setCar(table, cons("JOIN", id, car(table)));
-  // printf("CAR is: %s\n", getType(car(table)));
-  // printf("CAR's value is: %s", getType(car(car(table))));
-  setCdr(table, cons("JOIN", val, cdr(table)));
-  // printf("CDR is: %s\n", getType(cdr(table)));
-  // printf("CDR's value is: %s", getType(car(cdr(table))));
+  setCar(env, cons(JOIN, id, car(env)));
+  setCar(cdr(env), cons(JOIN, val, car(cdr(env))));
   return val;
+
+  //ch 4
+  // lexeme *table = car(env);
+  // setCar(table, cons("JOIN", id, car(table)));
+  // // printf("CAR is: %s\n", getType(car(table)));
+  // // printf("CAR's value is: %s", getType(car(car(table))));
+  // setCdr(table, cons("JOIN", val, cdr(table)));
+  // // printf("CDR is: %s\n", getType(cdr(table)));
+  // // printf("CDR's value is: %s", getType(car(cdr(table))));
+  // return val;
 }
 
 lexeme *extendEnv(lexeme *env, lexeme *vars, lexeme *vals){
-  return cons(ENV, cons(TABLE, vars, vals), env);
+  return cons(ENV, vars, cons(ENV, vals, env));
+  // ch 4
+  // return cons(ENV, cons(TABLE, vars, vals), env);
 }
 
 int sameVar(lexeme *id, lexeme *var) {
@@ -85,39 +129,77 @@ int sameVar(lexeme *id, lexeme *var) {
 
 void displayEnv(lexeme *env){
   printf("The environment is:\n");
-  if (car(car(env)) == NULL) { 
+  int count = 0;
+  if (car(env) == NULL) { 
     printf("EMPTY\n"); 
     return; 
   }
 
   while(env != NULL) {
-    lexeme *table = car(env);
-    lexeme *vars = car(table);
-    lexeme *vals = cdr(table);
+    lexeme *vars = car(env);
+    lexeme *vals = car(cdr(env));
     //display vars & vals
     while(vars != NULL) {
+      if (count > 0) {
+        printf("\t");
+      }
       displayVars(car(vars), car(vals));
       vars = cdr(vars);
       vals = cdr(vals);
     }
-    env = cdr(env);
+    count++;
+    env = cdr(cdr(env));
   }
+  
+  //ch 4
+  // if (car(car(env)) == NULL) { 
+  //   printf("EMPTY\n"); 
+  //   return; 
+  // }
+
+  // while(env != NULL) {
+  //   lexeme *table = car(env);
+  //   lexeme *vars = car(table);
+  //   lexeme *vals = cdr(table);
+  //   //display vars & vals
+  //   while(vars != NULL) {
+  //     displayVars(car(vars), car(vals));
+  //     vars = cdr(vars);
+  //     vals = cdr(vals);
+  //   }
+  //   env = cdr(env);
+  // }
 }
 
 void displayLocal(lexeme *env) {
   printf("The local environment is:\n");
-  if (car(car(env)) == NULL) { printf("EMPTY"); }
   
-  lexeme *table = car(env);
-  lexeme *vars = car(table);
-  lexeme *vals = cdr(table);
-  
+  if (car(env) == NULL) { 
+    printf("EMPTY\n"); 
+    return; 
+  }
+
+  lexeme *vars = car(env);
+  lexeme *vals = car(cdr(env));
+  //display vars & vals
   while(vars != NULL) {
-    printf("displaying local");
     displayVars(car(vars), car(vals));
     vars = cdr(vars);
     vals = cdr(vals);
-  }
+    }
+  //ch4
+  // if (car(car(env)) == NULL) { printf("EMPTY\n"); }
+  
+  // lexeme *table = car(env);
+  // lexeme *vars = car(table);
+  // lexeme *vals = cdr(table);
+  
+  // while(vars != NULL) {
+  //   printf("displaying local");
+  //   displayVars(car(vars), car(vals));
+  //   vars = cdr(vars);
+  //   vals = cdr(vals);
+  // }
 }
 
 void displayVars(lexeme *x, lexeme *y){
