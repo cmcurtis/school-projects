@@ -27,6 +27,7 @@ extern char *EXPONENT;
 extern char *MODULO;
 extern char *AND;
 extern char *OR;
+extern char *DOT;
 extern char *EQUALTO;
 
 // Keywords 
@@ -47,6 +48,7 @@ extern char *FOR;
 extern char *NEW;
 extern char *FUNCTION;
 extern char *DEFINE;
+extern char *CALL;
 
 // types
 extern char *type_INT;

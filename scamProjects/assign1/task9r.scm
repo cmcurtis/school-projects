@@ -1,0 +1,16 @@
+(define (main)
+  (setPort (open (getElement ScamArgs 1) 'read))
+  (define arg (readExpr))
+  (println "(ramanujanr " arg ") is " (fmt "%.25f" (ramanujanr arg)))
+  (println "$4$")
+  )
+
+(define (ramanujanr x) 
+  (define (helper a)
+    (cond
+      ((= a x) (sqrt (+ a 6)))
+      (else (sqrt (+ (+ a 6) (* (+ a 2) (helper (+ a 1))))))
+      )
+    )
+  (helper 0)
+  )

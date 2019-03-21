@@ -23,7 +23,8 @@ unary : VAR
       | REAL
       | STRING
       | CHAR
-      | NOT expr
+      | NOT OPAREN expr CPAREN
+      | OPAREN expr CPAREN
       | UMINUS unary
       | BOOL
       | function
@@ -42,14 +43,14 @@ classDef : CLASS VAR OBRACE optParamList CBRACE block
 
 classInit : NEW CLASS VAR OBRACE optArgList CBRACE
 
-classCall : 
+classCall : VAR DOT VAR ??
 
 function : functionDef
 	       | functionCall
 
 functionDef : FUNCTION VAR OBRACE optParamList CBRACE block
 
-functionCall : VAR OBRACE optArgList CBRACE
+functionCall : CALL OBRACE optArgList CBRACE
 
 block : BEGIN statements END
 
@@ -64,7 +65,6 @@ statement : expr
           | varDef
 
 expr : unary
-     | unary operator unary
      | unary operator expr
      | modifier
 

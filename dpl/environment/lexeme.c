@@ -119,4 +119,7 @@ void displayLexeme(lexeme *x){
   else if(x->type == type_STRING){
     printf("%s", x->sval);
   }
+  // else if(x->type == ENV){
+  //   printf("_environment_");
+  // }
 }

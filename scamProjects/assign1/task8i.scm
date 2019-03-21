@@ -1,0 +1,15 @@
+(define (main)
+    (setPort (open (getElement ScamArgs 1) 'read))
+    (define arg1 (readInt))
+    (println "(ecfi " arg1 ") is " (fmt "%.25f" (ecfi arg1)))
+    )
+
+(define (ecfi x)
+  (define (iter depth t)
+    (cond 
+      ((= 0 depth) (+ 2.0 t))
+      (else (iter (- depth 1) (/ 1.0 (+ 1 (/ 1.0 (+ (* 2.0 depth) (/ 1.0 (+ 1 t))))))))
+      )
+    )
+  (iter x 0)
+)

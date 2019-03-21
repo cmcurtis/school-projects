@@ -17,24 +17,15 @@ void display(lexeme *l) {
   
 }
 
-void recognizer(FILE *fileName){
-  current = lex(fileName); 
+lexeme* parse(FILE *fileName){
+  FILE *fp = fileName;
+  current = lex(fileName);
 
   if (programPending()) {
-    program();
-  }
-  printf("\nlegal\n");
-}
-
-int main(int argc, char **argv){
-  if (argc == 1) {
-    printf("%d arguments!\n",argc-1); 
-    exit(1);
+    lexeme *p = program();
+    return p;
   }
 
-  fp = fopen(argv[1], "r");
-  recognizer(fp);
-  fclose(fp);
 }
 
 /*
@@ -149,19 +140,20 @@ int elsePending(){
 Grammar definition functions
 */
 lexeme *program(){
-  lexeme *d = def();
+  lexeme *d, *p;
+  d = def();
   if (programPending()) { 
-    lexeme *p = program();
+    p = program();
   }
   match(END_OF_FILE);
-  return cons("PROGRAM", d, p);
+  return cons(PROGRAM, d, p);
 }
 
 lexeme *def() {
   if (classPending()) return classFunc(); 
   else if (varDefPending()) return varDef();
   else if (functionPending()) return function();
-  return newErrorLexeme("ERROR", "Error in def ", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in def ", getLineNum(current));
 }
 
 lexeme *op() {
@@ -177,7 +169,7 @@ lexeme *op() {
   else if (check(EQUALTO)) return match(EQUALTO);
   else if (check(GTHAN)) return match(GTHAN);
   else if (check(LTHAN)) return match(LTHAN);
-  return newErrorLexeme("ERROR", "Error in op", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in op", getLineNum(current));
 }
 
 lexeme *unary(){
@@ -303,7 +295,7 @@ lexeme *statement(){
   return newErrorLexeme(ERROR, "Error in statement", getLineNum(current));
 }
 
-lexeme *expr(){ //FIX
+lexeme *expr(){ //FIX??
   lexeme *u;
   if (modifierPending()){
     return modifier();
@@ -313,12 +305,8 @@ lexeme *expr(){ //FIX
     if (opPending()) {
       lexeme *o, *u2;
       o = op();
-      if (strcmp(getType(o),EQUALS) == 0) {
-        u2 = expr();
-      }
-      if(unaryPending()) { u2 = unary(); }
-
-      return cons(EXPR, u, cons(JOIN, o, u2));
+      u2 = expr();
+      return cons(getType(o), u, u2);
     }
     return u;
   }
@@ -383,7 +371,7 @@ lexeme *optElse(){
       el = optElse();
       b = cons(JOIN, b, el);
     }
-    el = cons(JOIN, e, b);
+    el = cons(ELSE_ST, e, b);
   }
   else {
     match(ELSE);

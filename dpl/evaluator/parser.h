@@ -6,6 +6,7 @@
 
 #include "lexeme.h"
 
+lexeme *parse(FILE *fp);
 
 //Pending Functions
 int programPending();

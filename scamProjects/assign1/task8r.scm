@@ -1,0 +1,21 @@
+(define (main)
+    (setPort (open (getElement ScamArgs 1) 'read))
+    (define arg (readExpr))
+    (println "(ecfr " arg ") is " (fmt "%.25f" (ecfr arg)))
+    )
+
+(define (ecfr x)
+    (define (helper depth)
+        (cond 
+            ((= 0 depth) 
+                (cond 
+                    ((= x 0) 2.0)
+                    (else (+ 2.0 (helper (+ depth 1))))
+                    )
+                )
+            ((= depth x) (/ 1.0 (+ 1 (/ 1.0 (+ (* 2.0 depth) 1)))))
+            (else (/ 1.0 (+ 1 (/ 1.0 (+ (* 2.0 depth) (/ 1.0 (+ 1 (helper (+ depth 1)))))))))
+            )
+        )
+    (helper 0)
+    )

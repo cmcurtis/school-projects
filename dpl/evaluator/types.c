@@ -2,7 +2,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-
 #include "types.h"
 
 //Punctuation
@@ -29,6 +28,7 @@ char *EXPONENT = "EXPONENT";
 char *MODULO = "MODULO";
 char *AND = "AND";
 char *OR = "OR";
+char *DOT = "DOT";
 char *EQUALTO = "EQUALTO";
 
 // Keywords 
@@ -48,7 +48,8 @@ char *WHILE = "WHILE";
 char *FOR = "FOR";
 char *NEW = "NEW";
 char *FUNCTION = "FUNCTION";
-char *DEFINE = "define";
+char *DEFINE = "DEFINE";
+char *CALL = "CALL";
 
 // types
 char *type_INT = "type_INT";

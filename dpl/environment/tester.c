@@ -16,13 +16,13 @@ int main(void){
   insertEnv(env, newLexemeKeyword(VARIABLE, "y", 0), newLexemeChar(type_STRING, "hello", 0));
   displayEnv(env);
   lexeme *env2 = createEnv();
-  insertEnv(env, newLexemeKeyword(VARIABLE, "a", 0), newLexemeInt(6, 0));
-  insertEnv(env, newLexemeKeyword(VARIABLE, "b", 0), newLexemeChar(type_STRING, "bye", 0));
-  lexeme *temp = extendEnv(env, car(env2), car(cdr(env2)));
-  displayLocal(env2);
+  insertEnv(env2, newLexemeKeyword(VARIABLE, "a", 0), newLexemeInt(6, 0));
+  insertEnv(env2, newLexemeKeyword(VARIABLE, "b", 0), newLexemeChar(type_STRING, "bye", 0));
+  env = extendEnv(env, car(car(env2)), cdr(car(env2)));
+  displayLocal(env);
   displayEnv(env);
   printf("Searching for x:\n");
-  temp = lookupVal(env, newLexemeKeyword(VARIABLE, "x", 0));
+  lexeme *temp = lookupVal(env, newLexemeKeyword(VARIABLE, "x", 0));
   printf("Found x with value: ");
   displayLexeme(temp);
   printf("\n");
