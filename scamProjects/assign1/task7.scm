@@ -8,30 +8,52 @@
     (println "(ethiop " arg1 " " arg2 ") is " (ethiop arg1 arg2))
     )
 
-(define (halve x)
-    (define (iter store src) 
-        (cond 
-            ((= src 0) store)
-            ((= src 1) store)
-            (else (iter (+ store 1) (- src 2)))
-            )
-        )
-    (iter 0 x)
-    )
-
 (define (double y)
     (+ y y)
     )
 
-(define (div2? z)
-    (define (iter store src) 
-        (cond 
-            ((= src 0) #t)
-            ((= src 1) #f)
-            (else (iter store (- src store)))
+(define (getBit x)
+    (cond 
+        ((= x 0) 1)
+        (else 
+            (define (iter store src) 
+                (cond 
+                    ((= src x) (double store))
+                    (else (iter (double store) (+ src 1)))
+                    )
+                )
+            (iter 1 1)
             )
         )
-    (iter 2 z)
+    )
+
+(define (halve x)
+    (define (iter sum d src) 
+        (define b (getBit src))
+        (cond
+            ((= src 0) d)
+            ((> (+ sum b) x) (iter sum d (- src 1)))
+            (else (iter (+ sum b) (+ d (getBit (- src 1))) (- src 1)))
+            )
+        )
+    (iter 0 0 24)
+    )
+
+(define (div2? z)
+    (define (iter sum src) 
+        (define b (getBit src))
+        (cond
+            ((= src 0)
+                (cond
+                    ((= (+ sum b) z) #f)
+                    (else #t)
+                    )
+                )
+            ((> (+ sum b) z) (iter sum (- src 1)))
+            (else (iter (+ sum b) (- src 1)))
+            )
+        )
+    (iter 0 24)
     )
 
 (define (ethiop x y)
