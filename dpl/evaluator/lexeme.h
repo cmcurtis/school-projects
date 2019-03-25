@@ -13,7 +13,7 @@ extern char* getSval(lexeme *l);
 extern int getIval(lexeme *l);
 extern double getRval(lexeme *l);
 extern char* getKval(lexeme *l);
-extern char* getFval(lexeme *l);
+extern FILE* getFval(lexeme *l);
 extern int getLineNum(lexeme *l);
 
 extern lexeme *car(lexeme *x);

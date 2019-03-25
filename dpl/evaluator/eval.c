@@ -415,9 +415,9 @@ lexeme *evalEqualTo(lexeme *t, lexeme *env){
 /*
 other eval helpers
 */
-lexeme *getFuncDefParams(lexeme *t){ return cdr(car(t)); }
-lexeme *getFuncDefBody(lexeme *t){ return cdr(cdr(t)); }
-lexeme *getFuncDefName(lexeme *t){ return car(t); }
+lexeme *getFuncDefParams(lexeme *t) { return cdr(car(t)); }
+lexeme *getFuncDefBody(lexeme *t) { return cdr(cdr(t)); }
+lexeme *getFuncDefName(lexeme *t) { return car(t); }
 lexeme *getClosureParams(lexeme *t) { return cdr(car(t)); }
 lexeme *getClosureBody(lexeme *t) { return cdr(cdr(t)); }
 lexeme *getClosureEnvironment(lexeme *t) { return car(t); }
@@ -425,29 +425,36 @@ lexeme *getClosureEnvironment(lexeme *t) { return car(t); }
 /*
 built-ins
 */
-lexeme *evalOpenFileForReading(lexeme *evaluatedArgs){
+lexeme* evalPrintln(evaluatedArgList) {
+  while (evaluatedArgList != null) {
+    displayLexeme(car(evaluatedArgList));
+    evaluatedArgList = cdr(evaluatedArgList);
+    }
+  return newLexemeBool(1, 0);
+  }
+
+lexeme *evalOpenFileForReading(lexeme *evaluatedArgs) {
   lexeme *fileName = car(evaluatedArgs);
-  lexeme *fp = new Lexeme(FILE_POINTER);
-  setFval(fp) = open(fileName.sval,"read"); //implementation language open
+  lexeme *fp = newLexeme(FILE_POINTER, getLineNum(evaluatedArgs));
+  setFval(fp) = fopen(getSval(fileName),"r");
   return fp;
   }
 
-function evalReadInteger(evaluatedArgs){
-  var filePointer = car(evaluatedArgs).fval;
-  var x = readInt(filePointer); //implementation language to read an int
-  return new Lexeme(INTEGER,x);
+function evalReadInteger(evaluatedArgs) {
+  FILE* filePointer = getFval(car(evaluatedArgs));
+  int x;
+  fscanf (filePointer, "%d", &x); 
+  return newLexemeInt(x, getLineNum(evaluatedArgs));
   }
 
-function evalAtFileEnd(evaluatedArgs){
-  var filePointer = car(evaluatedArgs).fval;
-  if (eof(filePointer))         //implementation language to check EOF
-      return new Lexeme(TRUE);
-  else
-      return new Lexeme(FALSE);
+function evalAtFileEnd(evaluatedArgs) {
+  var filePointer = getFval(car(evaluatedArgs));
+  if (feof(filePointer)) { return newLexemeBool(1, 0); }
+  else { return newLexemeBool(0, 0); }
   }
-  
-function evalCloseFile(evaluatedArgs){
-  var filePointer = car(evaluatedArgs).fval;
-  close(filePointer);           //implementation language for closing a file
-  return new Lexeme(TRUE);      //gotta return something
+
+function evalCloseFile(evaluatedArgs) {
+  FILE* filePointer = getFval(car(evaluatedArgs));
+  fclose(filePointer);
+  return newLexemeBool(1, 0);
   }

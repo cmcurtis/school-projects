@@ -31,7 +31,7 @@ char* getSval(lexeme *l) { return l->sval; }
 int getIval(lexeme *l) { return l->ival; }
 double getRval(lexeme *l) { return l->rval; }
 char* getKval(lexeme *l) { return l->kval; }
-char* getFval(lexeme *l) { return l->fval; }
+FILE* getFval(lexeme *l) { return l->fval; }
 
 /*
 helpers
