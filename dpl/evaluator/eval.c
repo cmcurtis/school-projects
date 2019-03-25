@@ -86,7 +86,7 @@ lexeme *eval(lexeme *tree, lexeme *env){
     return evalWhile(tree, env);
   }
   else {
-    //FATAL error
+    return newErrorLexeme(ERROR, "Evaluation error", getLineNum(tree));
   }
 }
 
@@ -118,12 +118,22 @@ lexeme *evalShortCircuitOp(lexeme *t, lexeme *env){
 lexeme *evalModifier(lexeme *t, lexeme *env){
   lexeme *left = car(t);
   lexeme *right = eval(cdr(t), env);
+  lexeme *value;
   if (getType(left) == PLUS) {
-    //TODO
+    if (getType(right) == type_INT) {
+      value = newLexemeInt((getIval(right) + 1), getLineNum(t));
+      return updateEnv(env, right, value);
+      }
+    else return newErrorLexeme(ERROR, "Modifier Error", getLineNum(t));
   }
-  if (getType(left) == MINUS) {
-    //TODO
+  else if (getType(left) == MINUS) {
+    if (getType(right) == type_INT) { 
+      value = newLexemeInt((getIval(right) - 1), getLineNum(t)); 
+      return updateEnv(env, right, value);
+      }
+    else return newErrorLexeme(ERROR, "Modifier Error", getLineNum(t));
   }
+  else return newErrorLexeme(ERROR, "Modifier Error", getLineNum(t));
 }
 
 lexeme *evalVarDef(lexeme *t, lexeme *env){
@@ -142,7 +152,7 @@ lexeme* evalLambda(lexeme *t, lexeme *env) {
 lexeme *evalCall(lexeme *t, lexeme *env){
   lexeme* closure = lookupVal(env, car(t));
   lexeme* args = evalArgs(cdr(t), env);
-  // if(isBuiltIn(closure)) { return evalBuiltIn(closure, args); }
+  if(isBuiltIn(closure)) { return evalBuiltIn(closure, args); }
   lexeme* params = getClosureParams(closure);
   lexeme* body = getClosureBody(closure);
   lexeme* senv = getClosureEnvironment(closure);
@@ -163,7 +173,7 @@ lexeme *evalAssignment(lexeme *t, lexeme *env){
     updateEnv(obj, car(cdr(t)), value);
     }
   else {
-    updateEnv(car(t), value, env);
+    updateEnv(car(t), value, env); //???
     }
   return value;
 }
@@ -202,7 +212,7 @@ lexeme *evalIf(lexeme *t, lexeme *env){
 }
 
 lexeme *evalFor(lexeme *t, lexeme *env){
-
+//TODO
 }
 
 lexeme *evalWhile(lexeme *t, lexeme *env){
@@ -233,9 +243,7 @@ lexeme *evalPlus(lexeme *t, lexeme *env){
   else if(getType(left) == type_REAL && getType(right) == type_INT) {
     return newLexemeReal(getRval(left) + getIval(right), getLineNum(left));
   }
-  else {
-    //ERROR
-  }
+  else return newErrorLexeme(ERROR, "Addition error", getLineNum(t));
 }
 
 lexeme *evalMinus(lexeme *t, lexeme *env) {
@@ -254,9 +262,7 @@ lexeme *evalMinus(lexeme *t, lexeme *env) {
   else if(getType(left) == type_REAL && getType(right) == type_INT) {
     return newLexemeReal(getRval(left) - getIval(right), getLineNum(left));
   }
-  else {
-    //ERROR
-  }
+  else return newErrorLexeme(ERROR, "Subtraction error", getLineNum(t));
 }
 
 lexeme *evalTimes(lexeme *t, lexeme *env) {
@@ -275,9 +281,7 @@ lexeme *evalTimes(lexeme *t, lexeme *env) {
   else if(getType(left) == type_REAL && getType(right) == type_INT) {
     return newLexemeReal(getRval(left) * getIval(right), getLineNum(left));
   }
-  else {
-    //ERROR
-  }
+  else return newErrorLexeme(ERROR, "Multiplication error", getLineNum(t));
 }
 
 lexeme *evalDivide(lexeme *t, lexeme *env) {
@@ -296,9 +300,7 @@ lexeme *evalDivide(lexeme *t, lexeme *env) {
   else if(getType(left) == type_REAL && getType(right) == type_INT) {
     return newLexemeReal(getRval(left) / getIval(right), getLineNum(left));
   }
-  else {
-    //ERROR
-  }
+  else return newErrorLexeme(ERROR, "Division error", getLineNum(t));
 }
 
 lexeme *evalModulo(lexeme *t, lexeme *env){
@@ -308,9 +310,7 @@ lexeme *evalModulo(lexeme *t, lexeme *env){
   if (getType(left) == type_INT && getType(right) == type_INT) {
     return newLexemeInt(getIval(left) % getIval(right), getLineNum(left));
   }
-  else{
-    //ERROR
-  }
+  else return newErrorLexeme(ERROR, "Modulo error", getLineNum(t));
 }
 
 lexeme *evalExponent(lexeme *t, lexeme *env){
@@ -329,9 +329,7 @@ lexeme *evalExponent(lexeme *t, lexeme *env){
   // else if(getType(left) == type_REAL && getType(right) == type_INT) {
   //   return newLexemeReal(getRval(left) ^ getIval(right), getLineNum(left));
   // }
-  else {
-    //ERROR
-  }
+  else return newErrorLexeme(ERROR, "Exponential error", getLineNum(t));
 }
 
 /*
@@ -359,9 +357,7 @@ lexeme *evalGreaterThan(lexeme *t, lexeme *env){
     if (getRval(left) > getIval(right)) { b = newLexmeBool(1, lineNum); }
     else { b = newLexemeBool(0, lineNum); }
   }
-  else {
-    //ERROR
-  }
+  else return newErrorLexeme(ERROR, "Comparison error", getLineNum(t));
   return b;
 }
 
@@ -386,9 +382,7 @@ lexeme *evalLessThan(lexeme *t, lexeme *env){
     if (getRval(left) < getIval(right)) { b = newLexmeBool(1, lineNum); }
     else { b = newLexemeBool(0, lineNum); }
   }
-  else {
-    //ERROR
-  }
+  else return newErrorLexeme(ERROR, "Comparison error", getLineNum(t));
   return b;
 }
 
@@ -413,14 +407,12 @@ lexeme *evalEqualTo(lexeme *t, lexeme *env){
     if (getRval(left) == getIval(right)) { b = newLexmeBool(1, lineNum); }
     else { b = newLexemeBool(0, lineNum); }
   }
-  else {
-    //ERROR
-  }
+  else return newErrorLexeme(ERROR, "Comparison error", getLineNum(t));
   return b;
 }
 
 /*
-other eval helpers
+eval getters
 */
 lexeme *getFuncDefParams(lexeme *t) { return cdr(car(t)); }
 lexeme *getFuncDefBody(lexeme *t) { return cdr(cdr(t)); }
