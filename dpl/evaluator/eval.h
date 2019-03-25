@@ -13,6 +13,7 @@ lexeme *evalSimpleOp(lexeme *tree, lexeme *env);
 lexeme *evalShortCircuitOp(lexeme *tree, lexeme *env);
 lexeme *evalModifier(lexeme *tree, lexeme *env);
 lexeme *evalVarDef(lexeme *tree, lexeme *env);
+lexeme *evalAssignment(lexeme *tree, lexeme *env);
 lexeme *evalFuncDef(lexeme *tree, lexeme *env);
 lexeme *evalCall(lexeme *tree, lexeme *env);
 lexeme *evalClassDef(lexeme *tree, lexeme *env);

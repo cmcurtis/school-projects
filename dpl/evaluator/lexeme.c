@@ -15,8 +15,8 @@ struct Lexeme{
   double rval;
   char *sval;
   char *kval;
-  // lexeme *aval;
-  char *fval;
+  lexeme **aval;
+  lexeme *(*fval)(lexeme *);
   int lineNum;
   lexeme *left;
   lexeme *right;
@@ -36,6 +36,10 @@ char* getFval(lexeme *l) { return l->fval; }
 /*
 helpers
 */
+void setType(lexeme *l, char *type){
+  l->type = type;
+}
+
 lexeme *car(lexeme *x){ return x->left; }
 lexeme *cdr(lexeme *x){ return x->right; }
 void setCar(lexeme *x, lexeme *y){ x->left = y; }
@@ -72,6 +76,14 @@ lexeme *newErrorLexeme(char *err, char *message, int n){
   return e;
 }
 
+lexeme *newLexemeBool(int x, int n) {
+  lexeme *p = malloc(sizeof(lexeme));
+  assert(p != 0);
+  p->type = type_BOOL;
+  p->ival = x;
+  p->lineNum = n;
+  return p;
+  }
 
 lexeme *newLexemeInt(int x, int n) {
   lexeme *p = malloc(sizeof(lexeme));

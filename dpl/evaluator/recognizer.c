@@ -313,7 +313,7 @@ lexeme *expr(){ //FIX
     if (opPending()) {
       lexeme *o, *u2;
       o = op();
-      if (strcmp(getType(o),EQUALS) == 0) {
+      if (getType(o) == EQUALS) {
         u2 = expr();
       }
       if(unaryPending()) { u2 = unary(); }

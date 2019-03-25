@@ -64,6 +64,7 @@ char *END_OF_FILE = "ENDofINPUT";
 //types for building parse trees
 char *ERROR = "ERROR";
 char *JOIN = "JOIN";
+char *CLOSURE = "CLOSURE";
 char *ENV = "ENV";
 char *TABLE = "TABLE";
 char *PROGRAM = "PROGRAM";
@@ -72,6 +73,7 @@ char *CLASS_INIT = "CLASS_INIT";
 char *FUNC_DEF = "FUNC_DEF";
 char *FUNC_CALL = "FUNC_CALL";
 char *VAR_DEF = "VAR_DEF";
+char *ASSIGN = "ASSIGN";
 char *MODIFIER = "MODIFIER";
 char *EXPR = "EXPR";
 char *VAR_LIST = "VAR_LIST";

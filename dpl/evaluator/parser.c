@@ -295,7 +295,7 @@ lexeme *statement(){
   return newErrorLexeme(ERROR, "Error in statement", getLineNum(current));
 }
 
-lexeme *expr(){ //FIX??
+lexeme *expr(){ 
   lexeme *u;
   if (modifierPending()){
     return modifier();
@@ -304,7 +304,13 @@ lexeme *expr(){ //FIX??
     u = unary();
     if (opPending()) {
       lexeme *o, *u2;
-      o = op();
+      if (check(EQUALS)){
+        o = op();
+        if (check(EQUALS)){
+          setType(o, EQUALTO);
+        }
+      }
+      else { o = op(); }
       u2 = expr();
       return cons(getType(o), u, u2);
     }
@@ -354,8 +360,9 @@ lexeme *ifStatement(){
   b = block();
   if (elsePending()) {
     el = optElse();
-    b = cons(JOIN, b, el);
+    // b = cons(JOIN, b, el);
   }
+  b = cons(JOIN, b, el);
   return cons(IF_ST, e, b);
 }
 

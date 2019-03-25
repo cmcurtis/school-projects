@@ -8,6 +8,7 @@
 typedef struct Lexeme lexeme;
 
 extern char *getType(lexeme *l);
+extern void setType(lexeme *l, char *type);
 extern char* getSval(lexeme *l);
 extern int getIval(lexeme *l);
 extern double getRval(lexeme *l);
@@ -23,6 +24,7 @@ extern lexeme *cons(char *type, lexeme *left, lexeme *right);
 
 extern lexeme *newLexeme(char *t, int n);
 extern lexeme *newErrorLexeme(char *err, char *message, int n);
+extern lexeme *newLexemeBool(int x, int n);
 extern lexeme *newLexemeInt(int x, int n);
 extern lexeme *newLexemeReal(double x, int n);
 extern lexeme *newLexemeChar(char *type, char *x, int n);
