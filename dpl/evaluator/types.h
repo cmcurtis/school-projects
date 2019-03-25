@@ -71,6 +71,7 @@ extern char *CLASS_DEF;
 extern char *CLASS_INIT;
 extern char *FUNC_DEF;
 extern char *FUNC_CALL;
+extern char *LAMBDA;
 extern char *VAR_DEF;
 extern char *ASSIGN;
 extern char *MODIFIER;

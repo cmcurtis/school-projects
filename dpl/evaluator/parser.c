@@ -84,7 +84,7 @@ int varDefPending() {
 }
 
 int functionPending() {
-  return funcDefPending() || funcCallPending();
+  return funcDefPending() || funcCallPending() || lambdaPending();
 }
 
 int funcDefPending() {
@@ -93,6 +93,10 @@ int funcDefPending() {
 
 int funcCallPending(){
   return check(CALL);
+}
+
+int lambdaPending(){
+  return check(LAMBDA);
 }
 
 int exprPending(){
@@ -246,6 +250,7 @@ lexeme *classInit(){
 lexeme *function(){
   if (funcDefPending()) return functionDef();
   else if (funcCallPending()) return functionCall();
+  else if (lambdaPending()) return lambda();
   return newErrorLexeme(ERROR, "Error in function", getLineNum(current));
 }
 
@@ -266,6 +271,15 @@ lexeme *functionCall(){
   lexeme *a = optArgList();
   match(CBRACE);
   return cons(FUNC_CALL, v, a);
+}
+
+lexeme *lambda(){
+  match(LAMBDA);
+  match(OBRACE);
+  lexeme *p = optParameterList();
+  match(CBRACE);
+  lexeme *b = block();
+  return cons(LAMBDA, NULL, cons(JOIN, p, b));
 }
 
 lexeme *block(){

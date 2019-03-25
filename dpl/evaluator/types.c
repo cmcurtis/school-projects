@@ -72,6 +72,7 @@ char *CLASS_DEF = "CLASS_DEF";
 char *CLASS_INIT = "CLASS_INIT";
 char *FUNC_DEF = "FUNC_DEF";
 char *FUNC_CALL = "FUNC_CALL";
+char *LAMBDA = "LAMBDA";
 char *VAR_DEF = "VAR_DEF";
 char *ASSIGN = "ASSIGN";
 char *MODIFIER = "MODIFIER";

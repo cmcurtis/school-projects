@@ -17,6 +17,7 @@ lexeme *evalAssignment(lexeme *tree, lexeme *env);
 lexeme *evalFuncDef(lexeme *tree, lexeme *env);
 lexeme *evalCall(lexeme *tree, lexeme *env);
 lexeme *evalClassDef(lexeme *tree, lexeme *env);
+lexeme* evalLambda(lexeme *tree, lexeme *env);
 lexeme *evalBlock(lexeme *tree, lexeme *env);
 lexeme *evalIf(lexeme *tree, lexeme *env);
 lexeme *evalFor(lexeme *tree, lexeme *env);

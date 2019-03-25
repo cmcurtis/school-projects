@@ -63,6 +63,9 @@ lexeme *eval(lexeme *tree, lexeme *env){
   else if (getType(tree) == FUNC_CALL) { 
     return evalCall(tree,env);
   }
+  else if (getType(tree) == LAMBDA) { 
+    return evalLambda(tree,env);
+  }
   else if (getType(tree) == CLASS_DEF) { 
     return evalClassDef(tree,env);
   }
@@ -131,6 +134,10 @@ lexeme *evalFuncDef(lexeme *t, lexeme *env){
   lexeme* closure = cons(CLOSURE, env, cons(JOIN, getFuncDefParams(t), cons(JOIN, getFuncDefBody(t), NULL)));
   return insertEnv(env, getFuncDefName(t), closure);
 }
+
+lexeme* evalLambda(lexeme *t, lexeme *env) {
+  return cons(CLOSURE, env, t);
+  }
 
 lexeme *evalCall(lexeme *t, lexeme *env){
   lexeme* closure = lookupVal(env, car(t));
@@ -433,27 +440,27 @@ lexeme* evalPrintln(evaluatedArgList) {
   return newLexemeBool(1, 0);
   }
 
-lexeme *evalOpenFileForReading(lexeme *evaluatedArgs) {
+lexeme* evalOpenFileForReading(lexeme *evaluatedArgs) {
   lexeme *fileName = car(evaluatedArgs);
   lexeme *fp = newLexeme(FILE_POINTER, getLineNum(evaluatedArgs));
   setFval(fp) = fopen(getSval(fileName),"r");
   return fp;
   }
 
-function evalReadInteger(evaluatedArgs) {
+lexeme* evalReadInteger(evaluatedArgs) {
   FILE* filePointer = getFval(car(evaluatedArgs));
   int x;
   fscanf (filePointer, "%d", &x); 
   return newLexemeInt(x, getLineNum(evaluatedArgs));
   }
 
-function evalAtFileEnd(evaluatedArgs) {
-  var filePointer = getFval(car(evaluatedArgs));
+lexeme* evalAtFileEnd(evaluatedArgs) {
+  FILE* filePointer = getFval(car(evaluatedArgs));
   if (feof(filePointer)) { return newLexemeBool(1, 0); }
   else { return newLexemeBool(0, 0); }
   }
 
-function evalCloseFile(evaluatedArgs) {
+lexeme* evalCloseFile(evaluatedArgs) {
   FILE* filePointer = getFval(car(evaluatedArgs));
   fclose(filePointer);
   return newLexemeBool(1, 0);
