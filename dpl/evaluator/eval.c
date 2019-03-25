@@ -432,7 +432,36 @@ lexeme *getClosureEnvironment(lexeme *t) { return car(t); }
 /*
 built-ins
 */
-lexeme* evalPrintln(evaluatedArgList) {
+int isBuiltIn(lexeme *c){
+  char* func = getSval(car(c));
+  if (strcmp(func, "PRINT") == 0 || strcmp(func, "OPEN") == 0 || strcmp(func, "CLOSE") == 0 || strcmp(func, "READ") == 0){
+      return 1;
+    }
+  else return 0;
+}
+
+lexeme* evalBuiltIn(lexeme* c, lexeme* args){
+  char* func = getSval(car(c));
+  switch (func) {
+    case "PRINT":
+      return evalPrintln(args);
+      break;
+    case "OPEN":
+      return evalOpenFileForReading(args);
+      break;
+    case "CLOSE":
+      return evalCloseFile(args);
+      break;
+    case "READ":
+      return evalReadInteger(args);
+      break;
+    default:
+      return newErrorLexeme(ERROR, "Error with Builtin", getLineNum(args));
+      break;
+  }
+}
+
+lexeme* evalPrintln(lexeme *evaluatedArgList) {
   while (evaluatedArgList != null) {
     displayLexeme(car(evaluatedArgList));
     evaluatedArgList = cdr(evaluatedArgList);
@@ -447,20 +476,20 @@ lexeme* evalOpenFileForReading(lexeme *evaluatedArgs) {
   return fp;
   }
 
-lexeme* evalReadInteger(evaluatedArgs) {
+lexeme* evalReadInteger(lexeme *evaluatedArgs) {
   FILE* filePointer = getFval(car(evaluatedArgs));
   int x;
   fscanf (filePointer, "%d", &x); 
   return newLexemeInt(x, getLineNum(evaluatedArgs));
   }
 
-lexeme* evalAtFileEnd(evaluatedArgs) {
+lexeme* evalAtFileEnd(lexeme *evaluatedArgs) {
   FILE* filePointer = getFval(car(evaluatedArgs));
   if (feof(filePointer)) { return newLexemeBool(1, 0); }
   else { return newLexemeBool(0, 0); }
   }
 
-lexeme* evalCloseFile(evaluatedArgs) {
+lexeme* evalCloseFile(lexeme *evaluatedArgs) {
   FILE* filePointer = getFval(car(evaluatedArgs));
   fclose(filePointer);
   return newLexemeBool(1, 0);
