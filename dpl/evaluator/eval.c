@@ -421,3 +421,33 @@ lexeme *getFuncDefName(lexeme *t){ return car(t); }
 lexeme *getClosureParams(lexeme *t) { return cdr(car(t)); }
 lexeme *getClosureBody(lexeme *t) { return cdr(cdr(t)); }
 lexeme *getClosureEnvironment(lexeme *t) { return car(t); }
+
+/*
+built-ins
+*/
+lexeme *evalOpenFileForReading(lexeme *evaluatedArgs){
+  lexeme *fileName = car(evaluatedArgs);
+  lexeme *fp = new Lexeme(FILE_POINTER);
+  setFval(fp) = open(fileName.sval,"read"); //implementation language open
+  return fp;
+  }
+
+function evalReadInteger(evaluatedArgs){
+  var filePointer = car(evaluatedArgs).fval;
+  var x = readInt(filePointer); //implementation language to read an int
+  return new Lexeme(INTEGER,x);
+  }
+
+function evalAtFileEnd(evaluatedArgs){
+  var filePointer = car(evaluatedArgs).fval;
+  if (eof(filePointer))         //implementation language to check EOF
+      return new Lexeme(TRUE);
+  else
+      return new Lexeme(FALSE);
+  }
+  
+function evalCloseFile(evaluatedArgs){
+  var filePointer = car(evaluatedArgs).fval;
+  close(filePointer);           //implementation language for closing a file
+  return new Lexeme(TRUE);      //gotta return something
+  }

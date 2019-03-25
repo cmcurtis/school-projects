@@ -16,7 +16,7 @@ struct Lexeme{
   char *sval;
   char *kval;
   lexeme **aval;
-  lexeme *(*fval)(lexeme *);
+  FILE *fval;
   int lineNum;
   lexeme *left;
   lexeme *right;
