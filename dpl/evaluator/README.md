@@ -7,6 +7,8 @@ To write a program, define a main function, then call the function.
       END
     call main{}
 
+To run your program: *****
+
 In your main function you can define variables with or without assigning value:
   Example:
     let x = "hello"
@@ -21,4 +23,36 @@ you can also define other functions:
 and call those functions:
   Example:
   let c = call foo{5, 8} 
+***lambdas***
+functions will return the last statement in the definition
+
+If statement structure:
+  Example:
+  if { #condition# } BEGIN
+    #do something#
+    END
+  else BEGIN
+    #do something else#
+    END
+
+While loop structure:
+  while{ #condition# } BEGIN
+    # do something #
+  END
+
+Arrays are created as such where size is the desired size of the array:
+  let x = call newArray{#size#}
+
+You can set a spot in an array, where i is the index, v is the value to be set and x is the array:
+  call setArray{x, i, v}
+
+You can get a value from an array in a similar fashion:
+  v = call getArray{x, i}
+
+***objects***
+
+
+
+Comments can be made as follows: 
+  # this is a comment #
 

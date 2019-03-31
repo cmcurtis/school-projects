@@ -11,9 +11,7 @@ function main {} BEGIN
   let a = call f{3}
   let b = call f{11}
 
-  let z = call a{5}
-
-  call PRINT{"a{5} is " , z}     
+  call PRINT{"a{5} is " , call a{5}}     
   call PRINT{"b{6} is ", call b{6}}      
   call PRINT{"a{10} is ", call a{10}}    
 END

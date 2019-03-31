@@ -2,12 +2,13 @@ function sum {} BEGIN
 let sum = 0
 let fp = call OPEN{"data.ints"}
 let i = call READ{fp}
-  while {NOT FILE_END{fp}} BEGIN
-    sum = sum + i;
-    i = call READ{fp};
-  END
+  while {call FILE_END{fp}} BEGIN 
+    sum = sum + i 
+    call PRINT{i}
+    i = call READ{fp}
+  END 
 call PRINT { " sum is " , sum }
-call CLOSE(fp);
+call CLOSE{fp}
 END
 
 call sum{}

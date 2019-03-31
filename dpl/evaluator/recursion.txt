@@ -1,0 +1,18 @@
+function main { } BEGIN
+  let n = 10
+  let a
+  let b
+  function multiplyNumbers{x} BEGIN
+    if {n > 0} BEGIN
+      a = n - 1
+      n = n * call multiplyNumbers{a}
+      END
+    else BEGIN
+      1
+      END
+  END
+
+  call PRINT {"Factorial of ", n, " = ", call multiplyNumbers{n}}
+END
+
+call main{}

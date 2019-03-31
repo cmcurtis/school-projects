@@ -1,17 +1,12 @@
 function main { } BEGIN
-#fix this#
-	let x0 = 0
-  let x1 = 1
-  let y0 = 2
-  call cost {x0, x1}
-  function area { l, w} BEGIN
-    l * w
-  END
+	let x = 10
+  let y = 80
+  let a
 
-  function cost { price, area } BEGIN
-    price * area
+  function percent { x, y } BEGIN
+    a = x / y
   END
-
-  call area {x , y}
+  call percent {x , y}
 END
+
 call main{}

@@ -69,6 +69,7 @@ char *END_OF_FILE = "ENDofINPUT";
 char *ERROR = "ERROR";
 char *JOIN = "JOIN";
 char *CLOSURE = "CLOSURE";
+char *LAMBDA_CLOSURE = "LAMBDA_CLOSURE";
 char *ENV = "ENV";
 char *TABLE = "TABLE";
 char *PROGRAM = "PROGRAM";

@@ -68,6 +68,7 @@ extern char *END_OF_FILE;
 extern char *ERROR;
 extern char *JOIN;
 extern char *CLOSURE;
+extern char *LAMBDA_CLOSURE;
 extern char *ENV;
 extern char *TABLE;
 extern char *PROGRAM;

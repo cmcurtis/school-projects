@@ -37,7 +37,14 @@ lexeme* evalCloseFile(lexeme *evaluatedArgs);
 lexeme* evalNewArray(lexeme *evalArgs);
 lexeme* evalSetArray(lexeme *evaluatedArgList);
 lexeme* evalGetArray(lexeme* evaluatedArgList);
+lexeme* evalGetArgCount(lexeme *evaluatedArgs);
+lexeme* evalGetArg(lexeme *evaluatedArgs);
 
+/*
+globals for commandline args
+*/
+int countCL;
+char **argsCL;
 
 int main(int argc, char **argv){
   //open file to eval
@@ -45,15 +52,21 @@ int main(int argc, char **argv){
     printf("%d arguments!\n",argc-1); 
     exit(1);
   }
+  countCL = argc;
+  argsCL = argv;
+
   FILE *fp;
   fp = fopen(argv[1], "r");
 
   lexeme *tree = parse(fp);
   lexeme *env = createEnv();
-   //insert builtIns into env
+  //insert builtIns into env
+  insertEnv(env, newLexemeKeyword(VARIABLE, "getArg", 0), newLexeme("getArg", 0)); 
+  insertEnv(env, newLexemeKeyword(VARIABLE, "getArgCount", 0), newLexeme("getArgCount", 0)); 
   insertEnv(env, newLexemeKeyword(VARIABLE, "PRINT", 0), newLexeme("PRINT", 0)); 
   insertEnv(env, newLexemeKeyword(VARIABLE, "OPEN", 0), newLexeme("OPEN", 0)); 
   insertEnv(env, newLexemeKeyword(VARIABLE, "READ", 0), newLexeme("READ", 0)); 
+  insertEnv(env, newLexemeKeyword(VARIABLE, "NOT_FILE_END", 0), newLexeme("NOT_FILE_END", 0)); 
   insertEnv(env, newLexemeKeyword(VARIABLE, "CLOSE", 0), newLexeme("CLOSE", 0)); 
   insertEnv(env, newLexemeKeyword(VARIABLE, "newArray", 0), newLexeme("newArray", 0)); 
   insertEnv(env, newLexemeKeyword(VARIABLE, "setArray", 0), newLexeme("setArray", 0)); 
@@ -102,15 +115,18 @@ lexeme *eval(lexeme *tree, lexeme *env){
     return evalVarDef(tree, env);
   }
   else if (getType(tree) == FUNC_DEF) {
-    printf("~function def evaluation~\n"); //DEBUG
+    // printf("~function def evaluation~\n"); //DEBUG
     return evalFuncDef(tree, env);
   }
   else if (getType(tree) == FUNC_CALL) { 
-    printf("~function call evaluation~\n"); //DEBUG
+    // printf("~function call evaluation~\n"); //DEBUG
     return evalCall(tree,env);
   }
   else if (getType(tree) == LAMBDA) { 
     return evalLambda(tree,env);
+  }
+  else if (getType(tree) == LAMBDA_CLOSURE) {
+    return evalLambdaClosure(tree, env);
   }
   else if (getType(tree) == CLASS_DEF) { 
     return evalClassDef(tree,env);
@@ -210,7 +226,7 @@ lexeme *evalFuncDef(lexeme *t, lexeme *env){
 }
 
 lexeme* evalLambda(lexeme *t, lexeme *env) {
-  return cons(CLOSURE, env, t);
+  return cons(LAMBDA_CLOSURE, env, t);
   }
 
 lexeme* evalArgs(lexeme *t, lexeme *env){
@@ -221,9 +237,20 @@ lexeme* evalArgs(lexeme *t, lexeme *env){
   return arg;
 }
 
+lexeme *evalLambdaClosure(lexeme *t, lexeme *env){
+  lexeme* args = evalArgs(cdr(t), env);
+  lexeme* params = getClosureParams(t);
+  lexeme* body = getClosureBody(t);
+  lexeme* senv = getClosureEnvironment(t);
+  // printf("\nEARGS\n"); //DEBUG
+  // lexeme* eargs = evalArgs(args, env);
+  lexeme* xenv = extendEnv(senv, params, args);
+  return eval(body, xenv);
+}
+
 lexeme* evalDot(lexeme *t, lexeme *env){
-  //TODO
-  return NULL;
+  lexeme* object = eval(car(t), env);
+  return eval(cdr(t), object);
 }
 
 lexeme *evalCall(lexeme *t, lexeme *env){
@@ -237,6 +264,7 @@ lexeme *evalCall(lexeme *t, lexeme *env){
   // printf("\nEARGS\n"); //DEBUG
   // lexeme* eargs = evalArgs(args, env);
   lexeme* xenv = extendEnv(senv, params, args);
+  insertEnv(xenv, newLexemeKeyword(VARIABLE,"this", getLineNum(t)), xenv); //for oo
   return eval(body, xenv);
 }
 
@@ -503,35 +531,11 @@ lexeme *evalEqualTo(lexeme *t, lexeme *env){
 /*
 eval getters
 */
-lexeme *getFuncDefParams(lexeme *t) { return cdr(car(t)); }
+lexeme *getFuncDefParams(lexeme *t) { return car(cdr(t)); }
 lexeme *getFuncDefBody(lexeme *t) { return cdr(cdr(t)); }
-lexeme *getFuncDefName(lexeme *t) { 
-  //DEBUG
-  // printf("getFuncDefName of:");
-  // displayLexeme(t);
-  // printf("Type is: %s Name is:", getType(car(t)));
-  // displayLexeme(car(t)); 
-  //DEBUG
-  return car(t); 
-  }
-lexeme *getClosureParams(lexeme *t) { 
-  //DEBUG
-  // printf("getClosureParams of:");
-  // displayLexeme(t);
-  // if (cdr(car(t)) != NULL) printf("Params are: %s", getType(cdr(car(t))));
-  // else printf("No params");
-  // //DEBUG
-  return cdr(car(t)); 
-  }
-lexeme *getClosureBody(lexeme *t) { 
-  //DEBUG
-  // printf("getClosureBody of:");
-  // displayLexeme(t);
-  // if (car(cdr(cdr(t))) != NULL) printf("Body is: %s\n", getType(car(cdr(cdr(t)))));
-  // else printf("\n\tNo BODY\n");
-  //DEBUG
-  return car(cdr(cdr(t))); 
-  }
+lexeme *getFuncDefName(lexeme *t) { return car(t); }
+lexeme *getClosureParams(lexeme *t) { return car(cdr(t)); }
+lexeme *getClosureBody(lexeme *t) { return car(cdr(cdr(t))); }
 lexeme *getClosureEnvironment(lexeme *t) { return car(t); }
 
 /*
@@ -541,7 +545,8 @@ int isBuiltIn(lexeme *c){
   char* func = getKval(c);
   // printf("\nisBUILTIN::FUNCTION NAME:: %s\n", func); //DEBUG
   if (strcmp(func, "PRINT") == 0 || strcmp(func, "OPEN") == 0 || strcmp(func, "CLOSE") == 0 || strcmp(func, "READ") == 0
-    || (strcmp(func, "newArray") == 0) || (strcmp(func, "setArray") == 0) || (strcmp(func, "getArray") == 0)){
+    || (strcmp(func, "NOT_FILE_END") == 0) || (strcmp(func, "newArray") == 0) || (strcmp(func, "setArray") == 0) 
+    || (strcmp(func, "getArray") == 0) || (strcmp(func, "getArg") == 0) || (strcmp(func, "getArgCount") == 0)){
       return 1;
     }
   else return 0;
@@ -550,10 +555,13 @@ int isBuiltIn(lexeme *c){
 lexeme* evalBuiltIn(lexeme* c, lexeme* args){
   // printf("EvaluatingBuiltIns\n"); //DEBUG
   char* func = getKval(c);
-  if (strcmp(func, "PRINT") == 0) { return evalPrintln(args); }
+  if(strcmp(func, "getArg") == 0) { return evalGetArg(args); }
+  else if(strcmp(func, "getArgCount") == 0) { return evalGetArgCount(args); }
+  else if (strcmp(func, "PRINT") == 0) { return evalPrintln(args); }
   else if(strcmp(func, "OPEN") == 0) { return evalOpenFileForReading(args); }
   else if(strcmp(func, "CLOSE") == 0) { return evalCloseFile(args); }
   else if(strcmp(func, "READ") == 0) { return evalReadInteger(args); }
+  else if(strcmp(func, "NOT_FILE_END") == 0) { return evalAtFileEnd(args); }
   else if(strcmp(func, "newArray") == 0) { return evalNewArray(args); }
   else if(strcmp(func, "setArray") == 0) { return evalSetArray(args); }
   else if(strcmp(func, "getArray") == 0) { return evalGetArray(args); }
@@ -586,8 +594,8 @@ lexeme* evalReadInteger(lexeme *evaluatedArgs) {
 
 lexeme* evalAtFileEnd(lexeme *evaluatedArgs) {
   FILE* filePointer = getFval(car(evaluatedArgs));
-  if (feof(filePointer)) { return newLexemeBool(1, 0); }
-  else { return newLexemeBool(0, 0); }
+  if (feof(filePointer)) { return newLexemeBool(0, 0); }
+  else { return newLexemeBool(1, 0); }
   }
 
 lexeme* evalCloseFile(lexeme *evaluatedArgs) {
@@ -596,6 +604,7 @@ lexeme* evalCloseFile(lexeme *evaluatedArgs) {
   return newLexemeBool(1, 0);
   }
 
+//TODO: FIX
 int length(lexeme* list){
   int i = 0;
   lexeme* temp = list;
@@ -639,3 +648,12 @@ lexeme* evalGetArray(lexeme* evaluatedArgList) {
   //check for valid types here
   return array[getIval(i)];
 }
+
+lexeme* evalGetArgCount(lexeme* evaluatedArgs) {
+  return newLexemeInt(countCL, 0);
+}
+
+lexeme* evalGetArg(lexeme* evaluatedArgs) { 
+  lexeme* index = car(evaluatedArgs);
+  return newLexemeChar(type_STRING, argsCL[getIval(index)], getLineNum(index));
+  }

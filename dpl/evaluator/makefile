@@ -1,7 +1,7 @@
 OBJS = types.o lexeme.o parser.o lexer.o environ.o eval.o
 SOURCE = types.c lexeme.c parser.c lexer.c environ.c eval.c
 HEADER = types.h lexeme.h parser.h lexer.h environ.h eval.h
-OUT = eval
+OUT = mylang
 CC = gcc 
 FLAGS = -g -c -Wall 
 LFLAGS = 
@@ -25,89 +25,89 @@ eval.o : eval.c
 	$(CC) $(FLAGS) eval.c -std=c99
 
 run : all
-	-./eval test1.txt
-	-./eval test2.txt
-	-./eval test3.txt
-	-./eval test4.txt
-	-./eval test5.txt
+	-./mylang test1.txt
+	-./mylang test2.txt
+	-./mylang test3.txt
+	-./mylang test4.txt
+	-./mylang test5.txt
 
 error1 :
 	cat error1.txt
 
 error1x :
-	./eval error1.txt || true
+	./mylang error1.txt || true
 
 error2 :
 	cat error2.txt
 
 error2x :
-	./eval error2.txt || true
+	./mylang error2.txt || true
 
 error3 :
 	cat error3.txt 
 
 error3x :
-	./eval error3.txt || true
+	./mylang error3.txt || true
 
 error4 :
 	cat error4.txt
 
 error4x :
-	./eval error4.txt || true
+	./mylang error4.txt || true
 
 error5 :
 	cat error5.txt
 
 error5x :
-	./eval error5.txt || true
+	./mylang error5.txt || true
 
 arrays :
 	cat arrays.txt
 
 arraysx :
-	./eval arrays.txt
+	./mylang arrays.txt
 
 conditionals :
 	cat conditionals.txt
 
 conditionalsx :
-	./eval conditionals.txt
+	./mylang conditionals.txt
 
 recursion :
 	cat recursion.txt
 
 recursionx :
-	./eval recursion.txt
+	./mylang recursion.txt
 
 iteration :
 	cat iteration.txt
 
 iterationx :
-	./eval iteration.txt
+	./mylang iteration.txt
 
 functions :
 	cat functions.txt
 
 functionsx : # shows you can pass functions and return nested functions
-	./eval functions.txt
+	./mylang functions.txt
 
 lambda :   
 	cat lambda.txt
 
 lambdax :
-	./eval lambda.txt
+	./mylang lambda.txt
 
 objects : 
 	cat objects.txt
 
 objectsx :  # get and update field, method call (e.g. setter)
-	./eval objects.txt
+	./mylang objects.txt
 
 problem :
 	cat problem.txt
 
 problemx :
-	.eval problem.txt
+	.mylang problem.txt
 
 # clean house 
 clean: 
