@@ -1,12 +1,12 @@
 function main { } BEGIN
 	let x = 10
-  let y = 80
+  let y = "80"
   let a
 
   function percent { x , y } BEGIN
-    a = x / y
+    a = x * y
   END
-  call percent {x , y, z}
+  call percent {x , y}
 END
 
 call main{ }

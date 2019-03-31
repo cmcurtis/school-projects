@@ -1,17 +1,15 @@
 function main { } BEGIN
 	let x0 = 0
   let x1 = 1
-  let y0 = 2
+  let y0 = "5"
   let y1 = 3
 
   function area { l, w} BEGIN
-    l * w
+    if { l > w } BEGIN
+      call PRINT { " square " }
+    END
   END
 
-  function cost { price, area } BEGIN
-    price * area
-  END
-
-  call area {x , y}
+  call area {z , y0}
 END
 call main{}
