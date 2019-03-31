@@ -1,7 +1,0 @@
-function main {} BEGIN
-
-let x = 52.4
-
-END
-call main{}
-call PRINT{10}

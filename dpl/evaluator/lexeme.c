@@ -111,9 +111,9 @@ lexeme *newLexemeChar(char *type, char *x, int n){
   assert(p != 0);
   p->type = type;
   p->sval = x;
-  printf("STRING VAL : %s\n", x); //DEBUG
-  printf("LEX VAL: %s\n", p->sval); //DEBUG
-  printf("GET SVAL TEST: %s\n", getSval(p)); //DEBUG
+  // printf("STRING VAL : %s\n", x); //DEBUG
+  // printf("LEX VAL: %s\n", p->sval); //DEBUG
+  // printf("GET SVAL TEST: %s\n", getSval(p)); //DEBUG
   return p;
 }
 

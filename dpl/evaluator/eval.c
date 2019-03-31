@@ -119,6 +119,9 @@ lexeme *eval(lexeme *tree, lexeme *env){
   else if (getType(tree) == IF_ST) { 
     return evalIf(tree,env);
   }
+  else if (getType(tree) == ELSE_ST) { 
+    return evalElse(tree,env);
+  }
   else if (getType(tree) == WHILE_LOOP) {
     return evalWhile(tree, env);
   }
@@ -127,7 +130,6 @@ lexeme *eval(lexeme *tree, lexeme *env){
   }
   return NULL;
   // return newErrorLexeme(ERROR, "Semmantic error", tree);
-  
 }
 
 
@@ -280,28 +282,21 @@ lexeme *evalStat(lexeme *t, lexeme *env){
 }
 
 lexeme *evalIf(lexeme *t, lexeme *env){
-  // printf("IF :"); //DEBUG
+  // printf("IF :\n"); //DEBUG
   lexeme *e = eval(car(t), env);
-  lexeme *b;
   if(getIval(e)){ //if cond is true
-    b = car(cdr(t));
+    return eval(car(cdr(t)), env);
     }
-  else {
-    if (getType(cdr(t)) == JOIN) { //else statement exists
-      lexeme *el = cdr(cdr(t));
-      lexeme *elVal = eval(car(el), env);
-      while (getIval(elVal) == 0){ //else is false
-        if(getType(cdr(el)) == JOIN) {
-          el = cdr(cdr(el));
-          elVal = eval(car(el), env);
-        }
-        else return NULL; //??
-      }
-      b = car(cdr(el));
+  else return eval(cdr(cdr(t)), env);
+}
+
+lexeme *evalElse(lexeme *t, lexeme *env){
+  // printf("IF ELSE:\n"); //DEBUG
+  lexeme *e = eval(car(t), env);
+  if (getIval(e)) {
+    return eval(car(cdr(t)), env);
     }
-    else return NULL; //??
-  }
-  return eval(b, env);
+  else return eval(cdr(cdr(t)), env);
 }
 
 lexeme *evalWhile(lexeme *t, lexeme *env){

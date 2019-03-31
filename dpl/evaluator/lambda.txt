@@ -1,0 +1,11 @@
+function main {} BEGIN
+  function f{x}
+    BEGIN
+    lambda {y} BEGIN
+      x + y
+      END
+    END
+  let a = call f{3}
+  call PRINT{a}
+END
+call main{}

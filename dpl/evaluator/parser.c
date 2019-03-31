@@ -397,43 +397,39 @@ lexeme *optArgList(){
 }
 
 lexeme *ifStatement(){
-  lexeme *e, *b, *el;
+  lexeme *e, *op, *e2, *b, *el, *result;
   el = NULL;
   match(IF);
   match(OBRACE);
   e = expr();
-  match(CBRACE);
-  b = block();
-  if (elsePending()) {
-    el = optElse();
-    // b = cons(JOIN, b, el);
-  }
-  b = cons(JOIN, b, el);
-  return cons(IF_ST, e, b);
-}
-
-lexeme *optElse(){
-  lexeme *e, *b, *el;
-  if (check(ELSEIF)) {
-    match(ELSEIF);
-    match(OBRACE);
-    e = expr();
-    match(CBRACE);
-    b = block();
-    if (check(ELSEIF)){
-      el = optElse();
-      b = cons(JOIN, b, el);
+  if (check(AND) || check(OR)) {
+    if(check(AND)){ op = match(AND); }
+    else if (check(OR)) { op = match(OR); }
+      e2 = expr();
+      match(CBRACE);
+      b = block();
+      if(check(ELSE)){
+        match(ELSE);
+        el = block();
+        result = cons(ELSE_ST, cons(getType(op), e, e2), cons(JOIN, b, el));
+      }
+      else {
+        result = cons(IF_ST, cons(getType(op), e, e2), b);
+      }
     }
-    el = cons(ELSE_ST, e, b);
-  }
   else {
-    match(ELSE);
-    match(OBRACE);
-    e = expr();
     match(CBRACE);
     b = block();
+    if(check(ELSE)){
+      match(ELSE);
+      el = block();
+      result = cons(ELSE_ST, e, cons(JOIN, b, el));
+    }
+    else {
+      result = cons(IF_ST, e, b);
+    }
   }
-  return cons(ELSE_ST, e, cons(JOIN, b, el));
+  return result;
 }
 
 lexeme *loop(){

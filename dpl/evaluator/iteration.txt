@@ -1,10 +1,15 @@
 function main { } BEGIN
-  let x = 0 
-  call PRINT { "Iteration" }
+  # iteration #
+  call PRINT{ "iterating from 25 to 1" }
+  let x = 25
+  while {x > 0} BEGIN
+    call PRINT{ "x is " , x }
+    x = x - 1
+  END
+  call PRINT{ "iterating from 1 to 25" }
   while {x < 25} BEGIN
     x = x + 1
-    call PRINT{ x }
+    call PRINT{ "x is " , x }
   END
-  
 END
 call main{}

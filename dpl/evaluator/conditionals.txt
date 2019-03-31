@@ -1,13 +1,15 @@
 function main { } BEGIN
   let x = 1 
   let y = 5
-  let z = " "
 
   while {x < y} BEGIN
-    x = x + 6
-    y = y + 4
-    if {x == y} BEGIN
-    call PRINT{ x , z, y }
+    x = x + 3
+    y = y + 2
+    if {x < y} BEGIN
+    call PRINT{ "x: ", x ," is < y: ", y }
+    END
+    else BEGIN
+      call PRINT{ "x: ", x ," is > y: ", y }
     END
   END
   
