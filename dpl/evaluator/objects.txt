@@ -1,0 +1,9 @@
+function main { } BEGIN
+  let a = 6
+  if {a => 5} BEGIN
+    call PRINT{a}
+    END
+  
+END
+
+call main{}

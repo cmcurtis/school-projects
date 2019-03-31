@@ -72,7 +72,7 @@ int programPending(){
 }
 
 int classPending(){
-  return classInitPending() || classDefPending() || classInitPending();
+  return classInitPending() || classDefPending();
 }
 
 int classInitPending(){
@@ -185,7 +185,15 @@ lexeme *op() {
 }
 
 lexeme *unary(){
-  if (check(VARIABLE)) return match(VARIABLE);
+  if (check(VARIABLE)) {
+    lexeme *v = match(VARIABLE);
+    if (check(DOT)) {
+      match(DOT);
+      lexeme *v2 = match(VARIABLE);
+      v = cons(DOT, v, v2);
+    }
+    return v;
+  }
   else if (check(type_INT)) return match(type_INT);
   else if (check(type_REAL)) return match(type_REAL);
   else if (check(type_STRING)) {
@@ -225,6 +233,11 @@ lexeme *modifier(){
 lexeme *varDef(){
   match(LET);
   lexeme *v = match(VARIABLE);
+  if (check(DOT)) {
+    match(DOT);
+    lexeme *v2 = match(VARIABLE);
+    v = cons(DOT, v, v2);
+  }
   //DEBUG
   // printf("PARSE: vardef:: ");
   // displayLexeme(v);
@@ -243,6 +256,20 @@ lexeme *classFunc() {
   if (classDefPending()) return classDef();
   else if (classInitPending()) return classInit();
   return newErrorLexeme(ERROR, "Error in class ", current);
+}
+
+lexeme *classCall(){
+  lexeme *name = match(VARIABLE);
+  lexeme *s;
+	if (check(OBRACE)) {
+			match(OBRACE);
+			lexeme *args = optArgList();
+			match(CBRACE);
+			s = cons(CLASS_CALL, name, cons(JOIN, args, NULL));
+			return s;
+		}
+		s = cons(CLASS_VAR, name, NULL);
+		return s;
 }
 
 lexeme *classDef(){
@@ -340,10 +367,24 @@ lexeme *expr(){
     if (opPending()) {
       lexeme *o, *u2;
       if (check(EQUALS)){
-        o = op();
+        o = match(EQUALS);
         if (check(EQUALS)){
+          match(EQUALS);
           setType(o, EQUALTO);
         }
+        if (check(LTHAN)){
+          match(LTHAN);
+          setType(o, LTHANOR);
+        }
+        if (check(GTHAN)){
+          match(GTHAN);
+          setType(o, GTHANOR);
+        }
+      }
+      else if(check(DOT)) {
+        o = match(DOT);
+        u2 = classCall();
+        return cons(getType(o), u, u2);
       }
       else { o = op(); }
       u2 = expr();

@@ -1,11 +1,12 @@
 function main {} BEGIN
-  function f{x}
-    BEGIN
+  function f{x} BEGIN
     lambda {y} BEGIN
       x + y
-      END
     END
+  END
   let a = call f{3}
-  call PRINT{a}
+   # let b = call a{6} #
+  call PRINT{"a = f{3}"}
+  call PRINT{"a{6} is ", call a{6}}
 END
 call main{}

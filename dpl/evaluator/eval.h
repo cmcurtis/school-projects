@@ -17,8 +17,9 @@ lexeme *evalAssignment(lexeme *tree, lexeme *env);
 lexeme *evalFuncDef(lexeme *tree, lexeme *env);
 lexeme *evalCall(lexeme *tree, lexeme *env);
 lexeme *evalClassDef(lexeme *tree, lexeme *env);
+lexeme *evalClassInit(lexeme *t, lexeme *env);
 lexeme *evalLambda(lexeme *tree, lexeme *env);
-lexeme *evalLambdaClosure(lexeme *tree, lexeme *env);
+lexeme *evalLambdaClosure(lexeme *t, lexeme *args, lexeme *env);
 lexeme *evalBlock(lexeme *tree, lexeme *env);
 lexeme *evalStat(lexeme *tree, lexeme *env);
 lexeme *evalIf(lexeme *tree, lexeme *env);
@@ -38,6 +39,8 @@ lexeme *evalExponent(lexeme *tree, lexeme *env);
 //comparison helpers
 lexeme *evalGreaterThan(lexeme *tree, lexeme *env);
 lexeme *evalLessThan(lexeme *tree, lexeme *env);
+lexeme *evalGreaterThanOr(lexeme *tree, lexeme *env);
+lexeme *evalLessThanOr(lexeme *tree, lexeme *env);
 lexeme *evalEqualTo(lexeme *tree, lexeme *env);
 
 // and or

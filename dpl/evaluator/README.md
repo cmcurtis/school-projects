@@ -23,7 +23,7 @@ you can also define other functions:
 and call those functions:
   Example:
   let c = call foo{5, 8} 
-***lambdas***
+
 functions will return the last statement in the definition
 
 If statement structure:
@@ -40,6 +40,14 @@ While loop structure:
     # do something #
   END
 
+comparisons can be made as follows:
+less than : <
+greater than : >
+equal to : == 
+less than or equal to : =<
+greater than or equal to : =>
+
+
 Arrays are created as such where size is the desired size of the array:
   let x = call newArray{#size#}
 
@@ -48,10 +56,6 @@ You can set a spot in an array, where i is the index, v is the value to be set a
 
 You can get a value from an array in a similar fashion:
   v = call getArray{x, i}
-
-***objects***
-
-
 
 Comments can be made as follows: 
   # this is a comment #

@@ -30,6 +30,8 @@ char *AND = "AND";
 char *OR = "OR";
 char *DOT = "DOT";
 char *EQUALTO = "EQUALTO";
+char *GTHANOR = "GTHANOR";
+char *LTHANOR = "LTHANOR";
 char *SET = "SET";
 char *GET = "GET";
 
@@ -75,6 +77,8 @@ char *TABLE = "TABLE";
 char *PROGRAM = "PROGRAM";
 char *CLASS_DEF = "CLASS_DEF";
 char *CLASS_INIT = "CLASS_INIT";
+char *CLASS_CALL = "CLASS_CALL";
+char *CLASS_VAR = "CLASS_VAR";
 char *FUNC_DEF = "FUNC_DEF";
 char *FUNC_CALL = "FUNC_CALL";
 char *LAMBDA = "LAMBDA";

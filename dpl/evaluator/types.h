@@ -29,6 +29,8 @@ extern char *AND;
 extern char *OR;
 extern char *DOT;
 extern char *EQUALTO;
+extern char *GTHANOR;
+extern char *LTHANOR;
 extern char *SET;
 extern char *GET;
 
@@ -74,6 +76,8 @@ extern char *TABLE;
 extern char *PROGRAM;
 extern char *CLASS_DEF;
 extern char *CLASS_INIT;
+extern char *CLASS_VAR;
+extern char *CLASS_CALL;
 extern char *FUNC_DEF;
 extern char *FUNC_CALL;
 extern char *LAMBDA;

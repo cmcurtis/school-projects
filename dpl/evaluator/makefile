@@ -24,13 +24,6 @@ environ.o : environ.c
 eval.o : eval.c
 	$(CC) $(FLAGS) eval.c -std=c99
 
-run : all
-	-./mylang test1.txt
-	-./mylang test2.txt
-	-./mylang test3.txt
-	-./mylang test4.txt
-	-./mylang test5.txt
-
 error1 :
 	cat error1.txt
 
@@ -65,49 +58,49 @@ arrays :
 	cat arrays.txt
 
 arraysx :
-	./mylang arrays.txt
+	./mylang arrays.txt || true
 
 conditionals :
 	cat conditionals.txt
 
 conditionalsx :
-	./mylang conditionals.txt
+	./mylang conditionals.txt || true
 
 recursion :
 	cat recursion.txt
 
 recursionx :
-	./mylang recursion.txt
+	./mylang recursion.txt || true
 
 iteration :
 	cat iteration.txt
 
 iterationx :
-	./mylang iteration.txt
+	./mylang iteration.txt || true
 
 functions :
 	cat functions.txt
 
 functionsx : # shows you can pass functions and return nested functions
-	./mylang functions.txt
+	./mylang functions.txt || true
 
 lambda :   
 	cat lambda.txt
 
 lambdax :
-	./mylang lambda.txt
+	./mylang lambda.txt || true
 
 objects : 
 	cat objects.txt
 
 objectsx :  # get and update field, method call (e.g. setter)
-	./mylang objects.txt
+	./mylang objects.txt || true
 
 problem :
 	cat problem.txt
 
 problemx :
-	.mylang problem.txt
+	./mylang problem.txt || true
 
 # clean house 
 clean: 

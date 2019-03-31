@@ -194,11 +194,9 @@ lexeme *lex(FILE *fp)
     case '}': return newLexeme(CBRACE, lineNumber);
     case '!': return newLexeme(NOT, lineNumber);
     case ';': return newLexeme(SEMI, lineNumber);
-    case '~': return newLexeme(TILDE, lineNumber);
+    case '.': return newLexeme(DOT, lineNumber);
     case '&': return newLexeme(AND, lineNumber);
     case '|': return newLexeme(OR, lineNumber);
-    case '$': return newLexeme(SET, lineNumber);
-    case '@': return newLexeme(GET, lineNumber);
 
     default: 
       if (isdigit(ch)) {

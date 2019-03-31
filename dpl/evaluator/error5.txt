@@ -3,10 +3,10 @@ function main { } BEGIN
   let y = 80
   let a
 
-  function percent { x, y } BEGIN
+  function percent { x , y } BEGIN
     a = x / y
   END
-  call percent {x , y}
+  call percent {x , y, z}
 END
 
-call main{}
+call main{ }

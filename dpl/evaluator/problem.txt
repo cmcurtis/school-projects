@@ -1,0 +1,17 @@
+function main { } BEGIN
+  let a = call getArgCount{}
+  a = a - 1
+  let fp = call OPEN{call getArg{a}}
+  let sum = 0
+  let i = call READ{fp}
+  while {call NOT_FILE_END{fp}} BEGIN 
+    sum = sum + i 
+    call PRINT{i}
+    i = call READ{fp}
+  END 
+  call PRINT { " sum is " , sum }
+  call CLOSE{fp}
+  0
+END
+
+call main{}
