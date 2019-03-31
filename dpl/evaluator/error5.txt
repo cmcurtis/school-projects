@@ -1,1 +1,17 @@
-semantic
+function main { } BEGIN
+#fix this#
+	let x0 = 0
+  let x1 = 1
+  let y0 = 2
+  call cost {x0, x1}
+  function area { l, w} BEGIN
+    l * w
+  END
+
+  function cost { price, area } BEGIN
+    price * area
+  END
+
+  call area {x , y}
+END
+call main{}

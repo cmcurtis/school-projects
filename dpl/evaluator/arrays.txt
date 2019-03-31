@@ -1,0 +1,19 @@
+function main { } BEGIN
+  #tests that array operations work#
+    let x = call newArray{10}
+    
+    let i = 0
+    let y
+    while {i < 10} BEGIN
+      call setArray{x, i, i}
+      y = call getArray{x, i}
+      call PRINT{y}
+      i = i + 1
+    END
+    call PRINT{"set x{2} = 4"}    
+    call setArray {x, 2, 4}
+    call PRINT{"z = x{2}"}
+    let z = call getArray{x, 2}
+    call PRINT{"z = ", z}
+END
+call main {}

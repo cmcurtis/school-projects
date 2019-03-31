@@ -32,9 +32,10 @@ int getIval(lexeme *l) { return l->ival; }
 double getRval(lexeme *l) { return l->rval; }
 char* getKval(lexeme *l) { return l->kval; }
 FILE* getFval(lexeme *l) { return l->fval; }
+lexeme** getAval(lexeme *l) {return l->aval; }
 
 /*
-helpers
+setters
 */
 void setType(lexeme *l, char *type){
   l->type = type;
@@ -42,6 +43,15 @@ void setType(lexeme *l, char *type){
 void setFval(lexeme *l, FILE *fp){
   l->fval = fp;
 }
+void setAval(lexeme *l, lexeme* v, int i){
+  l->aval[i] = v;
+}
+//constructor
+void newAval(lexeme *l, int size){
+  // printf("newAVAL for %s\n", l->kval); //DEBUG
+  l->aval = malloc(sizeof(lexeme *) * size);
+}
+
 
 lexeme *car(lexeme *x){ return x->left; }
 lexeme *cdr(lexeme *x){ return x->right; }

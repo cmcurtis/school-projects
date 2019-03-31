@@ -1,16 +1,17 @@
 function main {} BEGIN
   function f{x}
     BEGIN
+    let c
     function g{y} BEGIN
-      x + y
+      c = x + y
       END
-    call g{y}
+    g
     END
 
   let a = call f{3}
   let b = call f{11}
 
-  z = call a{5}
+  let z = call a{5}
 
   call PRINT{"a{5} is " , z}     
   call PRINT{"b{6} is ", call b{6}}      

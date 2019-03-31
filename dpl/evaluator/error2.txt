@@ -8,8 +8,6 @@ function main { } BEGIN
     l * w
   END
 
-  function cost { price, area } BEGIN
-    price * area
-  END
+  area {}
 END
 call main{}

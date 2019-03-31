@@ -35,31 +35,31 @@ error1 :
 	cat error1.txt
 
 error1x :
-	./eval error1.txt
+	./eval error1.txt || true
 
 error2 :
 	cat error2.txt
 
 error2x :
-	./eval error2.txt
+	./eval error2.txt || true
 
 error3 :
-	cat error3.txt
+	cat error3.txt 
 
 error3x :
-	./eval error3.txt
+	./eval error3.txt || true
 
 error4 :
 	cat error4.txt
 
 error4x :
-	./eval error4.txt
+	./eval error4.txt || true
 
 error5 :
 	cat error5.txt
 
 error5x :
-	./eval error5.txt
+	./eval error5.txt || true
 
 arrays :
 	cat arrays.txt

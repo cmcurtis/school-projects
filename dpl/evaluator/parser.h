@@ -41,6 +41,7 @@ lexeme *program();
 lexeme *def();
 lexeme *op();
 lexeme *unary();
+lexeme *array();
 lexeme *modifier();
 lexeme *varDef();
 lexeme *classFunc();

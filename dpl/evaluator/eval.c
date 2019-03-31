@@ -1,3 +1,5 @@
+//author:  Caley Curtis
+
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -32,6 +34,9 @@ lexeme* evalOpenFileForReading(lexeme *evaluatedArgs);
 lexeme* evalReadInteger(lexeme *evaluatedArgs);
 lexeme* evalAtFileEnd(lexeme *evaluatedArgs);
 lexeme* evalCloseFile(lexeme *evaluatedArgs);
+lexeme* evalNewArray(lexeme *evalArgs);
+lexeme* evalSetArray(lexeme *evaluatedArgList);
+lexeme* evalGetArray(lexeme* evaluatedArgList);
 
 
 int main(int argc, char **argv){
@@ -50,6 +55,11 @@ int main(int argc, char **argv){
   insertEnv(env, newLexemeKeyword(VARIABLE, "OPEN", 0), newLexeme("OPEN", 0)); 
   insertEnv(env, newLexemeKeyword(VARIABLE, "READ", 0), newLexeme("READ", 0)); 
   insertEnv(env, newLexemeKeyword(VARIABLE, "CLOSE", 0), newLexeme("CLOSE", 0)); 
+  insertEnv(env, newLexemeKeyword(VARIABLE, "newArray", 0), newLexeme("newArray", 0)); 
+  insertEnv(env, newLexemeKeyword(VARIABLE, "setArray", 0), newLexeme("setArray", 0)); 
+  insertEnv(env, newLexemeKeyword(VARIABLE, "getArray", 0), newLexeme("getArray", 0)); 
+
+
   eval(tree, env);
 
   fclose(fp);
@@ -92,11 +102,11 @@ lexeme *eval(lexeme *tree, lexeme *env){
     return evalVarDef(tree, env);
   }
   else if (getType(tree) == FUNC_DEF) {
-    // printf("~function evaluation~\n"); //DEBUG
+    printf("~function def evaluation~\n"); //DEBUG
     return evalFuncDef(tree, env);
   }
   else if (getType(tree) == FUNC_CALL) { 
-    // printf("~function call evaluation~\n"); //DEBUG
+    printf("~function call evaluation~\n"); //DEBUG
     return evalCall(tree,env);
   }
   else if (getType(tree) == LAMBDA) { 
@@ -190,7 +200,7 @@ lexeme *evalModifier(lexeme *t, lexeme *env){
 }
 
 lexeme *evalVarDef(lexeme *t, lexeme *env){
-  return insertEnv(env, car(t), cdr(t));
+  return insertEnv(env, car(t), eval(cdr(t),env));
 }
 
 lexeme *evalFuncDef(lexeme *t, lexeme *env){
@@ -206,19 +216,7 @@ lexeme* evalLambda(lexeme *t, lexeme *env) {
 lexeme* evalArgs(lexeme *t, lexeme *env){
   // printf("argument eval\n"); //DEBUG
   lexeme *arg;
-  if (t != NULL) { 
-    //DEBUG
-    // printf("~T~");
-    // displayLexeme(t);
-    // printf("~L~");
-    // displayLexeme(car(t));
-    // printf("~R~");
-    // // displayLexeme(cdr(t));
-    // printf("\n");
-    //DEBUG
-    
-    arg = cons(JOIN, eval(car(t), env), evalArgs(cdr(t), env)); 
-    }
+  if (t != NULL) { arg = cons(JOIN, eval(car(t), env), evalArgs(cdr(t), env)); }
   else arg = NULL;
   return arg;
 }
@@ -229,6 +227,7 @@ lexeme* evalDot(lexeme *t, lexeme *env){
 }
 
 lexeme *evalCall(lexeme *t, lexeme *env){
+  printf("EVAL CALL : %s", getKval(car(t))); //DEBUG
   lexeme* closure = lookupVal(env, car(t));
   lexeme* args = evalArgs(cdr(t), env);
   if(isBuiltIn(car(t))) { return evalBuiltIn(car(t), args); }
@@ -541,7 +540,8 @@ built-ins
 int isBuiltIn(lexeme *c){
   char* func = getKval(c);
   // printf("\nisBUILTIN::FUNCTION NAME:: %s\n", func); //DEBUG
-  if (strcmp(func, "PRINT") == 0 || strcmp(func, "OPEN") == 0 || strcmp(func, "CLOSE") == 0 || strcmp(func, "READ") == 0){
+  if (strcmp(func, "PRINT") == 0 || strcmp(func, "OPEN") == 0 || strcmp(func, "CLOSE") == 0 || strcmp(func, "READ") == 0
+    || (strcmp(func, "newArray") == 0) || (strcmp(func, "setArray") == 0) || (strcmp(func, "getArray") == 0)){
       return 1;
     }
   else return 0;
@@ -554,6 +554,9 @@ lexeme* evalBuiltIn(lexeme* c, lexeme* args){
   else if(strcmp(func, "OPEN") == 0) { return evalOpenFileForReading(args); }
   else if(strcmp(func, "CLOSE") == 0) { return evalCloseFile(args); }
   else if(strcmp(func, "READ") == 0) { return evalReadInteger(args); }
+  else if(strcmp(func, "newArray") == 0) { return evalNewArray(args); }
+  else if(strcmp(func, "setArray") == 0) { return evalSetArray(args); }
+  else if(strcmp(func, "getArray") == 0) { return evalGetArray(args); }
   else return newErrorLexeme(ERROR, "Error with Builtin", c);
 }
 
@@ -592,3 +595,47 @@ lexeme* evalCloseFile(lexeme *evaluatedArgs) {
   fclose(filePointer);
   return newLexemeBool(1, 0);
   }
+
+int length(lexeme* list){
+  int i = 0;
+  lexeme* temp = list;
+  while (temp != NULL) {
+    if (car(temp) == NULL) { i = i + 1; }
+    cdr(temp);
+  }
+  return i;
+}
+
+lexeme* evalNewArray(lexeme *evalArgs) {
+  // printf("eval new array\n"); //DEBUG
+  // assert(length(evalArgs) == 1);  //ensure only one argument
+  lexeme* size = car(evalArgs);
+  // printf("Size of Array == %i", getIval(size)); //DEBUG
+  assert(getType(size) == type_INT);          //ensure an integer argument
+  lexeme* a = newLexeme(ARRAY, getLineNum(size));
+  newAval(a, getIval(size));        //allocate the array
+  assert(getAval(a) != NULL);                //ensure a good allocation
+  return a;
+  }
+
+lexeme* evalSetArray(lexeme *evaluatedArgList) {
+  // printf("eval set array\n"); //DEBUG
+  // assert(length(evaluatedArgList) == 3);
+  lexeme* a = car(evaluatedArgList);
+  lexeme* i = car(cdr(evaluatedArgList));
+  lexeme* v = car(cdr(cdr(evaluatedArgList)));
+  lexeme** array = getAval(a);
+  //check for valid types here
+  array[getIval(i)] = v;
+  return v;
+}
+
+lexeme* evalGetArray(lexeme* evaluatedArgList) {
+  // printf("eval get array\n"); //DEBUG
+  // assert(length(evaluatedArgList) == 2);
+  lexeme* a = car(evaluatedArgList);
+  lexeme* i = car(cdr(evaluatedArgList));
+  lexeme** array = getAval(a);
+  //check for valid types here
+  return array[getIval(i)];
+}

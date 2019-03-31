@@ -17,6 +17,11 @@ extern FILE* getFval(lexeme *l);
 extern void setFval(lexeme *l, FILE *fp);
 extern int getLineNum(lexeme *l);
 
+extern lexeme** getAval(lexeme* l);
+extern void setAval(lexeme *l, lexeme* v, int i);
+void newAval(lexeme *l, int size);
+
+
 extern lexeme *car(lexeme *x);
 extern lexeme *cdr(lexeme *x);
 extern void setCar(lexeme *x, lexeme *y);

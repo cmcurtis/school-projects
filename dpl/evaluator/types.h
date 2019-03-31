@@ -29,6 +29,8 @@ extern char *AND;
 extern char *OR;
 extern char *DOT;
 extern char *EQUALTO;
+extern char *SET;
+extern char *GET;
 
 // Keywords 
 extern char *BEGIN;
@@ -49,6 +51,8 @@ extern char *NEW;
 extern char *FUNCTION;
 extern char *DEFINE;
 extern char *CALL;
+extern char *ARRAY;
+extern char *SET_ARRAY;
 
 // types
 extern char *type_INT;

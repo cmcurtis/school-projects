@@ -30,6 +30,8 @@ char *AND = "AND";
 char *OR = "OR";
 char *DOT = "DOT";
 char *EQUALTO = "EQUALTO";
+char *SET = "SET";
+char *GET = "GET";
 
 // Keywords 
 char *BEGIN = "BEGIN";
@@ -50,6 +52,8 @@ char *NEW = "NEW";
 char *FUNCTION = "FUNCTION";
 char *DEFINE = "DEFINE";
 char *CALL = "CALL";
+char *ARRAY = "ARRAY";
+char *SET_ARRAY = "SET_ARRAY";
 
 // types
 char *type_INT = "type_INT";

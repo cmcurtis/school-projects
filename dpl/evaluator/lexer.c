@@ -116,6 +116,8 @@ lexeme *lexVariableOrKeyword(FILE *fp) {
   else if (strcmp(token,"class") == 0) return newLexemeKeyword(CLASS, "class", lineNumber);
   else if (strcmp(token,"call") == 0) return newLexemeKeyword(CALL, "call", lineNumber);
   else if (strcmp(token,"new") == 0) return newLexemeKeyword(NEW, "new", lineNumber);
+  // else if (strcmp(token,"array") == 0) return newLexemeKeyword(ARRAY, "array", lineNumber);
+  // else if (strcmp(token,"set") == 0) return newLexemeKeyword(SET_ARRAY, "set", lineNumber);
   else {
     return newLexemeKeyword(VARIABLE, token, lineNumber);
     }
@@ -195,6 +197,8 @@ lexeme *lex(FILE *fp)
     case '~': return newLexeme(TILDE, lineNumber);
     case '&': return newLexeme(AND, lineNumber);
     case '|': return newLexeme(OR, lineNumber);
+    case '$': return newLexeme(SET, lineNumber);
+    case '@': return newLexeme(GET, lineNumber);
 
     default: 
       if (isdigit(ch)) {
