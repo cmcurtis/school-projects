@@ -44,6 +44,9 @@ lexeme *lookupVal(lexeme *env, lexeme *id) {
 
 lexeme *updateEnv(lexeme *env, lexeme *id, lexeme *val){
   //ch 4
+  // printf("updating:: %s with value: ", getKval(id)); //DEBUG
+  // displayLexeme(val);//DEBUG
+  // printf(" in env\n"); //DEBUG
   while (env != NULL)
     {
     lexeme *table = car(env);
@@ -68,14 +71,17 @@ lexeme *updateEnv(lexeme *env, lexeme *id, lexeme *val){
 
 lexeme *insertEnv(lexeme *env, lexeme *id, lexeme *val){
   //ch 4
+  // printf("inserting:: %s with value: ", getKval(id)); //DEBUG
+  // displayLexeme(val);//DEBUG
+  // printf(" into env\n"); //DEBUG
   lexeme *table = car(env);
-  setCar(table, cons("JOIN", id, car(table)));
-  // printf("CAR is: %s\n", getType(car(table)));
-  // printf("CAR's value is: %s", getType(car(car(table))));
-  setCdr(table, cons("JOIN", val, cdr(table)));
-  // printf("CDR is: %s\n", getType(cdr(table)));
-  // printf("CDR's value is: %s", getType(car(cdr(table))));
-  return val;
+  setCar(table, cons(JOIN, id, car(table)));
+  // printf("CAR is: %s\n", getType(car(table))); //DEBUG
+  // printf("CAR's value is: %s", getType(car(car(table)))); //DEBUG
+  setCdr(table, cons(JOIN, val, cdr(table)));
+  // printf("CDR is: %s\n", getType(cdr(table))); //DEBUG
+  // printf("CDR's value is: %s", getType(car(cdr(table)))); //DEBUG
+  return id;
 }
 
 lexeme *extendEnv(lexeme *env, lexeme *vars, lexeme *vals){

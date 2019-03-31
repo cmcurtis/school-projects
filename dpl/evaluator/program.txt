@@ -1,0 +1,11 @@
+function sum {} BEGIN
+let sum = 0
+let fp = call OPEN{"data.ints"}
+let i = call READ{fp}
+  while {NOT FILE_END{fp}} BEGIN
+    sum = sum + i;
+    i = READ{fp};
+  END
+PRINT { " sum is " , sum }
+CLOSE(fp);
+END

@@ -1,18 +1,7 @@
 function main {} BEGIN
 
 let x = 52.4
-let y
 
-y = x + 10
-
-if {x > 5} BEGIN
-  if {y < 2} BEGIN
-    new class c {x, y}
-    END
-  else BEGIN
-    while {y > 2} BEGIN
-      ++y
-      END
-    END
-  END
 END
+call main{}
+call PRINT{10}

@@ -1,0 +1,10 @@
+function main { } BEGIN
+  let x = 0 
+  call PRINT { "Iteration" }
+  while {x < 25} BEGIN
+    x = x + 1
+    call PRINT{ x }
+  END
+  
+END
+call main{}

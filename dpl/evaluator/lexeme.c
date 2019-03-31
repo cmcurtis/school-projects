@@ -39,6 +39,9 @@ helpers
 void setType(lexeme *l, char *type){
   l->type = type;
 }
+void setFval(lexeme *l, FILE *fp){
+  l->fval = fp;
+}
 
 lexeme *car(lexeme *x){ return x->left; }
 lexeme *cdr(lexeme *x){ return x->right; }
@@ -64,13 +67,13 @@ lexeme *newLexeme(char *t, int n){
   return l;
 }
 
-lexeme *newErrorLexeme(char *err, char *message, int n){
+lexeme *newErrorLexeme(char *err, char *message, lexeme *n){
   lexeme *e = malloc(sizeof(lexeme));
   assert (e != 0);
 
   e->type = err;
-  e->lineNum = n;
-  printf("%s @ line: %d\n", message, n);
+
+  printf("%s: %s @ line: %d\n", message, n->type, n->lineNum);
  
   // exit(1);
   return e;
@@ -108,11 +111,14 @@ lexeme *newLexemeChar(char *type, char *x, int n){
   assert(p != 0);
   p->type = type;
   p->sval = x;
+  printf("STRING VAL : %s\n", x); //DEBUG
+  printf("LEX VAL: %s\n", p->sval); //DEBUG
+  printf("GET SVAL TEST: %s\n", getSval(p)); //DEBUG
   return p;
 }
 
 lexeme *newLexemeKeyword(char *type, char *x, int n){
-  // printf("type: %s, x: %s\n", type, x);
+  // printf("NEW LEX KEYWORD:: type: %s, x: %s\n", type, x); //DEBUG
   lexeme *p = malloc(sizeof(lexeme));
   assert(p != 0);
   p->type = type;
@@ -122,16 +128,29 @@ lexeme *newLexemeKeyword(char *type, char *x, int n){
 }
 
 void displayLexeme(lexeme *x){
+  if (x == NULL) {
+    printf("NULL");
+  }
   if (x->type == VARIABLE){
+    // printf("Displaying Variable\n"); //DEBUG
     printf("%s", x->kval);
   }
   else if(x->type == type_INT){
+    // printf("Displaying Int\n"); //DEBUG
     printf("%d", x->ival);
   }
   else if(x->type == type_REAL){
+    // printf("Displaying real\n"); //DEBUG
     printf("%f", x->rval);
   }
   else if(x->type == type_STRING){
+    // printf("Displaying String\n"); //DEBUG
     printf("%s", x->sval);
   }
+  // else if(x->type == PROGRAM){
+  //   printf("program");
+  // }
+  // else{
+  //   printf("%s\n", x->type);
+  // }
 }

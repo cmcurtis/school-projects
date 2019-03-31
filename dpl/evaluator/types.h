@@ -83,4 +83,5 @@ extern char *IF_ST;
 extern char *ELSE_ST;
 extern char *ELSEIF_ST;
 extern char *FOR_LOOP;
+extern char *FILE_POINTER;
 extern char *WHILE_LOOP;

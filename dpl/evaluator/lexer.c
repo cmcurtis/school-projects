@@ -11,7 +11,7 @@
 #include "lexeme.h"
 #include "lexer.h"
 
-int lineNumber = 0;
+int lineNumber = 1;
 int CharacterHasBeenPushed = 0;
 char PushbackChar;
 
@@ -93,21 +93,32 @@ lexeme *lexVariableOrKeyword(FILE *fp) {
   else if (strcmp(token,"class") == 0) return newLexemeKeyword(CLASS, "class", lineNumber);
   else if (strcmp(token,"call") == 0) return newLexemeKeyword(CALL, "call", lineNumber);
   else if (strcmp(token,"new") == 0) return newLexemeKeyword(NEW, "new", lineNumber);
-  else 
+  else if (strcmp(token, "x") == 0) return newLexemeKeyword(VARIABLE, "x", lineNumber); //DEBUG
+  else if (strcmp(token, "y") == 0) return newLexemeKeyword(VARIABLE, "y", lineNumber); //DEBUG
+  else if (strcmp(token, "z") == 0) return newLexemeKeyword(VARIABLE, "z", lineNumber); //DEBUG
+  else if (strcmp(token, "main") == 0) return newLexemeKeyword(VARIABLE, "main", lineNumber); //DEBUG
+  else if (strcmp(token, "PRINT") == 0) return newLexemeKeyword(VARIABLE, "PRINT", lineNumber); //DEBUG
+  else if (strcmp(token, "OPEN") == 0) return newLexemeKeyword(VARIABLE, "OPEN", lineNumber); //DEBUG
+  else if (strcmp(token, "READ") == 0) return newLexemeKeyword(VARIABLE, "READ", lineNumber); //DEBUG
+  else if (strcmp(token, "CLOSE") == 0) return newLexemeKeyword(VARIABLE, "CLOSE", lineNumber); //DEBUG
+  else {
+    // printf("Token is: %s\n", token); //DEBUG
     return newLexemeKeyword(VARIABLE, token, lineNumber);
+    }
 }
 
 lexeme *lexNumber(FILE *fp) {
   int real = 0;
   char* buffer = malloc(sizeof(char[64]));
   char ch = myRead(fp);
-  // printf("ch: %c ", ch);
+  // printf("ch: %c ", ch); //DEBUG
 
   while(ch != EOF && (isdigit(ch) || ch == '.')) {
     append(buffer, ch);
-    // printf("buffer: %s", buffer);
+    // printf("buffer: %s", buffer); //DEBUG
     if(ch == '.' && real) { 
-      return newErrorLexeme("ERROR", "Bad Number", lineNumber);
+      return NULL;
+      // return newErrorLexeme("ERROR", "Bad Number", lineNumber);
       }
     if(ch == '.') real = 1;
     ch = myRead(fp);
@@ -118,23 +129,26 @@ lexeme *lexNumber(FILE *fp) {
 }
 
 lexeme *lexString(FILE *fp) {
-  char* buffer = malloc(sizeof(char[64]));
-  char ch = myRead(fp);
+  char ch;
+  char token[30] = {0};
+  
+  ch = myRead(fp);
 
-  while(!EOF && ch != '\"') {
-    append(buffer, ch);
+  while(ch != EOF && ch != '\"') { 
+    append(token, ch);
     ch = myRead(fp);
   }
-  myPushback(ch);
-  return newLexemeChar(type_STRING, buffer, lineNumber);
+  if (strcmp(token, " ") == 0) return newLexemeChar(type_STRING, " ", lineNumber); //DEBUG
+  else return newLexemeChar(type_STRING, token, lineNumber);
 }
 
 void lexComment(FILE *fp){
   char ch = myRead(fp);
 
-  while(!EOF && ch != '#') {
+  while(!EOF && ch != '\n') {
     ch = myRead(fp);
   }
+  myPushback(ch);
   return;
 }
 
@@ -181,6 +195,7 @@ lexeme *lex(FILE *fp)
         return lexVariableOrKeyword(fp);
       } 
       else if (ch == '\"'){ 
+        printf("String lexing\n"); //DEBUG
         return lexString(fp); 
       } 
       else if (ch == '#'){

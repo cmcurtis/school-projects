@@ -12,7 +12,29 @@
 
 #include "eval.h"
 
-int main(int argc, char *argv){
+/*
+eval getters
+*/
+lexeme *getFuncDefParams(lexeme *t);
+lexeme *getFuncDefBody(lexeme *t);
+lexeme *getFuncDefName(lexeme *t);
+lexeme *getClosureParams(lexeme *t);
+lexeme *getClosureBody(lexeme *t);
+lexeme *getClosureEnvironment(lexeme *t);
+
+/*
+built-ins
+*/
+int isBuiltIn(lexeme *c);
+lexeme* evalBuiltIn(lexeme* c, lexeme* args);
+lexeme* evalPrintln(lexeme *evaluatedArgList);
+lexeme* evalOpenFileForReading(lexeme *evaluatedArgs);
+lexeme* evalReadInteger(lexeme *evaluatedArgs);
+lexeme* evalAtFileEnd(lexeme *evaluatedArgs);
+lexeme* evalCloseFile(lexeme *evaluatedArgs);
+
+
+int main(int argc, char **argv){
   //open file to eval
   if (argc == 1) {
     printf("%d arguments!\n",argc-1); 
@@ -21,14 +43,25 @@ int main(int argc, char *argv){
   FILE *fp;
   fp = fopen(argv[1], "r");
 
-  lexeme *tree = parse(fp);  
+  lexeme *tree = parse(fp);
   lexeme *env = createEnv();
+   //insert builtIns into env
+  insertEnv(env, newLexemeKeyword(VARIABLE, "PRINT", 0), newLexeme("PRINT", 0)); 
+  insertEnv(env, newLexemeKeyword(VARIABLE, "OPEN", 0), newLexeme("OPEN", 0)); 
+  insertEnv(env, newLexemeKeyword(VARIABLE, "READ", 0), newLexeme("READ", 0)); 
+  insertEnv(env, newLexemeKeyword(VARIABLE, "CLOSE", 0), newLexeme("CLOSE", 0)); 
   eval(tree, env);
 
   fclose(fp);
 }
 
 lexeme *eval(lexeme *tree, lexeme *env){
+  // printf("\nEVALUATING::");
+  // displayLexeme(tree); //DEBUG
+  // printf("\nENV::");
+  // displayEnv(env); //DEBUG
+  // printf("\n");
+  if (tree == NULL) { return NULL; }
   if (getType(tree) == type_INT) { return tree; }
   else if (getType(tree) == type_REAL) { return tree; }
   else if (getType(tree) == type_CHAR) { return tree; }
@@ -49,18 +82,21 @@ lexeme *eval(lexeme *tree, lexeme *env){
     return evalAssignment(tree, env);
   }
   else if(getType(tree) == DOT) {
-    return evalDot(tree,env);
+    return evalDot(tree, env);
   }
   else if(getType(tree) == MODIFIER) {
     return evalModifier(tree, env);
   }
   else if (getType(tree) == VAR_DEF) {
-    return evalVarDef(tree,env);
+    // printf("~variable defintion evaluation~\n"); //DEBUG
+    return evalVarDef(tree, env);
   }
-  else if (getType(tree) == FUNC_DEF) { 
-    return evalFuncDef(tree,env);
+  else if (getType(tree) == FUNC_DEF) {
+    // printf("~function evaluation~\n"); //DEBUG
+    return evalFuncDef(tree, env);
   }
   else if (getType(tree) == FUNC_CALL) { 
+    // printf("~function call evaluation~\n"); //DEBUG
     return evalCall(tree,env);
   }
   else if (getType(tree) == LAMBDA) { 
@@ -75,19 +111,23 @@ lexeme *eval(lexeme *tree, lexeme *env){
   else if (getType(tree) == BLOCK) {
     return evalBlock(tree, env);
   }
-  //if, for, while
+  else if (getType(tree) == STAT) {
+    // printf("~statement evaluation~\n"); //DEBUG
+    return evalStat(tree, env);
+  }
+  //if, while
   else if (getType(tree) == IF_ST) { 
     return evalIf(tree,env);
-  }
-  else if (getType(tree) == FOR_LOOP) { 
-    return evalFor(tree, env);
   }
   else if (getType(tree) == WHILE_LOOP) {
     return evalWhile(tree, env);
   }
-  else {
-    return newErrorLexeme(ERROR, "Evaluation error", getLineNum(tree));
+  else if(getType(tree) == PROGRAM) {
+    return evalProgram(tree, env);
   }
+  return NULL;
+  // return newErrorLexeme(ERROR, "Semmantic error", tree);
+  
 }
 
 
@@ -104,15 +144,26 @@ lexeme *evalSimpleOp(lexeme *t, lexeme *env){
   if (getType(t) == GTHAN) return evalGreaterThan(t, env);
   if (getType(t) == LTHAN) return evalLessThan(t, env);
   if (getType(t) == EQUALTO) return evalEqualTo(t, env);
+  else return newErrorLexeme(ERROR, "Semantic error in SimpleOp", t);
 }
 
 lexeme *evalShortCircuitOp(lexeme *t, lexeme *env){
+  lexeme *left = eval(car(t), env);
+  lexeme *right = eval(cdr(t), env);
+
   if (getType(t) == AND) {
-
+    if (getIval(left) == 1 && getIval(right) == 1){
+      return newLexemeBool(1, getLineNum(left));
+    }
+    else return newLexemeBool(0, getLineNum(left));
   }
-  if (getType(t) == OR){
-
+  else if (getType(t) == OR){
+    if (getIval(left) == 1 || getIval(right) == 1){
+      return newLexemeBool(1, getLineNum(left));
+    }
+    else return newLexemeBool(0, getLineNum(left));
   }
+  else return newErrorLexeme(ERROR, "Semantic error in short circuit op", t);
 }
 
 lexeme *evalModifier(lexeme *t, lexeme *env){
@@ -124,16 +175,16 @@ lexeme *evalModifier(lexeme *t, lexeme *env){
       value = newLexemeInt((getIval(right) + 1), getLineNum(t));
       return updateEnv(env, right, value);
       }
-    else return newErrorLexeme(ERROR, "Modifier Error", getLineNum(t));
+    else return newErrorLexeme(ERROR, "Modifier Error", t);
   }
   else if (getType(left) == MINUS) {
     if (getType(right) == type_INT) { 
       value = newLexemeInt((getIval(right) - 1), getLineNum(t)); 
       return updateEnv(env, right, value);
       }
-    else return newErrorLexeme(ERROR, "Modifier Error", getLineNum(t));
+    else return newErrorLexeme(ERROR, "Modifier Error", t);
   }
-  else return newErrorLexeme(ERROR, "Modifier Error", getLineNum(t));
+  else return newErrorLexeme(ERROR, "Modifier Error", t);
 }
 
 lexeme *evalVarDef(lexeme *t, lexeme *env){
@@ -141,6 +192,7 @@ lexeme *evalVarDef(lexeme *t, lexeme *env){
 }
 
 lexeme *evalFuncDef(lexeme *t, lexeme *env){
+  // displayEnv(env); //DEBUG
   lexeme* closure = cons(CLOSURE, env, cons(JOIN, getFuncDefParams(t), cons(JOIN, getFuncDefBody(t), NULL)));
   return insertEnv(env, getFuncDefName(t), closure);
 }
@@ -149,36 +201,65 @@ lexeme* evalLambda(lexeme *t, lexeme *env) {
   return cons(CLOSURE, env, t);
   }
 
+lexeme* evalArgs(lexeme *t, lexeme *env){
+  // printf("argument eval\n"); //DEBUG
+  lexeme *arg;
+  if (t != NULL) { 
+    //DEBUG
+    // printf("~T~");
+    // displayLexeme(t);
+    // printf("~L~");
+    // displayLexeme(car(t));
+    // printf("~R~");
+    // // displayLexeme(cdr(t));
+    // printf("\n");
+    //DEBUG
+    
+    arg = cons(JOIN, eval(car(t), env), evalArgs(cdr(t), env)); 
+    }
+  else arg = NULL;
+  return arg;
+}
+
+lexeme* evalDot(lexeme *t, lexeme *env){
+  //TODO
+  return NULL;
+}
+
 lexeme *evalCall(lexeme *t, lexeme *env){
   lexeme* closure = lookupVal(env, car(t));
   lexeme* args = evalArgs(cdr(t), env);
-  if(isBuiltIn(closure)) { return evalBuiltIn(closure, args); }
+  if(isBuiltIn(car(t))) { return evalBuiltIn(car(t), args); }
   lexeme* params = getClosureParams(closure);
   lexeme* body = getClosureBody(closure);
   lexeme* senv = getClosureEnvironment(closure);
-  lexeme* eargs = evalArgs(args, env);
-  lexeme* xenv = extendEnv(senv, params, eargs);
+  // printf("\nEARGS\n"); //DEBUG
+  // lexeme* eargs = evalArgs(args, env);
+  lexeme* xenv = extendEnv(senv, params, args);
   return eval(body, xenv);
 }
 
 lexeme *evalClassDef(lexeme *t, lexeme *env){
-  return insertEnv(env, car(t), cons("CLOSURE", env, t));
+  return insertEnv(env, car(t), cons(CLOSURE, env, t));
 }
 
 lexeme *evalAssignment(lexeme *t, lexeme *env){
   //eval the right hand side
+  // printf("evalAssign\n"); //DEBUG
   lexeme* value = eval(cdr(t),env);
+  // displayLexeme(value); //DEBUG
   if (getType(car(t)) == DOT){
     lexeme* obj = eval(car(car(t)), env);
     updateEnv(obj, car(cdr(t)), value);
     }
   else {
-    updateEnv(car(t), value, env); //???
+    updateEnv(env, car(t), value);
     }
   return value;
 }
 
 lexeme *evalBlock(lexeme *t, lexeme *env){
+  // printf("evalBlock\n"); //DEBUG
   lexeme *result;
   while(t != NULL) {
     result = eval(car(t), env);
@@ -187,7 +268,19 @@ lexeme *evalBlock(lexeme *t, lexeme *env){
   return result;
 }
 
+lexeme *evalStat(lexeme *t, lexeme *env){
+  // printf("evalSTAT\n"); //DEBUG
+  lexeme *result;
+  while(t != NULL) {
+    result = eval(car(t), env);
+    t = cdr(t);
+  }
+  // printf("LASTSTATEMENT ::: %s \n", getType(result)); //DEBUG
+  return result;
+}
+
 lexeme *evalIf(lexeme *t, lexeme *env){
+  // printf("IF :"); //DEBUG
   lexeme *e = eval(car(t), env);
   lexeme *b;
   if(getIval(e)){ //if cond is true
@@ -202,27 +295,36 @@ lexeme *evalIf(lexeme *t, lexeme *env){
           el = cdr(cdr(el));
           elVal = eval(car(el), env);
         }
-        else return;
+        else return NULL; //??
       }
       b = car(cdr(el));
     }
-    else return;
+    else return NULL; //??
   }
   return eval(b, env);
 }
 
-lexeme *evalFor(lexeme *t, lexeme *env){
-//TODO
-}
-
 lexeme *evalWhile(lexeme *t, lexeme *env){
+  // printf("evalWHILE\n"); //DEBUG
+  lexeme *b;
   lexeme *e = eval(car(t), env);
-  if (getIval(e)){ //TODO: more conditions?
-    return eval(cdr(t), env);
+  while (getIval(e)){ //TODO: more conditions?
+    // printf("condition is true\n"); //DEBUG
+    b = eval(cdr(t), env);
+    e = eval(car(t), env);
   }
-  else return;
+  return b;
 }
 
+lexeme *evalProgram(lexeme *t, lexeme *env){
+  // printf("evalProgram\n"); //DEBUG
+  lexeme *d = eval(car(t), env);
+  // displayLexeme(d); // DEBUG
+  if (cdr(t) == NULL) {
+    return d;
+  }
+  else return eval(cdr(t), env);
+}
 
 /*
 operation helpers
@@ -243,7 +345,7 @@ lexeme *evalPlus(lexeme *t, lexeme *env){
   else if(getType(left) == type_REAL && getType(right) == type_INT) {
     return newLexemeReal(getRval(left) + getIval(right), getLineNum(left));
   }
-  else return newErrorLexeme(ERROR, "Addition error", getLineNum(t));
+  else return newErrorLexeme(ERROR, "Addition error", t);
 }
 
 lexeme *evalMinus(lexeme *t, lexeme *env) {
@@ -262,7 +364,7 @@ lexeme *evalMinus(lexeme *t, lexeme *env) {
   else if(getType(left) == type_REAL && getType(right) == type_INT) {
     return newLexemeReal(getRval(left) - getIval(right), getLineNum(left));
   }
-  else return newErrorLexeme(ERROR, "Subtraction error", getLineNum(t));
+  else return newErrorLexeme(ERROR, "Subtraction error", t);
 }
 
 lexeme *evalTimes(lexeme *t, lexeme *env) {
@@ -281,7 +383,7 @@ lexeme *evalTimes(lexeme *t, lexeme *env) {
   else if(getType(left) == type_REAL && getType(right) == type_INT) {
     return newLexemeReal(getRval(left) * getIval(right), getLineNum(left));
   }
-  else return newErrorLexeme(ERROR, "Multiplication error", getLineNum(t));
+  else return newErrorLexeme(ERROR, "Multiplication error", t);
 }
 
 lexeme *evalDivide(lexeme *t, lexeme *env) {
@@ -300,7 +402,7 @@ lexeme *evalDivide(lexeme *t, lexeme *env) {
   else if(getType(left) == type_REAL && getType(right) == type_INT) {
     return newLexemeReal(getRval(left) / getIval(right), getLineNum(left));
   }
-  else return newErrorLexeme(ERROR, "Division error", getLineNum(t));
+  else return newErrorLexeme(ERROR, "Division error", t);
 }
 
 lexeme *evalModulo(lexeme *t, lexeme *env){
@@ -310,7 +412,7 @@ lexeme *evalModulo(lexeme *t, lexeme *env){
   if (getType(left) == type_INT && getType(right) == type_INT) {
     return newLexemeInt(getIval(left) % getIval(right), getLineNum(left));
   }
-  else return newErrorLexeme(ERROR, "Modulo error", getLineNum(t));
+  else return newErrorLexeme(ERROR, "Modulo error", t);
 }
 
 lexeme *evalExponent(lexeme *t, lexeme *env){
@@ -320,16 +422,7 @@ lexeme *evalExponent(lexeme *t, lexeme *env){
   if (getType(left) == type_INT && getType(right) == type_INT) {
     return newLexemeInt(getIval(left) ^ getIval(right), getLineNum(left));
   }
-  // else if (getType(left) == type_INT && getType(right) == type_REAL) {
-  //   return newLexemeReal(getIval(left) ^ getRval(right), getLineNum(left));
-  // }
-  // else if(getType(left) == type_REAL && getType(right) == type_REAL) {
-  //   return newLexemeReal(getRval(left) ^ getRval(right), getLineNum(left));
-  // }
-  // else if(getType(left) == type_REAL && getType(right) == type_INT) {
-  //   return newLexemeReal(getRval(left) ^ getIval(right), getLineNum(left));
-  // }
-  else return newErrorLexeme(ERROR, "Exponential error", getLineNum(t));
+  else return newErrorLexeme(ERROR, "Exponential error", t);
 }
 
 /*
@@ -337,53 +430,55 @@ comparison helpers
 */
 lexeme *evalGreaterThan(lexeme *t, lexeme *env){
   //eval the left and the right hand sides
+  // printf("evalGreaterThan\n"); //DEBUG
   lexeme *left = eval(car(t), env);
   lexeme *right = eval(cdr(t), env);
   int lineNum = getLineNum(left);
-  lexeme *b;
   if (getType(left) == type_INT && getType(right) == type_INT) {
-    if (getIval(left) > getIval(right)) { b = newLexmeBool(1, lineNum); }
-    else { b = newLexemeBool(0, lineNum); }
+    if (getIval(left) > getIval(right)) return newLexemeBool(1, lineNum);
+    else return newLexemeBool(0, lineNum);
   }
   else if (getType(left) == type_INT && getType(right) == type_REAL) {
-    if (getIval(left) > getRval(right)) { b = newLexmeBool(1, lineNum); }
-    else { b = newLexemeBool(0, lineNum); }
+    if (getIval(left) > getRval(right)) return newLexemeBool(1, lineNum);
+    else return newLexemeBool(0, lineNum);
   }
   else if(getType(left) == type_REAL && getType(right) == type_REAL) {
-    if (getRval(left) > getRval(right)) { b = newLexmeBool(1, lineNum); }
-    else { b = newLexemeBool(0, lineNum); }
+    if (getRval(left) > getRval(right)) return newLexemeBool(1, lineNum);
+    else return newLexemeBool(0, lineNum);
   }
   else if(getType(left) == type_REAL && getType(right) == type_INT) {
-    if (getRval(left) > getIval(right)) { b = newLexmeBool(1, lineNum); }
-    else { b = newLexemeBool(0, lineNum); }
+    if (getRval(left) > getIval(right)) return newLexemeBool(1, lineNum);
+    else return newLexemeBool(0, lineNum);
   }
-  else return newErrorLexeme(ERROR, "Comparison error", getLineNum(t));
-  return b;
+  else return newErrorLexeme(ERROR, "Comparison error", t);
 }
 
 lexeme *evalLessThan(lexeme *t, lexeme *env){
+  // printf("evalLessThan\n"); //DEBUG
   lexeme *left = eval(car(t), env);
   lexeme *right = eval(cdr(t), env);
   int lineNum = getLineNum(left);
-  lexeme *b;
   if (getType(left) == type_INT && getType(right) == type_INT) {
-    if (getIval(left) < getIval(right)) { b = newLexmeBool(1, lineNum); }
-    else { b = newLexemeBool(0, lineNum); }
+    // printf("\tInt < Int\n"); //DEBUG
+    if (getIval(left) < getIval(right)) { return newLexemeBool(1, lineNum); }
+    else return newLexemeBool(0, lineNum);
   }
   else if (getType(left) == type_INT && getType(right) == type_REAL) {
-    if (getIval(left) < getRval(right)) { b = newLexmeBool(1, lineNum); }
-    else { b = newLexemeBool(0, lineNum); }
+    // printf("\tInt < Real\n"); //DEBUG
+    if (getIval(left) < getRval(right)) { return newLexemeBool(1, lineNum); }
+    else return newLexemeBool(0, lineNum);
   }
   else if(getType(left) == type_REAL && getType(right) == type_REAL) {
-    if (getRval(left) < getRval(right)) { b = newLexmeBool(1, lineNum); }
-    else { b = newLexemeBool(0, lineNum); }
+    // printf("\tReal < Real\n"); //DEBUG
+    if (getRval(left) < getRval(right)) return newLexemeBool(1, lineNum);
+    else return newLexemeBool(0, lineNum);
   }
   else if(getType(left) == type_REAL && getType(right) == type_INT) {
-    if (getRval(left) < getIval(right)) { b = newLexmeBool(1, lineNum); }
-    else { b = newLexemeBool(0, lineNum); }
+    // printf("\tReal < Real\n"); //DEBUG
+    if (getRval(left) < getIval(right)) return newLexemeBool(1, lineNum);
+    else return newLexemeBool(0, lineNum);
   }
-  else return newErrorLexeme(ERROR, "Comparison error", getLineNum(t));
-  return b;
+  else return newErrorLexeme(ERROR, "Comparison error", t);
 }
 
 lexeme *evalEqualTo(lexeme *t, lexeme *env){
@@ -392,22 +487,22 @@ lexeme *evalEqualTo(lexeme *t, lexeme *env){
   int lineNum = getLineNum(left);
   lexeme *b;
   if (getType(left) == type_INT && getType(right) == type_INT) {
-    if (getIval(left) == getIval(right)) { b = newLexmeBool(1, lineNum); }
+    if (getIval(left) == getIval(right)) { b = newLexemeBool(1, lineNum); }
     else { b = newLexemeBool(0, lineNum); }
   }
   else if (getType(left) == type_INT && getType(right) == type_REAL) {
-    if (getIval(left) == getRval(right)) { b = newLexmeBool(1, lineNum); }
+    if (getIval(left) == getRval(right)) { b = newLexemeBool(1, lineNum); }
     else { b = newLexemeBool(0, lineNum); }
   }
   else if(getType(left) == type_REAL && getType(right) == type_REAL) {
-    if (getRval(left) == getRval(right)) { b = newLexmeBool(1, lineNum); }
+    if (getRval(left) == getRval(right)) { b = newLexemeBool(1, lineNum); }
     else { b = newLexemeBool(0, lineNum); }
   }
   else if(getType(left) == type_REAL && getType(right) == type_INT) {
-    if (getRval(left) == getIval(right)) { b = newLexmeBool(1, lineNum); }
+    if (getRval(left) == getIval(right)) { b = newLexemeBool(1, lineNum); }
     else { b = newLexemeBool(0, lineNum); }
   }
-  else return newErrorLexeme(ERROR, "Comparison error", getLineNum(t));
+  else return newErrorLexeme(ERROR, "Comparison error", t);
   return b;
 }
 
@@ -416,16 +511,41 @@ eval getters
 */
 lexeme *getFuncDefParams(lexeme *t) { return cdr(car(t)); }
 lexeme *getFuncDefBody(lexeme *t) { return cdr(cdr(t)); }
-lexeme *getFuncDefName(lexeme *t) { return car(t); }
-lexeme *getClosureParams(lexeme *t) { return cdr(car(t)); }
-lexeme *getClosureBody(lexeme *t) { return cdr(cdr(t)); }
+lexeme *getFuncDefName(lexeme *t) { 
+  //DEBUG
+  // printf("getFuncDefName of:");
+  // displayLexeme(t);
+  // printf("Type is: %s Name is:", getType(car(t)));
+  // displayLexeme(car(t)); 
+  //DEBUG
+  return car(t); 
+  }
+lexeme *getClosureParams(lexeme *t) { 
+  //DEBUG
+  // printf("getClosureParams of:");
+  // displayLexeme(t);
+  // if (cdr(car(t)) != NULL) printf("Params are: %s", getType(cdr(car(t))));
+  // else printf("No params");
+  // //DEBUG
+  return cdr(car(t)); 
+  }
+lexeme *getClosureBody(lexeme *t) { 
+  //DEBUG
+  // printf("getClosureBody of:");
+  // displayLexeme(t);
+  // if (car(cdr(cdr(t))) != NULL) printf("Body is: %s\n", getType(car(cdr(cdr(t)))));
+  // else printf("\n\tNo BODY\n");
+  //DEBUG
+  return car(cdr(cdr(t))); 
+  }
 lexeme *getClosureEnvironment(lexeme *t) { return car(t); }
 
 /*
 built-ins
 */
 int isBuiltIn(lexeme *c){
-  char* func = getSval(car(c));
+  char* func = getKval(c);
+  // printf("\nisBUILTIN::FUNCTION NAME:: %s\n", func); //DEBUG
   if (strcmp(func, "PRINT") == 0 || strcmp(func, "OPEN") == 0 || strcmp(func, "CLOSE") == 0 || strcmp(func, "READ") == 0){
       return 1;
     }
@@ -433,38 +553,29 @@ int isBuiltIn(lexeme *c){
 }
 
 lexeme* evalBuiltIn(lexeme* c, lexeme* args){
-  char* func = getSval(car(c));
-  switch (func) {
-    case "PRINT":
-      return evalPrintln(args);
-      break;
-    case "OPEN":
-      return evalOpenFileForReading(args);
-      break;
-    case "CLOSE":
-      return evalCloseFile(args);
-      break;
-    case "READ":
-      return evalReadInteger(args);
-      break;
-    default:
-      return newErrorLexeme(ERROR, "Error with Builtin", getLineNum(args));
-      break;
-  }
+  // printf("EvaluatingBuiltIns\n"); //DEBUG
+  char* func = getKval(c);
+  if (strcmp(func, "PRINT") == 0) { return evalPrintln(args); }
+  else if(strcmp(func, "OPEN") == 0) { return evalOpenFileForReading(args); }
+  else if(strcmp(func, "CLOSE") == 0) { return evalCloseFile(args); }
+  else if(strcmp(func, "READ") == 0) { return evalReadInteger(args); }
+  else return newErrorLexeme(ERROR, "Error with Builtin", c);
 }
 
 lexeme* evalPrintln(lexeme *evaluatedArgList) {
-  while (evaluatedArgList != null) {
+  while (evaluatedArgList != NULL) {
+    displayLexeme(evaluatedArgList);//DEBUG
     displayLexeme(car(evaluatedArgList));
     evaluatedArgList = cdr(evaluatedArgList);
     }
+  printf("\n");
   return newLexemeBool(1, 0);
   }
 
 lexeme* evalOpenFileForReading(lexeme *evaluatedArgs) {
   lexeme *fileName = car(evaluatedArgs);
   lexeme *fp = newLexeme(FILE_POINTER, getLineNum(evaluatedArgs));
-  setFval(fp) = fopen(getSval(fileName),"r");
+  setFval(fp, fopen(getSval(fileName),"r"));
   return fp;
   }
 

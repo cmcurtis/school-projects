@@ -50,7 +50,7 @@ function : functionDef
 
 functionDef : FUNCTION VAR OBRACE optParamList CBRACE block
 
-functionCall : CALL OBRACE optArgList CBRACE
+functionCall : CALL VAR OBRACE optArgList CBRACE
 
 block : BEGIN statements END
 

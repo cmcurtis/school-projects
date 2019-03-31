@@ -19,10 +19,11 @@ lexeme *evalCall(lexeme *tree, lexeme *env);
 lexeme *evalClassDef(lexeme *tree, lexeme *env);
 lexeme* evalLambda(lexeme *tree, lexeme *env);
 lexeme *evalBlock(lexeme *tree, lexeme *env);
+lexeme *evalStat(lexeme *tree, lexeme *env);
 lexeme *evalIf(lexeme *tree, lexeme *env);
 lexeme *evalFor(lexeme *tree, lexeme *env);
 lexeme *evalWhile(lexeme *tree, lexeme *env);
-
+lexeme *evalProgram(lexeme *tree, lexeme *env);
 
 
 //operation helpers

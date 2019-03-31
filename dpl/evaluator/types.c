@@ -85,3 +85,4 @@ char *ELSE_ST = "ELSE_ST";
 char *ELSEIF_ST = "ELSEIF_ST";
 char *FOR_LOOP = "FOR_LOOP";
 char *WHILE_LOOP = "WHILE_LOOP";
+char *FILE_POINTER = "FILE_POINTER";

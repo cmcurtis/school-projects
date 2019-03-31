@@ -7,7 +7,8 @@
 #include "lexer.h"
 #include "lexeme.h"
 #include "types.h"
-#include "recognizer.h"
+#include "parser.h"
+
 
 lexeme *current;
 FILE *fp;
@@ -18,11 +19,14 @@ void display(lexeme *l) {
 }
 
 lexeme* parse(FILE *fileName){
-  FILE *fp = fileName;
+  current = newLexeme("", 0);
+  fp = fileName;
+  if (fp == NULL) {printf("FILE IS NULL");}
   current = lex(fileName);
 
   if (programPending()) {
     lexeme *p = program();
+    // displayLexeme(p); //DEBUG
     return p;
   }
 
@@ -37,15 +41,19 @@ int check(char *type){
 
 void *match(char *type){
   lexeme *temp = current;
+  //DEBUG
+  // printf("TEMP type : %s === ", type);
+  // printf("*TEMP sval: %s \n", getSval(temp));
   // printf("%s === ", type);
   // display(current);
   // printf("ival: %d, ", getIval(current));
-  // // printf("sval: %s, ", getSval(current));
+  // printf("sval: %s, ", getSval(current));
   // printf("rval: %f, ", getRval(current));
-  // // printf("kval: %s", getKval(current));
+  // printf("kval: %s\n", getKval(current));
+  //DEBUG
   if (!check(type)) {
-    newErrorLexeme("ERROR", "Match error", getLineNum(current));
-    printf("\nillegal\n");
+    newErrorLexeme("ERROR", "Syntax error", current);
+    // printf("\nillegal\n");
     exit(1);
   }
   advance();
@@ -133,7 +141,7 @@ int parametersPending(){
 }
 
 int argumentsPending(){
-  return unaryPending() || exprPending();
+  return unaryPending() || exprPending() || funcCallPending(); 
 }
 
 int elsePending(){
@@ -157,7 +165,7 @@ lexeme *def() {
   if (classPending()) return classFunc(); 
   else if (varDefPending()) return varDef();
   else if (functionPending()) return function();
-  return newErrorLexeme(ERROR, "Error in def ", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in def ", current);
 }
 
 lexeme *op() {
@@ -173,14 +181,18 @@ lexeme *op() {
   else if (check(EQUALTO)) return match(EQUALTO);
   else if (check(GTHAN)) return match(GTHAN);
   else if (check(LTHAN)) return match(LTHAN);
-  return newErrorLexeme(ERROR, "Error in op", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in op", current);
 }
 
 lexeme *unary(){
   if (check(VARIABLE)) return match(VARIABLE);
   else if (check(type_INT)) return match(type_INT);
   else if (check(type_REAL)) return match(type_REAL);
-  else if (check(type_STRING)) return match(type_STRING);
+  else if (check(type_STRING)) {
+    // printf("UNARY: variable type : %s === ", getType(current)); //DEBUG
+    // printf("UNARY: *VAR sval: %s \n", getSval(current)); //DEBUG
+    return match(type_STRING);
+  }
   else if (check(type_CHAR)) return match(type_CHAR);
   else if (check(NOT)) return match(NOT);
   else if (check(BOOL)) return match(BOOL);
@@ -191,7 +203,7 @@ lexeme *unary(){
     lexeme *u = unary();
     return cons(UMINUS, m, u);
   }
-  return newErrorLexeme(ERROR, "Error in unary", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in unary", current);
 }
 
 lexeme *modifier(){
@@ -207,15 +219,21 @@ lexeme *modifier(){
     lexeme *v = match(VARIABLE);
     return cons(MODIFIER, m, v);
   }
-    return newErrorLexeme(ERROR, "Error in modifier", getLineNum(current));
+    return newErrorLexeme(ERROR, "Error in modifier", current);
 }
 
 lexeme *varDef(){
   match(LET);
   lexeme *v = match(VARIABLE);
+  //DEBUG
+  // printf("PARSE: vardef:: ");
+  // displayLexeme(v);
+  //DEBUG
   if (check(EQUALS)) {
     match(EQUALS);
     lexeme *u = unary();
+    // printf("variable type : %s === ", getType(u)); //DEBUG
+    // printf("*VAR sval: %s \n", getSval(u)); //DEBUG
     return cons(VAR_DEF, v, u);
   }
   return cons(VAR_DEF, v, NULL);
@@ -224,7 +242,7 @@ lexeme *varDef(){
 lexeme *classFunc() {
   if (classDefPending()) return classDef();
   else if (classInitPending()) return classInit();
-  return newErrorLexeme(ERROR, "Error in class ", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in class ", current);
 }
 
 lexeme *classDef(){
@@ -247,11 +265,20 @@ lexeme *classInit(){
   return cons(CLASS_INIT, v, a);
 }
 
+lexeme *lambdaDef(){
+  match(LAMBDA);
+  match(OBRACE);
+  lexeme *p = optParameterList();
+  match(CBRACE);
+  lexeme *b = block();
+  return cons(LAMBDA, NULL, cons(JOIN, p, b));
+}
+
 lexeme *function(){
   if (funcDefPending()) return functionDef();
   else if (funcCallPending()) return functionCall();
-  else if (lambdaPending()) return lambda();
-  return newErrorLexeme(ERROR, "Error in function", getLineNum(current));
+  else if (lambdaPending()) return lambdaDef();
+  return newErrorLexeme(ERROR, "Error in function", current);
 }
 
 lexeme *functionDef(){
@@ -273,40 +300,34 @@ lexeme *functionCall(){
   return cons(FUNC_CALL, v, a);
 }
 
-lexeme *lambda(){
-  match(LAMBDA);
-  match(OBRACE);
-  lexeme *p = optParameterList();
-  match(CBRACE);
-  lexeme *b = block();
-  return cons(LAMBDA, NULL, cons(JOIN, p, b));
-}
-
 lexeme *block(){
   match(BEGIN);
+  // printf("EVAL BLOCK\n"); //DEBUG
   lexeme *s = statements();
-  if( statementPending() ) { statements(); } // fix?
+  if(statementPending()) { s = statements(); }
   match(END);
   return s;
 }
 
 lexeme *statements() {
+  // printf("\tPARSE STATEMENTS\n"); //DEBUG
   lexeme *s = statement();
   lexeme *s2 = NULL;
   if (statementPending())  {
-    s2 = statement();
+    s2 = statements();
   }
   return cons(STAT, s, s2);
 }
 
 lexeme *statement(){
+  // printf("\t\tPARSE STATEMENT\n"); //DEBUG
   if(exprPending()) return expr();
   else if(ifPending()) return ifStatement();
   else if(loopPending()) return loop();
   else if(functionPending()) return function();
   else if(classPending()) return classFunc();
   else if(varDefPending()) return varDef();
-  return newErrorLexeme(ERROR, "Error in statement", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in statement", current);
 }
 
 lexeme *expr(){ 
@@ -351,11 +372,22 @@ lexeme *optParameterList(){
 
 lexeme *arguments(){
   lexeme *u, *a;
-  u = unary();
+  if (unaryPending()) {
+    u = unary();
+    // printf("Unary type : %s === ", getType(u)); //DEBUG 
+    // printf("*Unary sval: %s \n", getSval(u)); //DEBUG
+    }
+  else if (funcCallPending()){
+    u = functionCall();
+  }
+  else {
+    u = expr();
+  }
   if (check(COMMA)) {
     match(COMMA);
     a = arguments();
   }
+  else a = NULL;
   return cons(VAR_LIST, u, a);
 }
 
@@ -407,7 +439,7 @@ lexeme *optElse(){
 lexeme *loop(){
   if (check(FOR)) return forLoop();
   else if (check(WHILE)) return whileLoop();
-  return newErrorLexeme(ERROR, "Error in loop", getLineNum(current));
+  return newErrorLexeme(ERROR, "Error in loop", current);
 }
 
 lexeme *forLoop() {

@@ -50,7 +50,7 @@ lexeme *classCall();
 lexeme *function();
 lexeme *functionDef();
 lexeme *functionCall();
-lexeme *lambda();
+lexeme *lambdaDef();
 lexeme *block();
 lexeme *statements();
 lexeme *statement();
