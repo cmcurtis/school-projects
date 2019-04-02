@@ -12,14 +12,13 @@
 (define (curry f @) 
   (define params (length (get 'parameters f)))
   (define l @)
-  (inspect params)
-  (inspect l)
-  (getList l)
   (cond
-    ((eq? #t (integer? (car l)))
+    ((null? l) (lambda (@) (curry f @)))
+    ((eq? #f (integer? (car l)))
       (cond 
-        (((= (length l) params) (apply f (car l))))
-        (else (lambda (@) (curry f (append (car l) @))))
+        ((= (length (car l)) params) (apply f (car l)))
+        (else 
+          (lambda (@) (curry f (append (car l) @))))
         )
       )
     ((= (length l) params) (apply f l))
@@ -31,9 +30,4 @@
 
 (define (integer? x) 
   (eq? (type x) 'INTEGER)
-  )
-
-(define (getList l)
-  (inspect (cdr l))
-  (inspect (car l))
   )
