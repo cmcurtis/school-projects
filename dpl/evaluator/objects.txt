@@ -1,6 +1,6 @@
 function main { } BEGIN
   let a = 6
-  if {a => 5} BEGIN
+  if {a = 5} BEGIN
     call PRINT{a}
     END
   
