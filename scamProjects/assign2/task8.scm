@@ -8,6 +8,7 @@
       )
   (iter (readExpr))
   )
+
 (define (node value left right) 
   (define (display) (print value))
   this
@@ -35,4 +36,21 @@
 ;  takes a binary search tree and a value and returns a new binary search tree that includes that value
 (define (insertBST tree value)
   (define n (newBST value))
+  (define (search tree value)
+    (cond
+      ((< value (tree'value)) 
+        (cond
+          ((null? (tree'left)) (node (tree'value) n (tree'right)))
+          (else (node (tree'value) (search (tree'left) value) (tree'right)))
+          )
+        )
+      (else 
+        (cond 
+          ((null? (tree'right)) (node (tree'value) (tree'left) n))
+          (else  (node (tree'value) (tree'left) (search (tree'right) value)))
+          )
+        )
+      )
+    )
+  (search tree value)
   )
