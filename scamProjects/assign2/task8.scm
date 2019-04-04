@@ -34,5 +34,5 @@
 
 ;  takes a binary search tree and a value and returns a new binary search tree that includes that value
 (define (insertBST tree value)
-  
+  (define n (newBST value))
   )

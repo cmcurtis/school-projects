@@ -17,21 +17,35 @@
   )
 
 (define (push s val)
+  (inspect (class s))
+  ;(cons val s) ;?
+  
   )
 
 (define (pop s) 
+  (head cdr s)
+  (car s)
   )
 
 (define (speek s)
+  (car s)
   )
 
 (define (ssize s)
+  (define (iter store items) 
+    (cond 
+      ((null? items) store)
+      (else 
+        (iter (+ store 1) (cdr items)) ;?
+        )
+      )
+    )
+  (iter 0 s)
   )
 
 ;Queue Methods
 ;Queue: constructor
 (define (Queue) 
-  (define head nil)
   (define items (list nil))
   this
   )
@@ -46,4 +60,13 @@
   )
 
 (define (qsize q)
+  (define (iter store items) 
+    (cond 
+      ((null? items) store)
+      (else 
+        (iter (+ store 1) (cdr items)) ;?
+        )
+      )
+    )
+  (iter 0 s)
   )

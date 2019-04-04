@@ -10,11 +10,31 @@
   )
 
 ; takes an Arabic number and produces the equivalent Church numeral
-(define (create )
-  
+(define (create n)
+  (lambda (f) 
+    (lambda (x) 
+      (define (iter src store)
+        (cond 
+          ((= n src) (f store))
+          (else (iter (+ 1 src) (f store)))
+          )
+        )
+      (iter 1 x)
+      )
+    )
   )
 
 ;produces the predecessor of the given Church numeral
-(define (pred )
-  
+(define (pred n)
+  (lambda (f) 
+    (lambda (x) 
+      (((n (lambda (g) 
+              (lambda (h) 
+                (h (g f))
+                )
+              )
+          ) (lambda (u) x)) (lambda (u) u)
+        )
+      )
+    )
   )

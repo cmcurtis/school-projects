@@ -9,6 +9,11 @@
   (iter (readExpr))
   )
 
-(define (powerSet)
-  
+(define (powerSet s)
+  (if (null? s)
+    (list `())
+    (let ((rest (powerSet (cdr s))))
+      (append rest (map (lambda (x) (cons (car s) x)) rest))
+      )
+    )
   )

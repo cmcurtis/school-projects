@@ -27,7 +27,3 @@
       )
     )
   )
-
-(define (integer? x) 
-  (eq? (type x) 'INTEGER)
-  )
