@@ -1,4 +1,5 @@
 (define (main)
+  (setNilDisplay 'nil)
   (setPort (open (getElement ScamArgs 1) 'read))
   (define env this)
   (define (iter expr)
@@ -11,9 +12,20 @@
 
 (define (powerSet s)
   (if (null? s)
-    (list `())
+    (list '())
     (let ((rest (powerSet (cdr s))))
-      (append rest (map (lambda (x) (cons (car s) x)) rest))
+      (merge rest (map (lambda (x) (cons (car s) x)) rest))
       )
     )
   )
+
+(define (merge s t) 
+  (cond
+    ((null? s) t)
+    ((null? t) s)
+    ((< (length (car s)) (length (car t))) 
+      (append (list (car s)) (merge (cdr s) t)))
+    (else 
+      (append (list (car t)) (merge s (cdr t)) ))
+  )
+)
