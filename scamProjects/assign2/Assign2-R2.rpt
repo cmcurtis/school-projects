@@ -1,0 +1,1620 @@
+cmcurtis1@crimson.ua.edu
+
+nothing to build
+testing results...
+
+
+THESE TESTS ARE SUPPLIED AS A CONVENIENCE TO YOU. THE RESULTS GENERATED
+FOR THIS REPORT MAY BE IN CONFLICT WITH THE ASSIGNMENT SPECIFICATION.
+ALWAYS CODE TO THE ASSIGNMENT SPECIFICATION, NOT TO THE RESULTS FOUND
+HEREIN.
+
+NOTE: your mail client may reformat this report. Do not use a mailed report
+for debugging purposes.
+
+Test files can be retrieved with:
+
+     wget beastie.cs.ua.edu/proglan/testing/2/submission2.tgz
+
+
+TESTING AUTHOR
+
+AUTHOR: Caley Curtis cmcurtis1@crimson.ua.edu
+
+AUTHOR the test succeeded
+
+TESTING TASK #1
+
+
+TEST #1
+     scam -r task1.scm ../task1.0 (time allowed: 1s)
+
+task1.0 contains:
+(for-loop (range 0 9 5) (lambda (x) (inspect x)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+x is 0
+x is 5
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #2
+     scam -r task1.scm ../task1.1 (time allowed: 1s)
+
+task1.1 contains:
+(println (range 4 20 2))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(4 6 8 10 12 14 16 18)
+--------------------------------------------------------------
+Files ../task1.1.expected and task1.1.yours differ
+YOUR RESULTS:
+--------------------------------------------------------------
+(4 6 8 10 12 14 16 18 20)
+--------------------------------------------------------------
+Output does not match exactly; the test FAILED
+
+
+TEST #3
+     scam -r task1.scm ../task1.2 (time allowed: 1s)
+
+task1.2 contains:
+(for-loop (range 50 130 6) (lambda (z) (inspect (* -5 z))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(* -5 z) is -250
+(* -5 z) is -280
+(* -5 z) is -310
+(* -5 z) is -340
+(* -5 z) is -370
+(* -5 z) is -400
+(* -5 z) is -430
+(* -5 z) is -460
+(* -5 z) is -490
+(* -5 z) is -520
+(* -5 z) is -550
+(* -5 z) is -580
+(* -5 z) is -610
+(* -5 z) is -640
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #4
+     scam -r task1.scm ../task1.3 (time allowed: 1s)
+
+task1.3 contains:
+(for-loop (range 59 103 6) (lambda (z) (inspect (- 9 z))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(- 9 z) is -50
+(- 9 z) is -56
+(- 9 z) is -62
+(- 9 z) is -68
+(- 9 z) is -74
+(- 9 z) is -80
+(- 9 z) is -86
+(- 9 z) is -92
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #5
+     scam -r task1.scm ../task1.4 (time allowed: 1s)
+
+task1.4 contains:
+(for-loop (range 67 123 14) (lambda (z) (inspect (+ -7 z))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(+ -7 z) is 60
+(+ -7 z) is 74
+(+ -7 z) is 88
+(+ -7 z) is 102
+--------------------------------------------------------------
+Files ../task1.4.expected and task1.4.yours differ
+YOUR RESULTS:
+--------------------------------------------------------------
+(+ -7 z) is 60
+(+ -7 z) is 74
+(+ -7 z) is 88
+(+ -7 z) is 102
+(+ -7 z) is 116
+--------------------------------------------------------------
+Output does not match exactly; the test FAILED
+
+
+TEST #6
+     scam -r task1.scm ../task1.5 (time allowed: 1s)
+
+task1.5 contains:
+(for-loop (range 25 44 14) (lambda (z) (inspect (+ 7 z))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(+ 7 z) is 32
+(+ 7 z) is 46
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #7
+     scam -r task1.scm ../task1.6 (time allowed: 1s)
+
+task1.6 contains:
+(for-loop (range 84 117 15) (lambda (z) (inspect (- -9 z))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(- -9 z) is -93
+(- -9 z) is -108
+(- -9 z) is -123
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #8
+     scam -r task1.scm ../task1.7 (time allowed: 1s)
+
+task1.7 contains:
+(for-loop (range 43 89 8) (lambda (z) (inspect (- -5 z))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(- -5 z) is -48
+(- -5 z) is -56
+(- -5 z) is -64
+(- -5 z) is -72
+(- -5 z) is -80
+(- -5 z) is -88
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #9
+     scam -r task1.scm ../task1.8 (time allowed: 1s)
+
+task1.8 contains:
+(for-loop (range 50 108 8) (lambda (z) (inspect (* 9 z))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(* 9 z) is 450
+(* 9 z) is 522
+(* 9 z) is 594
+(* 9 z) is 666
+(* 9 z) is 738
+(* 9 z) is 810
+(* 9 z) is 882
+(* 9 z) is 954
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #10
+     scam -r task1.scm ../task1.9 (time allowed: 1s)
+
+task1.9 contains:
+(for-loop (range 59 81 16) (lambda (z) (inspect (* -7 z))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(* -7 z) is -413
+(* -7 z) is -525
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #2
+
+
+TEST #11
+     scam -r task2.scm ../task2.0 (time allowed: 1s)
+
+task2.0 contains:
+(define (f a b) (+ a b))
+(inspect (curry f))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(curry f) is <function anonymous(@)>
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #12
+     scam -r task2.scm ../task2.1 (time allowed: 1s)
+
+task2.1 contains:
+(define (f a b) (+ a b))
+(inspect ((curry f) 1))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((curry f) 1) is <function anonymous(@)>
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #13
+     scam -r task2.scm ../task2.2 (time allowed: 1s)
+
+task2.2 contains:
+(define (f a b) (+ a b))
+(inspect (((curry f) 1) 1))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(((curry f) 1) 1) is 2
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #14
+     scam -r task2.scm ../task2.3 (time allowed: 1s)
+
+task2.3 contains:
+(define (f a b) (+ a b))
+(inspect ((curry f) 1 1))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((curry f) 1 1) is 2
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #15
+     scam -r task2.scm ../task2.4 (time allowed: 1s)
+
+task2.4 contains:
+(define (g a b c d) (- a b c d))
+(inspect ((curry g) 33 15 8 1))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((curry g) 33 15 8 1) is 9
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #16
+     scam -r task2.scm ../task2.5 (time allowed: 1s)
+
+task2.5 contains:
+(define (g a b c d) (- a b c d))
+(inspect ((curry g 25) 11 8 4))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((curry g 25) 11 8 4) is 2
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #17
+     scam -r task2.scm ../task2.6 (time allowed: 1s)
+
+task2.6 contains:
+(define (g a b c d) (- a b c d))
+(inspect (((curry g) 36 13) 8 1))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(((curry g) 36 13) 8 1) is 14
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #18
+     scam -r task2.scm ../task2.7 (time allowed: 1s)
+
+task2.7 contains:
+(define (g a b c d) (- a b c d))
+(inspect ((curry g 28 14) 6 2))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((curry g 28 14) 6 2) is 6
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #19
+     scam -r task2.scm ../task2.8 (time allowed: 1s)
+
+task2.8 contains:
+(define (g a b c d) (- a b c d))
+(inspect (((curry g 30) 15) 6 4))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(((curry g 30) 15) 6 4) is 5
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #20
+     scam -r task2.scm ../task2.9 (time allowed: 1s)
+
+task2.9 contains:
+(define (g a b c d) (- a b c d))
+(inspect (((curry g 31) 12) 8 1))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(((curry g 31) 12) 8 1) is 10
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #3
+
+
+TEST #21
+     scam -r task3.scm ../task3.0 (time allowed: 0.7s)
+
+task3.0 contains:
+(println (speek (pop (pop (push (push (push (Stack) 3) 2) 1)))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+3
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #22
+     scam -r task3.scm ../task3.1 (time allowed: 0.7s)
+
+task3.1 contains:
+(println (qpeek (dequeue (dequeue (enqueue (enqueue (enqueue (Queue) 1) 2) 3)))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+3
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #23
+     scam -r task3.scm ../task3.2 (time allowed: 0.7s)
+
+task3.2 contains:
+(println (speek (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (Stack) 17) 34) 66) 84) 90) 99) 45) 13) 38) 90) 77) 81) 39) 52) 27) 68) 10) 83) 45) 54) 64) 15) 11) 81) 77) 89) 78) 51) 96) 33) 33) 14) 58) 90) 89) 48) 89) 34) 52) 28) 25) 29) 99) 54) 71) 26) 22) 72) 10) 58) 26) 64) 64) 27) 46) 41) 16) 24) 83) 13) 48) 16) 18) 96) 96) 97) 45) 86) 32) 87) 14) 47) 16) 13) 92) 78) 30) 15) 50) 30) 64) 67) 85) 28)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+28
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #24
+     scam -r task3.scm ../task3.3 (time allowed: 0.7s)
+
+task3.3 contains:
+(println (ssize (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (push (Stack) 20) 98) 97) 59) 56) 95) 51) 45) 92) 12) 79) 84) 78) 17) 11) 83) 50) 51) 23) 15) 69) 37) 40) 20) 89) 43) 74) 22) 69) 37) 62) 80) 36) 60) 40) 82) 56) 81) 27) 48) 84) 96) 33) 62) 14) 35) 45) 55) 76) 58) 60) 45) 85) 90) 55)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+55
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #25
+     scam -r task3.scm ../task3.4 (time allowed: 0.7s)
+
+task3.4 contains:
+(println (qpeek (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (Queue) 68) 26) 38) 78) 21) 46) 56) 76) 56) 67) 35) 85) 70) 70) 85) 95) 89) 16) 87) 18) 26) 55) 66) 91) 52) 83) 22) 79) 83) 83) 40) 51) 99) 69) 30) 20) 15) 76) 87) 61) 44) 22) 47) 14) 83) 32) 10) 73) 39) 88) 82) 56) 44) 49) 47) 86) 32) 60) 66) 16) 43) 97) 58) 43) 66)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+68
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #26
+     scam -r task3.scm ../task3.5 (time allowed: 0.7s)
+
+task3.5 contains:
+(println (qsize (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (enqueue (Queue) 69) 89) 23) 96) 75) 41) 60) 17) 64) 32) 35) 41) 16) 78) 67) 62) 82) 70) 61) 21) 27) 27) 91) 71) 58) 77) 13) 89) 96) 36) 16) 65) 26) 29) 62)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+35
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #27
+     scam -r task3.scm ../task3.6 (time allowed: 0.7s)
+
+task3.6 is too large to display
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+85
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #28
+     scam -r task3.scm ../task3.7 (time allowed: 0.7s)
+
+task3.7 is too large to display
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+92
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #29
+     scam -r task3.scm ../task3.8 (time allowed: 0.7s)
+
+task3.8 is too large to display
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+64
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #30
+     scam -r task3.scm ../task3.9 (time allowed: 0.7s)
+
+task3.9 is too large to display
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+61
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #4
+
+
+TEST #31
+     scam -r task4.scm ../task4.0 (time allowed: 1s)
+
+task4.0 contains:
+(define sd '(define (f x) (define y 2) (+ x y)))
+(println (let*->lambdas sd))
+(inspect ((eval (let*->lambdas sd) this) 3))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(define (f x) (define y 2) (+ x y))
+((eval (let*->lambdas sd) this) 3) is 5
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #32
+     scam -r task4.scm ../task4.1 (time allowed: 1s)
+
+task4.1 contains:
+(define sd '(define (f x) (let* ((y 2)) (+ x y))))
+(println (let*->lambdas sd))
+(inspect ((eval (let*->lambdas sd) this) 3))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(define (f x) ((lambda (y) (+ x y)) 2))
+((eval (let*->lambdas sd) this) 3) is 5
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #33
+     scam -r task4.scm ../task4.2 (time allowed: 1s)
+
+task4.2 contains:
+(println (let*->lambdas '(define (f x) (let ((y 2) (z 3)) (+ x y z)))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(define (f x) (let ((y 2) (z 3)) (+ x y z)))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #34
+     scam -r task4.scm ../task4.3 (time allowed: 1s)
+
+task4.3 contains:
+(println (let*->lambdas '(define (g x y) (let* ((w (+ 2 3))) (+ x y w)))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(define (g x y) ((lambda (w) (+ x y w)) (+ 2 3)))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #35
+     scam -r task4.scm ../task4.4 (time allowed: 1s)
+
+task4.4 contains:
+(println (let*->lambdas '(define (g x y) (let* ((w (+ 2 3))) (inspect w) (+ x y w)))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(define (g x y) ((lambda (w) (inspect w) (+ x y w)) (+ 2 3)))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #36
+     scam -r task4.scm ../task4.5 (time allowed: 1s)
+
+task4.5 contains:
+(define sd '(define (g x y) (let* ((w (+ 2 3)) (z (* 2 w))) (inspect w) (inspect z) (+ x y w z))))
+(println (let*->lambdas sd))
+(inspect ((eval (let*->lambdas sd) this) 3 4))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(define (g x y) ((lambda (w) ((lambda (z) (inspect w) (inspect z) (+ x y w z)) (* 2 w))) (+ 2 3)))
+w is 5
+z is 10
+((eval (let*->lambdas sd) this) 3 4) is 22
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #5
+
+
+TEST #37
+     scam -r task5.scm ../task5.0 (time allowed: 1s)
+
+task5.0 contains:
+(println (((create 4) (lambda (x) (+ x 1))) 0))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+4
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #38
+     scam -r task5.scm ../task5.1 (time allowed: 1s)
+
+task5.1 contains:
+(println (((create 4) (lambda (x) (cons 'x x))) nil))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(x x x x)
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #39
+     scam -r task5.scm ../task5.2 (time allowed: 1s)
+
+task5.2 contains:
+(println (((pred (lambda (f) (lambda (n) (f (f (f (f n))))))) (lambda (x) (+ x 1))) 0))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+3
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #40
+     scam -r task5.scm ../task5.3 (time allowed: 1s)
+
+task5.3 contains:
+(println (((pred (pred (create 4))) (lambda (x) (+ x 1))) 0))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+2
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #41
+     scam -r task5.scm ../task5.4 (time allowed: 1s)
+
+task5.4 contains:
+(println (((pred (pred (create 10))) (lambda (x) (* x 2))) 1))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+256
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #42
+     scam -r task5.scm ../task5.5 (time allowed: 1s)
+
+task5.5 contains:
+(println (((pred (pred (create 10))) (lambda (x) (list x))) 'x))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((((((((x))))))))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #43
+     scam -r task5.scm ../task5.6 (time allowed: 1s)
+
+task5.6 contains:
+(println (((pred (pred (create 10))) (lambda (x) (cons 'x x))) nil))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(x x x x x x x x)
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #44
+     scam -r task5.scm ../task5.7 (time allowed: 1s)
+
+task5.7 contains:
+(println (((pred (pred (pred (create 3)))) (lambda (x) (list x x))) 'zero))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+zero
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #6
+
+
+TEST #45
+     scam -r task6.scm ../task6.0 (time allowed: 2.0s)
+
+task6.0 contains:
+(println (powerSet '(a b)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(nil (a) (b) (a b))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #46
+     scam -r task6.scm ../task6.1 (time allowed: 2.0s)
+
+task6.1 contains:
+(println (powerSet '(s e t)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(nil (s) (e) (t) (s e) (s t) (e t) (s e t))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #47
+     scam -r task6.scm ../task6.2 (time allowed: 2.0s)
+
+task6.2 contains:
+(println (powerSet '(x v q h c u)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(nil (x) (v) (q) (h) (c) (u) (x v) (x q) (x h) (x c) (x u) (v q) (v h) (v c) (v u) (q h) (q c) (q u) (h c) (h u) (c u) (x v q) (x v h) (x v c) (x v u) (x q h) (x q c) (x q u) (x h c) (x h u) (x c u) (v q h) (v q c) (v q u) (v h c) (v h u) (v c u) (q h c) (q h u) (q c u) (h c u) (x v q h) (x v q c) (x v q u) (x v h c) (x v h u) (x v c u) (x q h c) (x q h u) (x q c u) (x h c u) (v q h c) (v q h u) (v q c u) (v h c u) (q h c u) (x v q h c) (x v q h u) (x v q c u) (x v h c u) (x q h c u) (v q h c u) (x v q h c u))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #48
+     scam -r task6.scm ../task6.3 (time allowed: 2.0s)
+
+task6.3 contains:
+(println (powerSet '(y n o z d l)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(nil (y) (n) (o) (z) (d) (l) (y n) (y o) (y z) (y d) (y l) (n o) (n z) (n d) (n l) (o z) (o d) (o l) (z d) (z l) (d l) (y n o) (y n z) (y n d) (y n l) (y o z) (y o d) (y o l) (y z d) (y z l) (y d l) (n o z) (n o d) (n o l) (n z d) (n z l) (n d l) (o z d) (o z l) (o d l) (z d l) (y n o z) (y n o d) (y n o l) (y n z d) (y n z l) (y n d l) (y o z d) (y o z l) (y o d l) (y z d l) (n o z d) (n o z l) (n o d l) (n z d l) (o z d l) (y n o z d) (y n o z l) (y n o d l) (y n z d l) (y o z d l) (n o z d l) (y n o z d l))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #49
+     scam -r task6.scm ../task6.4 (time allowed: 2.0s)
+
+task6.4 contains:
+(println (powerSet '(d t i e q o)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(nil (d) (t) (i) (e) (q) (o) (d t) (d i) (d e) (d q) (d o) (t i) (t e) (t q) (t o) (i e) (i q) (i o) (e q) (e o) (q o) (d t i) (d t e) (d t q) (d t o) (d i e) (d i q) (d i o) (d e q) (d e o) (d q o) (t i e) (t i q) (t i o) (t e q) (t e o) (t q o) (i e q) (i e o) (i q o) (e q o) (d t i e) (d t i q) (d t i o) (d t e q) (d t e o) (d t q o) (d i e q) (d i e o) (d i q o) (d e q o) (t i e q) (t i e o) (t i q o) (t e q o) (i e q o) (d t i e q) (d t i e o) (d t i q o) (d t e q o) (d i e q o) (t i e q o) (d t i e q o))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #50
+     scam -r task6.scm ../task6.5 (time allowed: 2.0s)
+
+task6.5 contains:
+(println (powerSet '(y d w r f)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(nil (y) (d) (w) (r) (f) (y d) (y w) (y r) (y f) (d w) (d r) (d f) (w r) (w f) (r f) (y d w) (y d r) (y d f) (y w r) (y w f) (y r f) (d w r) (d w f) (d r f) (w r f) (y d w r) (y d w f) (y d r f) (y w r f) (d w r f) (y d w r f))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #51
+     scam -r task6.scm ../task6.6 (time allowed: 2.0s)
+
+task6.6 contains:
+(println (powerSet '(d u e z c s i)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(nil (d) (u) (e) (z) (c) (s) (i) (d u) (d e) (d z) (d c) (d s) (d i) (u e) (u z) (u c) (u s) (u i) (e z) (e c) (e s) (e i) (z c) (z s) (z i) (c s) (c i) (s i) (d u e) (d u z) (d u c) (d u s) (d u i) (d e z) (d e c) (d e s) (d e i) (d z c) (d z s) (d z i) (d c s) (d c i) (d s i) (u e z) (u e c) (u e s) (u e i) (u z c) (u z s) (u z i) (u c s) (u c i) (u s i) (e z c) (e z s) (e z i) (e c s) (e c i) (e s i) (z c s) (z c i) (z s i) (c s i) (d u e z) (d u e c) (d u e s) (d u e i) (d u z c) (d u z s) (d u z i) (d u c s) (d u c i) (d u s i) (d e z c) (d e z s) (d e z i) (d e c s) (d e c i) (d e s i) (d z c s) (d z c i) (d z s i) (d c s i) (u e z c) (u e z s) (u e z i) (u e c s) (u e c i) (u e s i) (u z c s) (u z c i) (u z s i) (u c s i) (e z c s) (e z c i) (e z s i) (e c s i) (z c s i) (d u e z c) (d u e z s) (d u e z i) (d u e c s) (d u e c i) (d u e s i) (d u z c s) (d u z c i) (d u z s i) (d u c s i) (d e z c s) (d e z c i) (d e z s i) (d e c s i) (d z c s i) (u e z c s) (u e z c i) (u e z s i) (u e c s i) (u z c s i) (e z c s i) (d u e z c s) (d u e z c i) (d u e z s i) (d u e c s i) (d u z c s i) (d e z c s i) (u e z c s i) (d u e z c s i))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #52
+     scam -r task6.scm ../task6.7 (time allowed: 2.0s)
+
+task6.7 contains:
+(println (powerSet '(u r t l j v h f m)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(nil (u) (r) (t) (l) (j) (v) (h) (f) (m) (u r) (u t) (u l) (u j) (u v) (u h) (u f) (u m) (r t) (r l) (r j) (r v) (r h) (r f) (r m) (t l) (t j) (t v) (t h) (t f) (t m) (l j) (l v) (l h) (l f) (l m) (j v) (j h) (j f) (j m) (v h) (v f) (v m) (h f) (h m) (f m) (u r t) (u r l) (u r j) (u r v) (u r h) (u r f) (u r m) (u t l) (u t j) (u t v) (u t h) (u t f) (u t m) (u l j) (u l v) (u l h) (u l f) (u l m) (u j v) (u j h) (u j f) (u j m) (u v h) (u v f) (u v m) (u h f) (u h m) (u f m) (r t l) (r t j) (r t v) (r t h) (r t f) (r t m) (r l j) (r l v) (r l h) (r l f) (r l m) (r j v) (r j h) (r j f) (r j m) (r v h) (r v f) (r v m) (r h f) (r h m) (r f m) (t l j) (t l v) (t l h) (t l f) (t l m) (t j v) (t j h) (t j f) (t j m) (t v h) (t v f) (t v m) (t h f) (t h m) (t f m) (l j v) (l j h) (l j f) (l j m) (l v h) (l v f) (l v m) (l h f) (l h m) (l f m) (j v h) (j v f) (j v m) (j h f) (j h m) (j f m) (v h f) (v h m) (v f m) (h f m) (u r t l) (u r t j) (u r t v) (u r t h) (u r t f) (u r t m) (u r l j) (u r l v) (u r l h) (u r l f) (u r l m) (u r j v) (u r j h) (u r j f) (u r j m) (u r v h) (u r v f) (u r v m) (u r h f) (u r h m) (u r f m) (u t l j) (u t l v) (u t l h) (u t l f) (u t l m) (u t j v) (u t j h) (u t j f) (u t j m) (u t v h) (u t v f) (u t v m) (u t h f) (u t h m) (u t f m) (u l j v) (u l j h) (u l j f) (u l j m) (u l v h) (u l v f) (u l v m) (u l h f) (u l h m) (u l f m) (u j v h) (u j v f) (u j v m) (u j h f) (u j h m) (u j f m) (u v h f) (u v h m) (u v f m) (u h f m) (r t l j) (r t l v) (r t l h) (r t l f) (r t l m) (r t j v) (r t j h) (r t j f) (r t j m) (r t v h) (r t v f) (r t v m) (r t h f) (r t h m) (r t f m) (r l j v) (r l j h) (r l j f) (r l j m) (r l v h) (r l v f) (r l v m) (r l h f) (r l h m) (r l f m) (r j v h) (r j v f) (r j v m) (r j h f) (r j h m) (r j f m) (r v h f) (r v h m) (r v f m) (r h f m) (t l j v) (t l j h) (t l j f) (t l j m) (t l v h) (t l v f) (t l v m) (t l h f) (t l h m) (t l f m) (t j v h) (t j v f) (t j v m) (t j h f) (t j h m) (t j f m) (t v h f) (t v h m) (t v f m) (t h f m) (l j v h) (l j v f) (l j v m) (l j h f) (l j h m) (l j f m) (l v h f) (l v h m) (l v f m) (l h f m) (j v h f) (j v h m) (j v f m) (j h f m) (v h f m) (u r t l j) (u r t l v) (u r t l h) (u r t l f) (u r t l m) (u r t j v) (u r t j h) (u r t j f) (u r t j m) (u r t v h) (u r t v f) (u r t v m) (u r t h f) (u r t h m) (u r t f m) (u r l j v) (u r l j h) (u r l j f) (u r l j m) (u r l v h) (u r l v f) (u r l v m) (u r l h f) (u r l h m) (u r l f m) (u r j v h) (u r j v f) (u r j v m) (u r j h f) (u r j h m) (u r j f m) (u r v h f) (u r v h m) (u r v f m) (u r h f m) (u t l j v) (u t l j h) (u t l j f) (u t l j m) (u t l v h) (u t l v f) (u t l v m) (u t l h f) (u t l h m) (u t l f m) (u t j v h) (u t j v f) (u t j v m) (u t j h f) (u t j h m) (u t j f m) (u t v h f) (u t v h m) (u t v f m) (u t h f m) (u l j v h) (u l j v f) (u l j v m) (u l j h f) (u l j h m) (u l j f m) (u l v h f) (u l v h m) (u l v f m) (u l h f m) (u j v h f) (u j v h m) (u j v f m) (u j h f m) (u v h f m) (r t l j v) (r t l j h) (r t l j f) (r t l j m) (r t l v h) (r t l v f) (r t l v m) (r t l h f) (r t l h m) (r t l f m) (r t j v h) (r t j v f) (r t j v m) (r t j h f) (r t j h m) (r t j f m) (r t v h f) (r t v h m) (r t v f m) (r t h f m) (r l j v h) (r l j v f) (r l j v m) (r l j h f) (r l j h m) (r l j f m) (r l v h f) (r l v h m) (r l v f m) (r l h f m) (r j v h f) (r j v h m) (r j v f m) (r j h f m) (r v h f m) (t l j v h) (t l j v f) (t l j v m) (t l j h f) (t l j h m) (t l j f m) (t l v h f) (t l v h m) (t l v f m) (t l h f m) (t j v h f) (t j v h m) (t j v f m) (t j h f m) (t v h f m) (l j v h f) (l j v h m) (l j v f m) (l j h f m) (l v h f m) (j v h f m) (u r t l j v) (u r t l j h) (u r t l j f) (u r t l j m) (u r t l v h) (u r t l v f) (u r t l v m) (u r t l h f) (u r t l h m) (u r t l f m) (u r t j v h) (u r t j v f) (u r t j v m) (u r t j h f) (u r t j h m) (u r t j f m) (u r t v h f) (u r t v h m) (u r t v f m) (u r t h f m) (u r l j v h) (u r l j v f) (u r l j v m) (u r l j h f) (u r l j h m) (u r l j f m) (u r l v h f) (u r l v h m) (u r l v f m) (u r l h f m) (u r j v h f) (u r j v h m) (u r j v f m) (u r j h f m) (u r v h f m) (u t l j v h) (u t l j v f) (u t l j v m) (u t l j h f) (u t l j h m) (u t l j f m) (u t l v h f) (u t l v h m) (u t l v f m) (u t l h f m) (u t j v h f) (u t j v h m) (u t j v f m) (u t j h f m) (u t v h f m) (u l j v h f) (u l j v h m) (u l j v f m) (u l j h f m) (u l v h f m) (u j v h f m) (r t l j v h) (r t l j v f) (r t l j v m) (r t l j h f) (r t l j h m) (r t l j f m) (r t l v h f) (r t l v h m) (r t l v f m) (r t l h f m) (r t j v h f) (r t j v h m) (r t j v f m) (r t j h f m) (r t v h f m) (r l j v h f) (r l j v h m) (r l j v f m) (r l j h f m) (r l v h f m) (r j v h f m) (t l j v h f) (t l j v h m) (t l j v f m) (t l j h f m) (t l v h f m) (t j v h f m) (l j v h f m) (u r t l j v h) (u r t l j v f) (u r t l j v m) (u r t l j h f) (u r t l j h m) (u r t l j f m) (u r t l v h f) (u r t l v h m) (u r t l v f m) (u r t l h f m) (u r t j v h f) (u r t j v h m) (u r t j v f m) (u r t j h f m) (u r t v h f m) (u r l j v h f) (u r l j v h m) (u r l j v f m) (u r l j h f m) (u r l v h f m) (u r j v h f m) (u t l j v h f) (u t l j v h m) (u t l j v f m) (u t l j h f m) (u t l v h f m) (u t j v h f m) (u l j v h f m) (r t l j v h f) (r t l j v h m) (r t l j v f m) (r t l j h f m) (r t l v h f m) (r t j v h f m) (r l j v h f m) (t l j v h f m) (u r t l j v h f) (u r t l j v h m) (u r t l j v f m) (u r t l j h f m) (u r t l v h f m) (u r t j v h f m) (u r l j v h f m) (u t l j v h f m) (r t l j v h f m) (u r t l j v h f m))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #53
+     scam -r task6.scm ../task6.8 (time allowed: 2.0s)
+
+task6.8 contains:
+(println (powerSet '(i w f s b c r z g p)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(nil (i) (w) (f) (s) (b) (c) (r) (z) (g) (p) (i w) (i f) (i s) (i b) (i c) (i r) (i z) (i g) (i p) (w f) (w s) (w b) (w c) (w r) (w z) (w g) (w p) (f s) (f b) (f c) (f r) (f z) (f g) (f p) (s b) (s c) (s r) (s z) (s g) (s p) (b c) (b r) (b z) (b g) (b p) (c r) (c z) (c g) (c p) (r z) (r g) (r p) (z g) (z p) (g p) (i w f) (i w s) (i w b) (i w c) (i w r) (i w z) (i w g) (i w p) (i f s) (i f b) (i f c) (i f r) (i f z) (i f g) (i f p) (i s b) (i s c) (i s r) (i s z) (i s g) (i s p) (i b c) (i b r) (i b z) (i b g) (i b p) (i c r) (i c z) (i c g) (i c p) (i r z) (i r g) (i r p) (i z g) (i z p) (i g p) (w f s) (w f b) (w f c) (w f r) (w f z) (w f g) (w f p) (w s b) (w s c) (w s r) (w s z) (w s g) (w s p) (w b c) (w b r) (w b z) (w b g) (w b p) (w c r) (w c z) (w c g) (w c p) (w r z) (w r g) (w r p) (w z g) (w z p) (w g p) (f s b) (f s c) (f s r) (f s z) (f s g) (f s p) (f b c) (f b r) (f b z) (f b g) (f b p) (f c r) (f c z) (f c g) (f c p) (f r z) (f r g) (f r p) (f z g) (f z p) (f g p) (s b c) (s b r) (s b z) (s b g) (s b p) (s c r) (s c z) (s c g) (s c p) (s r z) (s r g) (s r p) (s z g) (s z p) (s g p) (b c r) (b c z) (b c g) (b c p) (b r z) (b r g) (b r p) (b z g) (b z p) (b g p) (c r z) (c r g) (c r p) (c z g) (c z p) (c g p) (r z g) (r z p) (r g p) (z g p) (i w f s) (i w f b) (i w f c) (i w f r) (i w f z) (i w f g) (i w f p) (i w s b) (i w s c) (i w s r) (i w s z) (i w s g) (i w s p) (i w b c) (i w b r) (i w b z) (i w b g) (i w b p) (i w c r) (i w c z) (i w c g) (i w c p) (i w r z) (i w r g) (i w r p) (i w z g) (i w z p) (i w g p) (i f s b) (i f s c) (i f s r) (i f s z) (i f s g) (i f s p) (i f b c) (i f b r) (i f b z) (i f b g) (i f b p) (i f c r) (i f c z) (i f c g) (i f c p) (i f r z) (i f r g) (i f r p) (i f z g) (i f z p) (i f g p) (i s b c) (i s b r) (i s b z) (i s b g) (i s b p) (i s c r) (i s c z) (i s c g) (i s c p) (i s r z) (i s r g) (i s r p) (i s z g) (i s z p) (i s g p) (i b c r) (i b c z) (i b c g) (i b c p) (i b r z) (i b r g) (i b r p) (i b z g) (i b z p) (i b g p) (i c r z) (i c r g) (i c r p) (i c z g) (i c z p) (i c g p) (i r z g) (i r z p) (i r g p) (i z g p) (w f s b) (w f s c) (w f s r) (w f s z) (w f s g) (w f s p) (w f b c) (w f b r) (w f b z) (w f b g) (w f b p) (w f c r) (w f c z) (w f c g) (w f c p) (w f r z) (w f r g) (w f r p) (w f z g) (w f z p) (w f g p) (w s b c) (w s b r) (w s b z) (w s b g) (w s b p) (w s c r) (w s c z) (w s c g) (w s c p) (w s r z) (w s r g) (w s r p) (w s z g) (w s z p) (w s g p) (w b c r) (w b c z) (w b c g) (w b c p) (w b r z) (w b r g) (w b r p) (w b z g) (w b z p) (w b g p) (w c r z) (w c r g) (w c r p) (w c z g) (w c z p) (w c g p) (w r z g) (w r z p) (w r g p) (w z g p) (f s b c) (f s b r) (f s b z) (f s b g) (f s b p) (f s c r) (f s c z) (f s c g) (f s c p) (f s r z) (f s r g) (f s r p) (f s z g) (f s z p) (f s g p) (f b c r) (f b c z) (f b c g) (f b c p) (f b r z) (f b r g) (f b r p) (f b z g) (f b z p) (f b g p) (f c r z) (f c r g) (f c r p) (f c z g) (f c z p) (f c g p) (f r z g) (f r z p) (f r g p) (f z g p) (s b c r) (s b c z) (s b c g) (s b c p) (s b r z) (s b r g) (s b r p) (s b z g) (s b z p) (s b g p) (s c r z) (s c r g) (s c r p) (s c z g) (s c z p) (s c g p) (s r z g) (s r z p) (s r g p) (s z g p) (b c r z) (b c r g) (b c r p) (b c z g) (b c z p) (b c g p) (b r z g) (b r z p) (b r g p) (b z g p) (c r z g) (c r z p) (c r g p) (c z g p) (r z g p) (i w f s b) (i w f s c) (i w f s r) (i w f s z) (i w f s g) (i w f s p) (i w f b c) (i w f b r) (i w f b z) (i w f b g) (i w f b p) (i w f c r) (i w f c z) (i w f c g) (i w f c p) (i w f r z) (i w f r g) (i w f r p) (i w f z g) (i w f z p) (i w f g p) (i w s b c) (i w s b r) (i w s b z) (i w s b g) (i w s b p) (i w s c r) (i w s c z) (i w s c g) (i w s c p) (i w s r z) (i w s r g) (i w s r p) (i w s z g) (i w s z p) (i w s g p) (i w b c r) (i w b c z) (i w b c g) (i w b c p) (i w b r z) (i w b r g) (i w b r p) (i w b z g) (i w b z p) (i w b g p) (i w c r z) (i w c r g) (i w c r p) (i w c z g) (i w c z p) (i w c g p) (i w r z g) (i w r z p) (i w r g p) (i w z g p) (i f s b c) (i f s b r) (i f s b z) (i f s b g) (i f s b p) (i f s c r) (i f s c z) (i f s c g) (i f s c p) (i f s r z) (i f s r g) (i f s r p) (i f s z g) (i f s z p) (i f s g p) (i f b c r) (i f b c z) (i f b c g) (i f b c p) (i f b r z) (i f b r g) (i f b r p) (i f b z g) (i f b z p) (i f b g p) (i f c r z) (i f c r g) (i f c r p) (i f c z g) (i f c z p) (i f c g p) (i f r z g) (i f r z p) (i f r g p) (i f z g p) (i s b c r) (i s b c z) (i s b c g) (i s b c p) (i s b r z) (i s b r g) (i s b r p) (i s b z g) (i s b z p) (i s b g p) (i s c r z) (i s c r g) (i s c r p) (i s c z g) (i s c z p) (i s c g p) (i s r z g) (i s r z p) (i s r g p) (i s z g p) (i b c r z) (i b c r g) (i b c r p) (i b c z g) (i b c z p) (i b c g p) (i b r z g) (i b r z p) (i b r g p) (i b z g p) (i c r z g) (i c r z p) (i c r g p) (i c z g p) (i r z g p) (w f s b c) (w f s b r) (w f s b z) (w f s b g) (w f s b p) (w f s c r) (w f s c z) (w f s c g) (w f s c p) (w f s r z) (w f s r g) (w f s r p) (w f s z g) (w f s z p) (w f s g p) (w f b c r) (w f b c z) (w f b c g) (w f b c p) (w f b r z) (w f b r g) (w f b r p) (w f b z g) (w f b z p) (w f b g p) (w f c r z) (w f c r g) (w f c r p) (w f c z g) (w f c z p) (w f c g p) (w f r z g) (w f r z p) (w f r g p) (w f z g p) (w s b c r) (w s b c z) (w s b c g) (w s b c p) (w s b r z) (w s b r g) (w s b r p) (w s b z g) (w s b z p) (w s b g p) (w s c r z) (w s c r g) (w s c r p) (w s c z g) (w s c z p) (w s c g p) (w s r z g) (w s r z p) (w s r g p) (w s z g p) (w b c r z) (w b c r g) (w b c r p) (w b c z g) (w b c z p) (w b c g p) (w b r z g) (w b r z p) (w b r g p) (w b z g p) (w c r z g) (w c r z p) (w c r g p) (w c z g p) (w r z g p) (f s b c r) (f s b c z) (f s b c g) (f s b c p) (f s b r z) (f s b r g) (f s b r p) (f s b z g) (f s b z p) (f s b g p) (f s c r z) (f s c r g) (f s c r p) (f s c z g) (f s c z p) (f s c g p) (f s r z g) (f s r z p) (f s r g p) (f s z g p) (f b c r z) (f b c r g) (f b c r p) (f b c z g) (f b c z p) (f b c g p) (f b r z g) (f b r z p) (f b r g p) (f b z g p) (f c r z g) (f c r z p) (f c r g p) (f c z g p) (f r z g p) (s b c r z) (s b c r g) (s b c r p) (s b c z g) (s b c z p) (s b c g p) (s b r z g) (s b r z p) (s b r g p) (s b z g p) (s c r z g) (s c r z p) (s c r g p) (s c z g p) (s r z g p) (b c r z g) (b c r z p) (b c r g p) (b c z g p) (b r z g p) (c r z g p) (i w f s b c) (i w f s b r) (i w f s b z) (i w f s b g) (i w f s b p) (i w f s c r) (i w f s c z) (i w f s c g) (i w f s c p) (i w f s r z) (i w f s r g) (i w f s r p) (i w f s z g) (i w f s z p) (i w f s g p) (i w f b c r) (i w f b c z) (i w f b c g) (i w f b c p) (i w f b r z) (i w f b r g) (i w f b r p) (i w f b z g) (i w f b z p) (i w f b g p) (i w f c r z) (i w f c r g) (i w f c r p) (i w f c z g) (i w f c z p) (i w f c g p) (i w f r z g) (i w f r z p) (i w f r g p) (i w f z g p) (i w s b c r) (i w s b c z) (i w s b c g) (i w s b c p) (i w s b r z) (i w s b r g) (i w s b r p) (i w s b z g) (i w s b z p) (i w s b g p) (i w s c r z) (i w s c r g) (i w s c r p) (i w s c z g) (i w s c z p) (i w s c g p) (i w s r z g) (i w s r z p) (i w s r g p) (i w s z g p) (i w b c r z) (i w b c r g) (i w b c r p) (i w b c z g) (i w b c z p) (i w b c g p) (i w b r z g) (i w b r z p) (i w b r g p) (i w b z g p) (i w c r z g) (i w c r z p) (i w c r g p) (i w c z g p) (i w r z g p) (i f s b c r) (i f s b c z) (i f s b c g) (i f s b c p) (i f s b r z) (i f s b r g) (i f s b r p) (i f s b z g) (i f s b z p) (i f s b g p) (i f s c r z) (i f s c r g) (i f s c r p) (i f s c z g) (i f s c z p) (i f s c g p) (i f s r z g) (i f s r z p) (i f s r g p) (i f s z g p) (i f b c r z) (i f b c r g) (i f b c r p) (i f b c z g) (i f b c z p) (i f b c g p) (i f b r z g) (i f b r z p) (i f b r g p) (i f b z g p) (i f c r z g) (i f c r z p) (i f c r g p) (i f c z g p) (i f r z g p) (i s b c r z) (i s b c r g) (i s b c r p) (i s b c z g) (i s b c z p) (i s b c g p) (i s b r z g) (i s b r z p) (i s b r g p) (i s b z g p) (i s c r z g) (i s c r z p) (i s c r g p) (i s c z g p) (i s r z g p) (i b c r z g) (i b c r z p) (i b c r g p) (i b c z g p) (i b r z g p) (i c r z g p) (w f s b c r) (w f s b c z) (w f s b c g) (w f s b c p) (w f s b r z) (w f s b r g) (w f s b r p) (w f s b z g) (w f s b z p) (w f s b g p) (w f s c r z) (w f s c r g) (w f s c r p) (w f s c z g) (w f s c z p) (w f s c g p) (w f s r z g) (w f s r z p) (w f s r g p) (w f s z g p) (w f b c r z) (w f b c r g) (w f b c r p) (w f b c z g) (w f b c z p) (w f b c g p) (w f b r z g) (w f b r z p) (w f b r g p) (w f b z g p) (w f c r z g) (w f c r z p) (w f c r g p) (w f c z g p) (w f r z g p) (w s b c r z) (w s b c r g) (w s b c r p) (w s b c z g) (w s b c z p) (w s b c g p) (w s b r z g) (w s b r z p) (w s b r g p) (w s b z g p) (w s c r z g) (w s c r z p) (w s c r g p) (w s c z g p) (w s r z g p) (w b c r z g) (w b c r z p) (w b c r g p) (w b c z g p) (w b r z g p) (w c r z g p) (f s b c r z) (f s b c r g) (f s b c r p) (f s b c z g) (f s b c z p) (f s b c g p) (f s b r z g) (f s b r z p) (f s b r g p) (f s b z g p) (f s c r z g) (f s c r z p) (f s c r g p) (f s c z g p) (f s r z g p) (f b c r z g) (f b c r z p) (f b c r g p) (f b c z g p) (f b r z g p) (f c r z g p) (s b c r z g) (s b c r z p) (s b c r g p) (s b c z g p) (s b r z g p) (s c r z g p) (b c r z g p) (i w f s b c r) (i w f s b c z) (i w f s b c g) (i w f s b c p) (i w f s b r z) (i w f s b r g) (i w f s b r p) (i w f s b z g) (i w f s b z p) (i w f s b g p) (i w f s c r z) (i w f s c r g) (i w f s c r p) (i w f s c z g) (i w f s c z p) (i w f s c g p) (i w f s r z g) (i w f s r z p) (i w f s r g p) (i w f s z g p) (i w f b c r z) (i w f b c r g) (i w f b c r p) (i w f b c z g) (i w f b c z p) (i w f b c g p) (i w f b r z g) (i w f b r z p) (i w f b r g p) (i w f b z g p) (i w f c r z g) (i w f c r z p) (i w f c r g p) (i w f c z g p) (i w f r z g p) (i w s b c r z) (i w s b c r g) (i w s b c r p) (i w s b c z g) (i w s b c z p) (i w s b c g p) (i w s b r z g) (i w s b r z p) (i w s b r g p) (i w s b z g p) (i w s c r z g) (i w s c r z p) (i w s c r g p) (i w s c z g p) (i w s r z g p) (i w b c r z g) (i w b c r z p) (i w b c r g p) (i w b c z g p) (i w b r z g p) (i w c r z g p) (i f s b c r z) (i f s b c r g) (i f s b c r p) (i f s b c z g) (i f s b c z p) (i f s b c g p) (i f s b r z g) (i f s b r z p) (i f s b r g p) (i f s b z g p) (i f s c r z g) (i f s c r z p) (i f s c r g p) (i f s c z g p) (i f s r z g p) (i f b c r z g) (i f b c r z p) (i f b c r g p) (i f b c z g p) (i f b r z g p) (i f c r z g p) (i s b c r z g) (i s b c r z p) (i s b c r g p) (i s b c z g p) (i s b r z g p) (i s c r z g p) (i b c r z g p) (w f s b c r z) (w f s b c r g) (w f s b c r p) (w f s b c z g) (w f s b c z p) (w f s b c g p) (w f s b r z g) (w f s b r z p) (w f s b r g p) (w f s b z g p) (w f s c r z g) (w f s c r z p) (w f s c r g p) (w f s c z g p) (w f s r z g p) (w f b c r z g) (w f b c r z p) (w f b c r g p) (w f b c z g p) (w f b r z g p) (w f c r z g p) (w s b c r z g) (w s b c r z p) (w s b c r g p) (w s b c z g p) (w s b r z g p) (w s c r z g p) (w b c r z g p) (f s b c r z g) (f s b c r z p) (f s b c r g p) (f s b c z g p) (f s b r z g p) (f s c r z g p) (f b c r z g p) (s b c r z g p) (i w f s b c r z) (i w f s b c r g) (i w f s b c r p) (i w f s b c z g) (i w f s b c z p) (i w f s b c g p) (i w f s b r z g) (i w f s b r z p) (i w f s b r g p) (i w f s b z g p) (i w f s c r z g) (i w f s c r z p) (i w f s c r g p) (i w f s c z g p) (i w f s r z g p) (i w f b c r z g) (i w f b c r z p) (i w f b c r g p) (i w f b c z g p) (i w f b r z g p) (i w f c r z g p) (i w s b c r z g) (i w s b c r z p) (i w s b c r g p) (i w s b c z g p) (i w s b r z g p) (i w s c r z g p) (i w b c r z g p) (i f s b c r z g) (i f s b c r z p) (i f s b c r g p) (i f s b c z g p) (i f s b r z g p) (i f s c r z g p) (i f b c r z g p) (i s b c r z g p) (w f s b c r z g) (w f s b c r z p) (w f s b c r g p) (w f s b c z g p) (w f s b r z g p) (w f s c r z g p) (w f b c r z g p) (w s b c r z g p) (f s b c r z g p) (i w f s b c r z g) (i w f s b c r z p) (i w f s b c r g p) (i w f s b c z g p) (i w f s b r z g p) (i w f s c r z g p) (i w f b c r z g p) (i w s b c r z g p) (i f s b c r z g p) (w f s b c r z g p) (i w f s b c r z g p))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #54
+     scam -r task6.scm ../task6.9 (time allowed: 2.0s)
+
+task6.9 contains:
+(println (powerSet '(y j t z h r n e u f)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+(nil (y) (j) (t) (z) (h) (r) (n) (e) (u) (f) (y j) (y t) (y z) (y h) (y r) (y n) (y e) (y u) (y f) (j t) (j z) (j h) (j r) (j n) (j e) (j u) (j f) (t z) (t h) (t r) (t n) (t e) (t u) (t f) (z h) (z r) (z n) (z e) (z u) (z f) (h r) (h n) (h e) (h u) (h f) (r n) (r e) (r u) (r f) (n e) (n u) (n f) (e u) (e f) (u f) (y j t) (y j z) (y j h) (y j r) (y j n) (y j e) (y j u) (y j f) (y t z) (y t h) (y t r) (y t n) (y t e) (y t u) (y t f) (y z h) (y z r) (y z n) (y z e) (y z u) (y z f) (y h r) (y h n) (y h e) (y h u) (y h f) (y r n) (y r e) (y r u) (y r f) (y n e) (y n u) (y n f) (y e u) (y e f) (y u f) (j t z) (j t h) (j t r) (j t n) (j t e) (j t u) (j t f) (j z h) (j z r) (j z n) (j z e) (j z u) (j z f) (j h r) (j h n) (j h e) (j h u) (j h f) (j r n) (j r e) (j r u) (j r f) (j n e) (j n u) (j n f) (j e u) (j e f) (j u f) (t z h) (t z r) (t z n) (t z e) (t z u) (t z f) (t h r) (t h n) (t h e) (t h u) (t h f) (t r n) (t r e) (t r u) (t r f) (t n e) (t n u) (t n f) (t e u) (t e f) (t u f) (z h r) (z h n) (z h e) (z h u) (z h f) (z r n) (z r e) (z r u) (z r f) (z n e) (z n u) (z n f) (z e u) (z e f) (z u f) (h r n) (h r e) (h r u) (h r f) (h n e) (h n u) (h n f) (h e u) (h e f) (h u f) (r n e) (r n u) (r n f) (r e u) (r e f) (r u f) (n e u) (n e f) (n u f) (e u f) (y j t z) (y j t h) (y j t r) (y j t n) (y j t e) (y j t u) (y j t f) (y j z h) (y j z r) (y j z n) (y j z e) (y j z u) (y j z f) (y j h r) (y j h n) (y j h e) (y j h u) (y j h f) (y j r n) (y j r e) (y j r u) (y j r f) (y j n e) (y j n u) (y j n f) (y j e u) (y j e f) (y j u f) (y t z h) (y t z r) (y t z n) (y t z e) (y t z u) (y t z f) (y t h r) (y t h n) (y t h e) (y t h u) (y t h f) (y t r n) (y t r e) (y t r u) (y t r f) (y t n e) (y t n u) (y t n f) (y t e u) (y t e f) (y t u f) (y z h r) (y z h n) (y z h e) (y z h u) (y z h f) (y z r n) (y z r e) (y z r u) (y z r f) (y z n e) (y z n u) (y z n f) (y z e u) (y z e f) (y z u f) (y h r n) (y h r e) (y h r u) (y h r f) (y h n e) (y h n u) (y h n f) (y h e u) (y h e f) (y h u f) (y r n e) (y r n u) (y r n f) (y r e u) (y r e f) (y r u f) (y n e u) (y n e f) (y n u f) (y e u f) (j t z h) (j t z r) (j t z n) (j t z e) (j t z u) (j t z f) (j t h r) (j t h n) (j t h e) (j t h u) (j t h f) (j t r n) (j t r e) (j t r u) (j t r f) (j t n e) (j t n u) (j t n f) (j t e u) (j t e f) (j t u f) (j z h r) (j z h n) (j z h e) (j z h u) (j z h f) (j z r n) (j z r e) (j z r u) (j z r f) (j z n e) (j z n u) (j z n f) (j z e u) (j z e f) (j z u f) (j h r n) (j h r e) (j h r u) (j h r f) (j h n e) (j h n u) (j h n f) (j h e u) (j h e f) (j h u f) (j r n e) (j r n u) (j r n f) (j r e u) (j r e f) (j r u f) (j n e u) (j n e f) (j n u f) (j e u f) (t z h r) (t z h n) (t z h e) (t z h u) (t z h f) (t z r n) (t z r e) (t z r u) (t z r f) (t z n e) (t z n u) (t z n f) (t z e u) (t z e f) (t z u f) (t h r n) (t h r e) (t h r u) (t h r f) (t h n e) (t h n u) (t h n f) (t h e u) (t h e f) (t h u f) (t r n e) (t r n u) (t r n f) (t r e u) (t r e f) (t r u f) (t n e u) (t n e f) (t n u f) (t e u f) (z h r n) (z h r e) (z h r u) (z h r f) (z h n e) (z h n u) (z h n f) (z h e u) (z h e f) (z h u f) (z r n e) (z r n u) (z r n f) (z r e u) (z r e f) (z r u f) (z n e u) (z n e f) (z n u f) (z e u f) (h r n e) (h r n u) (h r n f) (h r e u) (h r e f) (h r u f) (h n e u) (h n e f) (h n u f) (h e u f) (r n e u) (r n e f) (r n u f) (r e u f) (n e u f) (y j t z h) (y j t z r) (y j t z n) (y j t z e) (y j t z u) (y j t z f) (y j t h r) (y j t h n) (y j t h e) (y j t h u) (y j t h f) (y j t r n) (y j t r e) (y j t r u) (y j t r f) (y j t n e) (y j t n u) (y j t n f) (y j t e u) (y j t e f) (y j t u f) (y j z h r) (y j z h n) (y j z h e) (y j z h u) (y j z h f) (y j z r n) (y j z r e) (y j z r u) (y j z r f) (y j z n e) (y j z n u) (y j z n f) (y j z e u) (y j z e f) (y j z u f) (y j h r n) (y j h r e) (y j h r u) (y j h r f) (y j h n e) (y j h n u) (y j h n f) (y j h e u) (y j h e f) (y j h u f) (y j r n e) (y j r n u) (y j r n f) (y j r e u) (y j r e f) (y j r u f) (y j n e u) (y j n e f) (y j n u f) (y j e u f) (y t z h r) (y t z h n) (y t z h e) (y t z h u) (y t z h f) (y t z r n) (y t z r e) (y t z r u) (y t z r f) (y t z n e) (y t z n u) (y t z n f) (y t z e u) (y t z e f) (y t z u f) (y t h r n) (y t h r e) (y t h r u) (y t h r f) (y t h n e) (y t h n u) (y t h n f) (y t h e u) (y t h e f) (y t h u f) (y t r n e) (y t r n u) (y t r n f) (y t r e u) (y t r e f) (y t r u f) (y t n e u) (y t n e f) (y t n u f) (y t e u f) (y z h r n) (y z h r e) (y z h r u) (y z h r f) (y z h n e) (y z h n u) (y z h n f) (y z h e u) (y z h e f) (y z h u f) (y z r n e) (y z r n u) (y z r n f) (y z r e u) (y z r e f) (y z r u f) (y z n e u) (y z n e f) (y z n u f) (y z e u f) (y h r n e) (y h r n u) (y h r n f) (y h r e u) (y h r e f) (y h r u f) (y h n e u) (y h n e f) (y h n u f) (y h e u f) (y r n e u) (y r n e f) (y r n u f) (y r e u f) (y n e u f) (j t z h r) (j t z h n) (j t z h e) (j t z h u) (j t z h f) (j t z r n) (j t z r e) (j t z r u) (j t z r f) (j t z n e) (j t z n u) (j t z n f) (j t z e u) (j t z e f) (j t z u f) (j t h r n) (j t h r e) (j t h r u) (j t h r f) (j t h n e) (j t h n u) (j t h n f) (j t h e u) (j t h e f) (j t h u f) (j t r n e) (j t r n u) (j t r n f) (j t r e u) (j t r e f) (j t r u f) (j t n e u) (j t n e f) (j t n u f) (j t e u f) (j z h r n) (j z h r e) (j z h r u) (j z h r f) (j z h n e) (j z h n u) (j z h n f) (j z h e u) (j z h e f) (j z h u f) (j z r n e) (j z r n u) (j z r n f) (j z r e u) (j z r e f) (j z r u f) (j z n e u) (j z n e f) (j z n u f) (j z e u f) (j h r n e) (j h r n u) (j h r n f) (j h r e u) (j h r e f) (j h r u f) (j h n e u) (j h n e f) (j h n u f) (j h e u f) (j r n e u) (j r n e f) (j r n u f) (j r e u f) (j n e u f) (t z h r n) (t z h r e) (t z h r u) (t z h r f) (t z h n e) (t z h n u) (t z h n f) (t z h e u) (t z h e f) (t z h u f) (t z r n e) (t z r n u) (t z r n f) (t z r e u) (t z r e f) (t z r u f) (t z n e u) (t z n e f) (t z n u f) (t z e u f) (t h r n e) (t h r n u) (t h r n f) (t h r e u) (t h r e f) (t h r u f) (t h n e u) (t h n e f) (t h n u f) (t h e u f) (t r n e u) (t r n e f) (t r n u f) (t r e u f) (t n e u f) (z h r n e) (z h r n u) (z h r n f) (z h r e u) (z h r e f) (z h r u f) (z h n e u) (z h n e f) (z h n u f) (z h e u f) (z r n e u) (z r n e f) (z r n u f) (z r e u f) (z n e u f) (h r n e u) (h r n e f) (h r n u f) (h r e u f) (h n e u f) (r n e u f) (y j t z h r) (y j t z h n) (y j t z h e) (y j t z h u) (y j t z h f) (y j t z r n) (y j t z r e) (y j t z r u) (y j t z r f) (y j t z n e) (y j t z n u) (y j t z n f) (y j t z e u) (y j t z e f) (y j t z u f) (y j t h r n) (y j t h r e) (y j t h r u) (y j t h r f) (y j t h n e) (y j t h n u) (y j t h n f) (y j t h e u) (y j t h e f) (y j t h u f) (y j t r n e) (y j t r n u) (y j t r n f) (y j t r e u) (y j t r e f) (y j t r u f) (y j t n e u) (y j t n e f) (y j t n u f) (y j t e u f) (y j z h r n) (y j z h r e) (y j z h r u) (y j z h r f) (y j z h n e) (y j z h n u) (y j z h n f) (y j z h e u) (y j z h e f) (y j z h u f) (y j z r n e) (y j z r n u) (y j z r n f) (y j z r e u) (y j z r e f) (y j z r u f) (y j z n e u) (y j z n e f) (y j z n u f) (y j z e u f) (y j h r n e) (y j h r n u) (y j h r n f) (y j h r e u) (y j h r e f) (y j h r u f) (y j h n e u) (y j h n e f) (y j h n u f) (y j h e u f) (y j r n e u) (y j r n e f) (y j r n u f) (y j r e u f) (y j n e u f) (y t z h r n) (y t z h r e) (y t z h r u) (y t z h r f) (y t z h n e) (y t z h n u) (y t z h n f) (y t z h e u) (y t z h e f) (y t z h u f) (y t z r n e) (y t z r n u) (y t z r n f) (y t z r e u) (y t z r e f) (y t z r u f) (y t z n e u) (y t z n e f) (y t z n u f) (y t z e u f) (y t h r n e) (y t h r n u) (y t h r n f) (y t h r e u) (y t h r e f) (y t h r u f) (y t h n e u) (y t h n e f) (y t h n u f) (y t h e u f) (y t r n e u) (y t r n e f) (y t r n u f) (y t r e u f) (y t n e u f) (y z h r n e) (y z h r n u) (y z h r n f) (y z h r e u) (y z h r e f) (y z h r u f) (y z h n e u) (y z h n e f) (y z h n u f) (y z h e u f) (y z r n e u) (y z r n e f) (y z r n u f) (y z r e u f) (y z n e u f) (y h r n e u) (y h r n e f) (y h r n u f) (y h r e u f) (y h n e u f) (y r n e u f) (j t z h r n) (j t z h r e) (j t z h r u) (j t z h r f) (j t z h n e) (j t z h n u) (j t z h n f) (j t z h e u) (j t z h e f) (j t z h u f) (j t z r n e) (j t z r n u) (j t z r n f) (j t z r e u) (j t z r e f) (j t z r u f) (j t z n e u) (j t z n e f) (j t z n u f) (j t z e u f) (j t h r n e) (j t h r n u) (j t h r n f) (j t h r e u) (j t h r e f) (j t h r u f) (j t h n e u) (j t h n e f) (j t h n u f) (j t h e u f) (j t r n e u) (j t r n e f) (j t r n u f) (j t r e u f) (j t n e u f) (j z h r n e) (j z h r n u) (j z h r n f) (j z h r e u) (j z h r e f) (j z h r u f) (j z h n e u) (j z h n e f) (j z h n u f) (j z h e u f) (j z r n e u) (j z r n e f) (j z r n u f) (j z r e u f) (j z n e u f) (j h r n e u) (j h r n e f) (j h r n u f) (j h r e u f) (j h n e u f) (j r n e u f) (t z h r n e) (t z h r n u) (t z h r n f) (t z h r e u) (t z h r e f) (t z h r u f) (t z h n e u) (t z h n e f) (t z h n u f) (t z h e u f) (t z r n e u) (t z r n e f) (t z r n u f) (t z r e u f) (t z n e u f) (t h r n e u) (t h r n e f) (t h r n u f) (t h r e u f) (t h n e u f) (t r n e u f) (z h r n e u) (z h r n e f) (z h r n u f) (z h r e u f) (z h n e u f) (z r n e u f) (h r n e u f) (y j t z h r n) (y j t z h r e) (y j t z h r u) (y j t z h r f) (y j t z h n e) (y j t z h n u) (y j t z h n f) (y j t z h e u) (y j t z h e f) (y j t z h u f) (y j t z r n e) (y j t z r n u) (y j t z r n f) (y j t z r e u) (y j t z r e f) (y j t z r u f) (y j t z n e u) (y j t z n e f) (y j t z n u f) (y j t z e u f) (y j t h r n e) (y j t h r n u) (y j t h r n f) (y j t h r e u) (y j t h r e f) (y j t h r u f) (y j t h n e u) (y j t h n e f) (y j t h n u f) (y j t h e u f) (y j t r n e u) (y j t r n e f) (y j t r n u f) (y j t r e u f) (y j t n e u f) (y j z h r n e) (y j z h r n u) (y j z h r n f) (y j z h r e u) (y j z h r e f) (y j z h r u f) (y j z h n e u) (y j z h n e f) (y j z h n u f) (y j z h e u f) (y j z r n e u) (y j z r n e f) (y j z r n u f) (y j z r e u f) (y j z n e u f) (y j h r n e u) (y j h r n e f) (y j h r n u f) (y j h r e u f) (y j h n e u f) (y j r n e u f) (y t z h r n e) (y t z h r n u) (y t z h r n f) (y t z h r e u) (y t z h r e f) (y t z h r u f) (y t z h n e u) (y t z h n e f) (y t z h n u f) (y t z h e u f) (y t z r n e u) (y t z r n e f) (y t z r n u f) (y t z r e u f) (y t z n e u f) (y t h r n e u) (y t h r n e f) (y t h r n u f) (y t h r e u f) (y t h n e u f) (y t r n e u f) (y z h r n e u) (y z h r n e f) (y z h r n u f) (y z h r e u f) (y z h n e u f) (y z r n e u f) (y h r n e u f) (j t z h r n e) (j t z h r n u) (j t z h r n f) (j t z h r e u) (j t z h r e f) (j t z h r u f) (j t z h n e u) (j t z h n e f) (j t z h n u f) (j t z h e u f) (j t z r n e u) (j t z r n e f) (j t z r n u f) (j t z r e u f) (j t z n e u f) (j t h r n e u) (j t h r n e f) (j t h r n u f) (j t h r e u f) (j t h n e u f) (j t r n e u f) (j z h r n e u) (j z h r n e f) (j z h r n u f) (j z h r e u f) (j z h n e u f) (j z r n e u f) (j h r n e u f) (t z h r n e u) (t z h r n e f) (t z h r n u f) (t z h r e u f) (t z h n e u f) (t z r n e u f) (t h r n e u f) (z h r n e u f) (y j t z h r n e) (y j t z h r n u) (y j t z h r n f) (y j t z h r e u) (y j t z h r e f) (y j t z h r u f) (y j t z h n e u) (y j t z h n e f) (y j t z h n u f) (y j t z h e u f) (y j t z r n e u) (y j t z r n e f) (y j t z r n u f) (y j t z r e u f) (y j t z n e u f) (y j t h r n e u) (y j t h r n e f) (y j t h r n u f) (y j t h r e u f) (y j t h n e u f) (y j t r n e u f) (y j z h r n e u) (y j z h r n e f) (y j z h r n u f) (y j z h r e u f) (y j z h n e u f) (y j z r n e u f) (y j h r n e u f) (y t z h r n e u) (y t z h r n e f) (y t z h r n u f) (y t z h r e u f) (y t z h n e u f) (y t z r n e u f) (y t h r n e u f) (y z h r n e u f) (j t z h r n e u) (j t z h r n e f) (j t z h r n u f) (j t z h r e u f) (j t z h n e u f) (j t z r n e u f) (j t h r n e u f) (j z h r n e u f) (t z h r n e u f) (y j t z h r n e u) (y j t z h r n e f) (y j t z h r n u f) (y j t z h r e u f) (y j t z h n e u f) (y j t z r n e u f) (y j t h r n e u f) (y j z h r n e u f) (y t z h r n e u f) (j t z h r n e u f) (y j t z h r n e u f))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #7
+
+
+TEST #55
+     scam -r task7.scm ../task7.0 (time allowed: 1s)
+
+task7.0 contains:
+(println (transpose '((1 0) (0 1))))
+(println (matrix-*-matrix '((1 2) (3 4)) '((1 0) (0 1))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((1 0) (0 1))
+((1 2) (3 4))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #56
+     scam -r task7.scm ../task7.1 (time allowed: 1s)
+
+task7.1 contains:
+(println (dot-product '(1 2 3 4) '(5 6 7 8)))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+70
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #57
+     scam -r task7.scm ../task7.2 (time allowed: 1s)
+
+task7.2 contains:
+(println (transpose '((2 6 8 8) (9 3 0 3) (8 7 7 3) (4 1 6 0) (8 3 4 6))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((2 9 8 4 8) (6 3 7 1 3) (8 0 7 6 4) (8 3 3 0 6))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #58
+     scam -r task7.scm ../task7.3 (time allowed: 1s)
+
+task7.3 contains:
+(println (matrix-*-matrix '((9 9 5 5) (9 4 3 9) (0 7 8 7) (0 0 8 4)) '((4 1 0 6) (3 3 1 8) (3 7 1 6))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((45 40 71 53) (54 46 96 81) (90 62 92 109))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #59
+     scam -r task7.scm ../task7.4 (time allowed: 1s)
+
+task7.4 contains:
+(println (transpose '((1 3 7 1 4) (5 7 5 6 2) (8 6 6 8 9) (8 0 8 0 1))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((1 5 8 8) (3 7 6 0) (7 5 6 8) (1 6 8 0) (4 2 9 1))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #60
+     scam -r task7.scm ../task7.5 (time allowed: 1s)
+
+task7.5 contains:
+(println (matrix-*-matrix '((8 1 9) (7 3 5) (0 6 2)) '((2 3 0) (7 6 5) (8 6 5) (1 1 1))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((37 11 33) (98 55 103) (106 56 112) (15 10 16))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #61
+     scam -r task7.scm ../task7.6 (time allowed: 1s)
+
+task7.6 contains:
+(println (transpose '((0 9 1 3 8) (1 9 7 8 8) (8 0 8 4 2))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((0 1 8) (9 9 0) (1 7 8) (3 8 4) (8 8 2))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #62
+     scam -r task7.scm ../task7.7 (time allowed: 1s)
+
+task7.7 contains:
+(println (matrix-*-matrix '((2 8 3 4) (7 6 7 8) (0 3 8 4) (9 7 8 6)) '((4 5 2 2) (1 0 2 7) (1 9 1 3))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((61 82 79 76) (65 63 75 54) (92 86 98 98))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #63
+     scam -r task7.scm ../task7.8 (time allowed: 1s)
+
+task7.8 contains:
+(println (transpose '((9 6 0 0) (6 2 6 8) (1 3 3 3) (0 5 5 0))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((9 6 1 0) (6 2 3 5) (0 6 3 5) (0 8 3 0))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #64
+     scam -r task7.scm ../task7.9 (time allowed: 1s)
+
+task7.9 contains:
+(println (matrix-*-matrix '((1 5 8 6) (1 2 9 9) (7 3 9 2)) '((1 9 1) (5 1 9) (3 8 0) (6 3 4) (6 2 4))))
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+((17 26 98 89) (69 54 130 57) (11 31 96 90) (37 48 111 71) (36 46 102 62))
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING TASK #8
+
+
+TEST #65
+     scam -r task8.scm ../task8.0 (time allowed: 1s)
+
+task8.0 contains:
+(define t0 (newBST 5))
+(define t1 (insertBST t0 2))
+(define t2 (insertBST t1 8))
+(displayBST t2)
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+    8
+5
+    2
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #66
+     scam -r task8.scm ../task8.1 (time allowed: 1s)
+
+task8.1 contains:
+(define t0 (newBST 5))
+(displayBST t0)
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+5
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #67
+     scam -r task8.scm ../task8.2 (time allowed: 1s)
+
+task8.2 contains:
+(define t1 (newBST 55))
+(define t2 (insertBST t1 54))
+(define t3 (insertBST t2 83))
+(define t4 (insertBST t3 10))
+(define t5 (insertBST t4 68))
+(define t6 (insertBST t5 27))
+(define t7 (insertBST t6 52))
+(define t8 (insertBST t7 39))
+(define t9 (insertBST t8 81))
+(define t10 (insertBST t9 77))
+(define t11 (insertBST t10 38))
+(define t12 (insertBST t11 13))
+(define t13 (insertBST t12 45))
+(define t14 (insertBST t13 99))
+(define t15 (insertBST t14 90))
+(define t16 (insertBST t15 84))
+(define t17 (insertBST t16 66))
+(define t18 (insertBST t17 34))
+(define t19 (insertBST t18 17))
+(displayBST t19)
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+        99
+            90
+                84
+    83
+            81
+                77
+        68
+            66
+55
+    54
+                52
+                        45
+                    39
+                        38
+                            34
+            27
+                    17
+                13
+        10
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #68
+     scam -r task8.scm ../task8.3 (time allowed: 1s)
+
+task8.3 contains:
+(define t1 (newBST 63))
+(define t2 (insertBST t1 17))
+(define t3 (insertBST t2 78))
+(define t4 (insertBST t3 84))
+(define t5 (insertBST t4 79))
+(define t6 (insertBST t5 12))
+(define t7 (insertBST t6 92))
+(define t8 (insertBST t7 45))
+(define t9 (insertBST t8 51))
+(define t10 (insertBST t9 95))
+(define t11 (insertBST t10 56))
+(define t12 (insertBST t11 59))
+(define t13 (insertBST t12 97))
+(define t14 (insertBST t13 98))
+(define t15 (insertBST t14 20))
+(displayBST t15)
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+                        98
+                    97
+                95
+            92
+        84
+            79
+    78
+63
+                    59
+                56
+            51
+        45
+            20
+    17
+        12
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #69
+     scam -r task8.scm ../task8.4 (time allowed: 1s)
+
+task8.4 contains:
+(define t1 (newBST 71))
+(define t2 (insertBST t1 16))
+(define t3 (insertBST t2 89))
+(define t4 (insertBST t3 95))
+(define t5 (insertBST t4 70))
+(define t6 (insertBST t5 85))
+(define t7 (insertBST t6 35))
+(define t8 (insertBST t7 67))
+(define t9 (insertBST t8 76))
+(define t10 (insertBST t9 56))
+(define t11 (insertBST t10 46))
+(define t12 (insertBST t11 21))
+(define t13 (insertBST t12 78))
+(define t14 (insertBST t13 38))
+(define t15 (insertBST t14 26))
+(define t16 (insertBST t15 68))
+(displayBST t16)
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+        95
+    89
+        85
+                78
+            76
+71
+        70
+                    68
+                67
+                    56
+                        46
+                            38
+            35
+                    26
+                21
+    16
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #70
+     scam -r task8.scm ../task8.5 (time allowed: 1s)
+
+task8.5 contains:
+(define t1 (newBST 33))
+(define t2 (insertBST t1 35))
+(define t3 (insertBST t2 32))
+(define t4 (insertBST t3 64))
+(define t5 (insertBST t4 17))
+(define t6 (insertBST t5 60))
+(define t7 (insertBST t6 41))
+(define t8 (insertBST t7 75))
+(define t9 (insertBST t8 96))
+(define t10 (insertBST t9 23))
+(define t11 (insertBST t10 89))
+(define t12 (insertBST t11 69))
+(displayBST t12)
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+                96
+                    89
+            75
+                69
+        64
+            60
+                41
+    35
+33
+    32
+            23
+        17
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #71
+     scam -r task8.scm ../task8.6 (time allowed: 1s)
+
+task8.6 contains:
+(define t1 (newBST 86))
+(define t2 (insertBST t1 31))
+(define t3 (insertBST t2 52))
+(define t4 (insertBST t3 10))
+(define t5 (insertBST t4 88))
+(define t6 (insertBST t5 89))
+(define t7 (insertBST t6 93))
+(define t8 (insertBST t7 21))
+(define t9 (insertBST t8 82))
+(define t10 (insertBST t9 40))
+(define t11 (insertBST t10 25))
+(define t12 (insertBST t11 99))
+(define t13 (insertBST t12 17))
+(define t14 (insertBST t13 73))
+(displayBST t14)
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+                99
+            93
+        89
+    88
+86
+            82
+                73
+        52
+            40
+    31
+                25
+            21
+                17
+        10
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #72
+     scam -r task8.scm ../task8.7 (time allowed: 1s)
+
+task8.7 contains:
+(define t1 (newBST 48))
+(define t2 (insertBST t1 59))
+(define t3 (insertBST t2 75))
+(define t4 (insertBST t3 86))
+(define t5 (insertBST t4 37))
+(define t6 (insertBST t5 29))
+(define t7 (insertBST t6 60))
+(define t8 (insertBST t7 45))
+(define t9 (insertBST t8 16))
+(define t10 (insertBST t9 42))
+(define t11 (insertBST t10 84))
+(define t12 (insertBST t11 66))
+(define t13 (insertBST t12 74))
+(define t14 (insertBST t13 99))
+(define t15 (insertBST t14 19))
+(define t16 (insertBST t15 26))
+(define t17 (insertBST t16 11))
+(define t18 (insertBST t17 62))
+(define t19 (insertBST t18 70))
+(define t20 (insertBST t19 77))
+(define t21 (insertBST t20 20))
+(define t22 (insertBST t21 51))
+(define t23 (insertBST t22 87))
+(define t24 (insertBST t23 76))
+(define t25 (insertBST t24 25))
+(define t26 (insertBST t25 13))
+(define t27 (insertBST t26 95))
+(define t28 (insertBST t27 28))
+(define t29 (insertBST t28 65))
+(define t30 (insertBST t29 14))
+(define t31 (insertBST t30 88))
+(define t32 (insertBST t31 64))
+(define t33 (insertBST t32 32))
+(define t34 (insertBST t33 18))
+(define t35 (insertBST t34 93))
+(define t36 (insertBST t35 54))
+(define t37 (insertBST t36 67))
+(define t38 (insertBST t37 69))
+(define t39 (insertBST t38 41))
+(define t40 (insertBST t39 38))
+(define t41 (insertBST t40 92))
+(define t42 (insertBST t41 27))
+(define t43 (insertBST t42 79))
+(define t44 (insertBST t43 36))
+(define t45 (insertBST t44 12))
+(define t46 (insertBST t45 23))
+(define t47 (insertBST t46 34))
+(define t48 (insertBST t47 31))
+(define t49 (insertBST t48 58))
+(define t50 (insertBST t49 89))
+(define t51 (insertBST t50 97))
+(define t52 (insertBST t51 47))
+(define t53 (insertBST t52 90))
+(define t54 (insertBST t53 39))
+(define t55 (insertBST t54 10))
+(define t56 (insertBST t55 82))
+(define t57 (insertBST t56 80))
+(define t58 (insertBST t57 71))
+(define t59 (insertBST t58 78))
+(define t60 (insertBST t59 50))
+(define t61 (insertBST t60 44))
+(define t62 (insertBST t61 85))
+(define t63 (insertBST t62 35))
+(define t64 (insertBST t63 30))
+(displayBST t64)
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+                99
+                            97
+                        95
+                                93
+                                    92
+                                            90
+                                        89
+                            88
+                    87
+            86
+                    85
+                84
+                            82
+                                80
+                        79
+                            78
+                    77
+                        76
+        75
+                    74
+                            71
+                        70
+                                69
+                            67
+                66
+                        65
+                            64
+                    62
+            60
+    59
+                58
+            54
+        51
+            50
+48
+            47
+        45
+                44
+            42
+                41
+                        39
+                    38
+    37
+                36
+                        35
+                    34
+            32
+                31
+                    30
+        29
+                        28
+                            27
+                    26
+                            25
+                                23
+                        20
+                19
+                    18
+            16
+                        14
+                    13
+                        12
+                11
+                    10
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #73
+     scam -r task8.scm ../task8.8 (time allowed: 1s)
+
+task8.8 contains:
+(define t1 (newBST 55))
+(define t2 (insertBST t1 91))
+(define t3 (insertBST t2 28))
+(define t4 (insertBST t3 27))
+(define t5 (insertBST t4 95))
+(define t6 (insertBST t5 24))
+(define t7 (insertBST t6 68))
+(define t8 (insertBST t7 40))
+(define t9 (insertBST t8 59))
+(define t10 (insertBST t9 16))
+(define t11 (insertBST t10 52))
+(define t12 (insertBST t11 99))
+(define t13 (insertBST t12 64))
+(define t14 (insertBST t13 44))
+(define t15 (insertBST t14 97))
+(define t16 (insertBST t15 74))
+(define t17 (insertBST t16 60))
+(define t18 (insertBST t17 75))
+(define t19 (insertBST t18 43))
+(define t20 (insertBST t19 48))
+(define t21 (insertBST t20 56))
+(define t22 (insertBST t21 63))
+(define t23 (insertBST t22 87))
+(define t24 (insertBST t23 53))
+(define t25 (insertBST t24 22))
+(define t26 (insertBST t25 71))
+(define t27 (insertBST t26 57))
+(define t28 (insertBST t27 11))
+(define t29 (insertBST t28 83))
+(define t30 (insertBST t29 94))
+(define t31 (insertBST t30 96))
+(define t32 (insertBST t31 90))
+(define t33 (insertBST t32 25))
+(define t34 (insertBST t33 92))
+(define t35 (insertBST t34 84))
+(define t36 (insertBST t35 47))
+(define t37 (insertBST t36 20))
+(define t38 (insertBST t37 50))
+(define t39 (insertBST t38 78))
+(define t40 (insertBST t39 58))
+(define t41 (insertBST t40 80))
+(define t42 (insertBST t41 70))
+(define t43 (insertBST t42 88))
+(define t44 (insertBST t43 82))
+(define t45 (insertBST t44 49))
+(define t46 (insertBST t45 36))
+(define t47 (insertBST t46 37))
+(define t48 (insertBST t47 85))
+(define t49 (insertBST t48 81))
+(define t50 (insertBST t49 39))
+(define t51 (insertBST t50 79))
+(define t52 (insertBST t51 32))
+(define t53 (insertBST t52 76))
+(define t54 (insertBST t53 12))
+(define t55 (insertBST t54 18))
+(define t56 (insertBST t55 62))
+(define t57 (insertBST t56 45))
+(define t58 (insertBST t57 38))
+(define t59 (insertBST t58 19))
+(define t60 (insertBST t59 89))
+(define t61 (insertBST t60 65))
+(define t62 (insertBST t61 30))
+(define t63 (insertBST t62 72))
+(define t64 (insertBST t63 14))
+(define t65 (insertBST t64 17))
+(define t66 (insertBST t65 69))
+(define t67 (insertBST t66 98))
+(define t68 (insertBST t67 31))
+(displayBST t68)
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+            99
+                    98
+                97
+                    96
+        95
+            94
+                92
+    91
+                        90
+                                89
+                            88
+                    87
+                                85
+                            84
+                        83
+                                    82
+                                        81
+                                80
+                                    79
+                            78
+                                76
+                75
+            74
+                    72
+                71
+                    70
+                        69
+        68
+                    65
+                64
+                        63
+                            62
+                    60
+            59
+                        58
+                    57
+                56
+55
+                53
+            52
+                        50
+                            49
+                    48
+                        47
+                            45
+                44
+                    43
+        40
+                    39
+                        38
+                37
+            36
+                32
+                        31
+                    30
+    28
+        27
+                25
+            24
+                    22
+                        20
+                                19
+                            18
+                                17
+                16
+                            14
+                        12
+                    11
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TEST #74
+     scam -r task8.scm ../task8.9 (time allowed: 1s)
+
+task8.9 contains:
+(define t1 (newBST 63))
+(define t2 (insertBST t1 57))
+(define t3 (insertBST t2 86))
+(define t4 (insertBST t3 34))
+(define t5 (insertBST t4 69))
+(define t6 (insertBST t5 18))
+(define t7 (insertBST t6 37))
+(define t8 (insertBST t7 46))
+(define t9 (insertBST t8 91))
+(define t10 (insertBST t9 89))
+(define t11 (insertBST t10 21))
+(define t12 (insertBST t11 19))
+(define t13 (insertBST t12 44))
+(define t14 (insertBST t13 90))
+(define t15 (insertBST t14 51))
+(define t16 (insertBST t15 74))
+(define t17 (insertBST t16 60))
+(define t18 (insertBST t17 73))
+(define t19 (insertBST t18 17))
+(define t20 (insertBST t19 42))
+(define t21 (insertBST t20 27))
+(define t22 (insertBST t21 28))
+(define t23 (insertBST t22 35))
+(define t24 (insertBST t23 78))
+(define t25 (insertBST t24 11))
+(define t26 (insertBST t25 75))
+(define t27 (insertBST t26 29))
+(define t28 (insertBST t27 14))
+(define t29 (insertBST t28 72))
+(define t30 (insertBST t29 87))
+(define t31 (insertBST t30 22))
+(define t32 (insertBST t31 33))
+(define t33 (insertBST t32 65))
+(define t34 (insertBST t33 52))
+(define t35 (insertBST t34 43))
+(define t36 (insertBST t35 66))
+(define t37 (insertBST t36 16))
+(define t38 (insertBST t37 84))
+(define t39 (insertBST t38 38))
+(define t40 (insertBST t39 99))
+(define t41 (insertBST t40 59))
+(define t42 (insertBST t41 25))
+(define t43 (insertBST t42 92))
+(define t44 (insertBST t43 24))
+(define t45 (insertBST t44 32))
+(define t46 (insertBST t45 93))
+(define t47 (insertBST t46 41))
+(define t48 (insertBST t47 76))
+(define t49 (insertBST t48 98))
+(define t50 (insertBST t49 97))
+(define t51 (insertBST t50 36))
+(define t52 (insertBST t51 23))
+(define t53 (insertBST t52 70))
+(define t54 (insertBST t53 82))
+(define t55 (insertBST t54 56))
+(define t56 (insertBST t55 26))
+(define t57 (insertBST t56 80))
+(displayBST t57)
+
+EXPECTED RESULTS:
+--------------------------------------------------------------
+            99
+                        98
+                            97
+                    93
+                92
+        91
+                90
+            89
+                87
+    86
+                    84
+                        82
+                            80
+                78
+                        76
+                    75
+            74
+                73
+                    72
+                        70
+        69
+                66
+            65
+63
+        60
+            59
+    57
+                            56
+                        52
+                    51
+                46
+                    44
+                            43
+                        42
+                                41
+                            38
+            37
+                    36
+                35
+        34
+                                33
+                                    32
+                            29
+                        28
+                    27
+                                26
+                            25
+                                24
+                                    23
+                        22
+                21
+                    19
+            18
+                17
+                            16
+                        14
+                    11
+--------------------------------------------------------------
+Your output matches exactly!
+
+
+TESTING COMPLETE.
+
+Your bonus is 0.10 points.
+
+Tests passed: 73
+Tests failed: 2
+
+There are test failures, you need to resubmit.

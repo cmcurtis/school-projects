@@ -15,7 +15,7 @@
   ;x is base and z is top and y is step 
   (define (iter base top step store l)
     (cond 
-      ((= store top) (append l (list top)))
+      ((= store top) l)
       ((> store top) l)
       (else 
         (iter base top step (+ step store) (append l (list store)))
